@@ -28,3 +28,27 @@ $ node -v
 $ node file_name.js
 ```
 ***
+
+### Module System
+Module system is library like system that allows us to do specified and advanced objectives. Some are included globally (by default) like *console*, some require importing from directly the Node.js itself (see [docs](https://nodejs.org/dist/latest-v15.x/docs/api/)) and some are done by users and shared on [**npm**](https://www.npmjs.com/) mostly.
+
+Regardless of it is a built-in, npm or self-made module; we need to import the module and assign it to a variable/constant like the following:
+```javascript
+const module_name = require('module_name')
+/* i.e. to import filesystem */
+const fs = require('fs')
+```
+***
+
+### Some Functions
+- `fs.writeFileSync('file_name.extension', data)`  
+Overwrites the data into the given file.
+
+- `fs.writeFile('file_name.extension', data)`  
+Overwrites the data into the given file. *Asynchronous version!*
+
+- `fs.appendFileSync('file_name.extension', data)`  
+Appends the data into the given file.
+
+- `fs.appendFile('file_name.extension', data)`  
+Appends the data into the given file. *Asynchronous version!*
