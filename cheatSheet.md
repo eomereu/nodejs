@@ -38,11 +38,12 @@ Module system is library like system that allows us to do specified and advanced
 console.log('utils.js')
 const name = 'Mike'
 module.exports = name
+
 /* app.js */
 const firstName = require('./utils.js')
 console.log(name)
-```
-```bash
+
+/* terminal */
 $ node app.js
 utils.js
 Mike
@@ -63,7 +64,18 @@ const utils = require('./utils.js')
 /* or */
 require('./utils.js')
 ```
+3. **NPM Modules**  
+When we first install Node on our machine, npm is also installed with it automatically. We can check its version by `npm -v`. To use npm modules we should first initialize it within the root directory of our project and then install the ones we are going to use,
+```bash
+# version check
+$ npm -v
 
+# initialization
+$ npm init
+```
+Initialization process will create a *package.json* file inside our directory and while creating it, it will want some information for us right after hitting Enter for `npm init` command. We can simply give nothing and keep on hitting Enter to those details and answering *'yes'* to the last *'Is this OK?'* question for the time being.
+
+*PS: Here 'json' stands for 'Java Script Object Notation' and inside, we are couraged to use double quotes instead of single ones*
 ***
 
 ### Some Functions
