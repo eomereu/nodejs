@@ -8,25 +8,25 @@ Of course there are slight differences between JavaScript on browser and on Node
 
 ### [Install](https://www.youtube.com/watch?v=OsaMcvF1xaE&ab_channel=Chaitanya) & Uninstall
 - To install the tar.xz file, after extracting and assuming the folder name is *node*, on the directory of the folder, *which is generally the 'Downloads' folder,*
-```bash
-$ sudo cp -r node/{bin,include,lib,share} /usr/
-```
+  ```bash
+  $ sudo cp -r node/{bin,include,lib,share} /usr/
+  ```
 - To uninstall,
-```bash
-$ sudo apt remove nodejs
-```
+  ```bash
+  $ sudo apt remove nodejs
+  ```
 ***
 
 ### General
 - To check the current version of Node.js,
-```bash
-$ node -v
-```
+  ```bash
+  $ node -v
+  ```
 
 - To simply run the script via terminal,
-```bash
-$ node file_name.js
-```
+  ```bash
+  $ node file_name.js
+  ```
 ***
 
 ### Module System
@@ -51,31 +51,45 @@ Mike
 
 Regardless of it is a built-in, npm or self-made module, we use `require()` function:
 1. **Built-in Modules**
-```javascript
-const module_name = require('module_name')
-/* i.e. to import filesystem */
-const fs = require('fs')
-```
+    ```javascript
+    const module_name = require('module_name')
+    /* i.e. to import filesystem */
+    const fs = require('fs')
+    ```
 2. **Self-made Modules**  
 Including a module will end up executing it directly, regardless of being assigned to a variable or not. *Especially when our own modules are subjected.*
-```javascript
-/* assuming the utils.js file is in the same directory as the file we are importing it into*/
-const utils = require('./utils.js')
-/* or */
-require('./utils.js')
-```
+    ```javascript
+    /* assuming the utils.js file is in the same directory as the file we are importing it into*/
+    const utils = require('./utils.js')
+    /* or */
+    require('./utils.js')
+    ```
 3. **NPM Modules**  
 When we first install Node on our machine, npm is also installed with it automatically. We can check its version by `npm -v`. To use npm modules we should first initialize it within the root directory of our project and then install the ones we are going to use,
-```bash
-# version check
-$ npm -v
+    ```bash
+    # version check
+    $ npm -v
 
-# initialization
-$ npm init
-```
-Initialization process will create a *package.json* file inside our directory and while creating it, it will want some information for us right after hitting Enter for `npm init` command. We can simply give nothing and keep on hitting Enter to those details and answering *'yes'* to the last *'Is this OK?'* question for the time being.
+    # initialization
+    $ npm init
+    ```
+    Initialization process will create a *package.json* file inside our directory and while creating it, it will want some information for us right after hitting Enter for `npm init` command. We can simply give nothing and keep on hitting Enter to those details and answering *'yes'* to the last *'Is this OK?'* question for the time being.
 
-*PS: Here 'json' stands for 'Java Script Object Notation' and inside, we are couraged to use double quotes instead of single ones*
+    *PS: Here 'json' stands for 'Java Script Object Notation' and inside, we are couraged to use double quotes instead of single ones*
+
+    After initialization process and specifying which NPM module to use in our app, we should install it in the root directory by,
+    ```bash
+    $ npm i package_name
+    ```
+    > `npm i package_name@version` will simply install the module with the specified version
+    
+    The folder of the module is automatically created under the *node_modules* folder with its module name and none of the files here are subject to change.
+  ***
+
+### Some NPM Modules
+- [validator](https://www.npmjs.com/package/validator)  
+A library of string validators and sanitizers. Some useful methods:  
+`isEmail('str')` - `isURL('str')`
 ***
 
 ### Some Functions
