@@ -27,6 +27,12 @@ Of course there are slight differences between JavaScript on browser and on Node
   ```bash
   $ node file_name.js
   ```
+
+- A more practical usage on logging to console,
+  ```javascript
+  const log = console.log
+  log('Hello!')
+  ```
 ***
 
 ### Module System
@@ -84,12 +90,22 @@ When we first install Node on our machine, npm is also installed with it automat
     > `npm i package_name@version` will simply install the module with the specified version
     
     The folder of the module is automatically created under the *node_modules* folder with its module name and none of the files here are subject to change.
+
+    Cloning any project with NPM modules in it will arrive without *node_modules* folder undoubtfully. Since its untouchablity and size when a project with it is to be pushed to Git or to any repository, the mentiones foler is deleted. So after cloning the project because we need the folder, we can simply install it via the command:  
+    ```bash
+    $ npm install
+    ``` 
+    within the root directory. It will use the *package.json* and *package-lock.json* files as a reference to install the folder.
   ***
 
 ### Some NPM Modules
-- [validator](https://www.npmjs.com/package/validator)  
+- [**validator**](https://www.npmjs.com/package/validator)  
 A library of string validators and sanitizers. Some useful methods:  
 `isEmail('str')` - `isURL('str')`
+
+- [**chalk**](https://www.npmjs.com/package/chalk)  
+Terminal string styling done right. *The order of features doesn't matter!* Example usage:  
+`console.log(chalk.bgRed.bold('Error!'))`
 ***
 
 ### Some Functions

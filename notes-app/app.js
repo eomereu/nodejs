@@ -1,8 +1,15 @@
 const validator = require('validator')
+const chalk = require('chalk')
+
+const log = console.log
 
 const getName = require('./notes.js')
 const msg = getName()
-console.log(msg)
+log(msg)
 
-console.log(validator.isEmail('a@b.com'))
-console.log(validator.isURL('htp/ab.com'))
+log(validator.isEmail('a@b.com'))
+log(validator.isURL('htp/ab.com'))
+log(chalk.green.bold('Success!'))
+log(chalk.bgRed('Error!'))
+log(chalk.bold.yellow('Warning!'))
+log(chalk.red.inverse('Error!'))
