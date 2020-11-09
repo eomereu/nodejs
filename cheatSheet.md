@@ -95,17 +95,33 @@ When we first install Node on our machine, npm is also installed with it automat
     ```bash
     $ npm install
     ``` 
-    within the root directory. It will use the *package.json* and *package-lock.json* files as a reference to install the folder.
+    within the root directory. It will use the *package.json* and *package-lock.json* files as a reference to install the folder.  
+
+4. Global NPM Packages  
+    These will allow us to get a nwe command on terminal. When we install a global package, we don't load it into our file with *require* etc. instead we install it globally via terminal by,
+    ```bash
+    $ sudo npm i global_package_name -g
+    ```
+    >When we install a package globally it won't make any changes on *package.json*, *package-lock.json* or in *node_modules* folder; instead it will directly install it into our operating system!
+
   ***
 
 ### Some NPM Modules
 - [**validator**](https://www.npmjs.com/package/validator)  
-A library of string validators and sanitizers. Some useful methods:  
+A library of string validators and sanitizers.  
+Some useful methods:  
 `isEmail('str')` - `isURL('str')`
 
 - [**chalk**](https://www.npmjs.com/package/chalk)  
-Terminal string styling done right. *The order of features doesn't matter!* Example usage:  
+Terminal string styling done right. *The order of features doesn't matter!*  
+Example usage:  
 `console.log(chalk.bgRed.bold('Error!'))`
+
+- [**nodemon** *-global*](https://www.npmjs.com/package/nodemon)  
+nodemon is a tool that helps develop node.js based applications by automatically restarting the node application when file changes in the directory are detected. To use nodemon, replace the word node on the command line when executing your script.  
+Usage (start/exit):  
+`$ nodemon app.js`  
+  `Ctrl+C`  
 ***
 
 ### Some Functions
