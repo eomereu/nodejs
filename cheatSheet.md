@@ -33,6 +33,31 @@ Of course there are slight differences between JavaScript on browser and on Node
   const log = console.log
   log('Hello!')
   ```
+
+- `console.log(process.argv)`  
+Here *argv* stands for **argument vector** and contains all of the arguments provided while running the node script. So by adding the mentioned code piece into our js file and running it by,
+  ```bash
+  $ node app.js MyInput
+  ```
+  We will get something like,
+  ```bash
+  [
+    '/usr/bin/node',
+    '/home/eomer/Desktop/nodejs/notes-app/app.js',
+    'MyInput'
+  ]
+  ```
+  Actually this is the value of *argv* that we used in our code. Here the first two arguments are always provided, the third one is provided when we run it with additional argument *like MyInput string here*. So the arguments are respectively,
+  1. Executable node directory on our machine
+  2. Path of our js file
+  3. The argument we provided  
+
+  So thanks to `process.argv` enabling us to access that argument we provide, we can make use out of it through our app,
+  ```javascript
+  console.log(process.argv[2])
+  ```
+  Will return merely our argument as expected.
+  > We can provide as many arguments as we want!
 ***
 
 ### Module System
