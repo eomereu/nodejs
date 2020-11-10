@@ -11,53 +11,16 @@ Of course there are slight differences between JavaScript on browser and on Node
   ```bash
   $ sudo cp -r node/{bin,include,lib,share} /usr/
   ```
-- To uninstall,
-  ```bash
-  $ sudo apt remove nodejs
-  ```
-***
 
-### General
 - To check the current version of Node.js,
   ```bash
   $ node -v
   ```
 
-- To simply run the script via terminal,
+- To uninstall,
   ```bash
-  $ node file_name.js
+  $ sudo apt remove nodejs
   ```
-
-- A more practical usage on logging to console,
-  ```javascript
-  const log = console.log
-  log('Hello!')
-  ```
-
-- `console.log(process.argv)`  
-Here *argv* stands for **argument vector** and contains all of the arguments provided while running the node script. So by adding the mentioned code piece into our js file and running it by,
-  ```bash
-  $ node app.js MyInput
-  ```
-  We will get something like,
-  ```bash
-  [
-    '/usr/bin/node',
-    '/home/eomer/Desktop/nodejs/notes-app/app.js',
-    'MyInput'
-  ]
-  ```
-  Actually this is the value of *argv* that we used in our code. Here the first two arguments are always provided, the third one is provided when we run it with additional argument *like MyInput string here*. So the arguments are respectively,
-  1. Executable node directory on our machine
-  2. Path of our js file
-  3. The argument we provided  
-
-  So thanks to `process.argv` enabling us to access that argument we provide, we can make use out of it through our app,
-  ```javascript
-  console.log(process.argv[2])
-  ```
-  Will return merely our argument as expected.
-  > We can provide as many arguments as we want!
 ***
 
 ### Module System
@@ -128,10 +91,67 @@ When we first install Node on our machine, npm is also installed with it automat
     $ sudo npm i global_package_name -g
     ```
     >When we install a package globally it won't make any changes on *package.json*, *package-lock.json* or in *node_modules* folder; instead it will directly install it into our operating system!
+***
 
-  ***
+### General
+- To simply run the script via terminal,
+  ```bash
+  $ node file_name.js
+  ```
 
-### Some NPM Modules
+- A more practical usage on logging to console,
+  ```javascript
+  const log = console.log
+  log('Hello!')
+  ```
+***
+
+### Getting User Input via Command Line Arguments 
+Simply to get inputs from user via command line we need `console.log(process.argv)`...
+Here *argv* stands for **argument vector** and contains all of the arguments provided while running the node script. So by adding the mentioned code piece into our js file and running it by,
+```bash
+$ node app.js MyInput
+```
+We will get something like,
+```bash
+[
+  '/usr/bin/node',
+  '/home/eomer/Desktop/nodejs/notes-app/app.js',
+  'MyInput'
+]
+```
+  Actually this is the value of *argv* that we used in our code. Here the first two arguments are always provided, the third one is provided when we run it with additional argument *like MyInput string here*. So the arguments are respectively,
+  1. Executable node directory on our machine
+  2. Path of our js file
+  3. The argument we provided  
+
+So thanks to `process.argv` enabling us to access that argument we provide, we can make use out of it through our app,
+```javascript
+console.log(process.argv[2])
+```
+Will return merely our argument as expected.
+> We can provide as many arguments as we want!
+
+However when we provide an argument it won't parse it by yourself. So at the end of the day we will need an NPM module to accomplish this called as ***yargs***.  
+Without yargs, in other words with `console.log(process.argv)`:
+```bash
+$ node app.js add --title="Things to buy"
+['/usr/bin/node',
+  '/home/eomer/Desktop/nodejs/notes-app/app.js',
+  'add'
+  '--title=Things to buy'
+]
+```
+With yargs, in other words with `console.log(yargs.argv)`:
+```bash
+$ node app.js add --title="Things to buy"
+{ _: [ 'add' ], title: 'Things to buy', '$0': 'app.js' }
+```
+> *See **yargs** under **Useful NPM Modules** for further use...*
+***
+
+
+### Useful NPM Modules
 - [**validator**](https://www.npmjs.com/package/validator)  
 A library of string validators and sanitizers.  
 Some useful methods:  
@@ -147,9 +167,64 @@ nodemon is a tool that helps develop node.js based applications by automatically
 Usage (start/exit):  
 `$ nodemon app.js`  
   `Ctrl+C`  
+
+- [**yargs**](https://www.npmjs.com/package/yargs)  
+Parses us users' command line inputs  
+Some commands:  
+`$ node app.js --help` - `console.log(yargs.argv)` - `yargs.version('5.2.0')` - `yargs.command({ command: 'command_name', describe: 'description_of_the_command' })`  
+Example usage:
+Command `console.log(yargs.argv)` included in the *app.js*:
+With yargs, in other words with `console.log(yargs.argv)`:
+  ```bash
+  $ node app.js
+  { _: [], '$0': 'app.js' }
+  ```
+  Here the *underscore array* contains our given commands -nonparsable ones- respectively, *$0 key* indicates the file we run. Furthermore, the parsable arguments we/users give added to the returned object as a new *key-value pair* as below:
+  ```bash
+  $ node app.js add --title="Things to buy"
+  { _: [ 'add' ], title: 'Things to buy', '$0': 'app.js' }
+  ```
+  By default yargs provides us a `--help` argument to help user to see how and with which commands to use the app,
+  ```bash
+  $ node app.js --help
+  Options:
+    --help    Show help                         [boolean]
+    --version Show version number               [boolean]
+  ```
+  Of course we can both edit and add options, *(i.e. Version is 1.0.0 by default)*
+  ```javascript
+  /* In our js file */
+  yargs.version('5.2.0')
+  ```
+  ```bash
+  $ node app.js --version
+  5.2.0
+  ```
+  To add a command to yargs:
+  ```javascript
+  yargs.command({
+    command: 'add',
+    describe: 'Adds a new note',
+    handler: function() {
+      log('Adding the note!')
+    }
+  })
+  ```
+  Here *command* keyword is of course for the name of our new command, *describe* to explain its function within *help*, and lastly but most importantly ***handler*** is the part that is going to be executed when the command is used!
+  ```bash
+  $ node app.js --help
+  app.js [command]
+
+  Commands:
+    app.js  add  Adds a new note
+
+  Options:
+    --help    Show help                         [boolean]
+    --version Show version number               [boolean]
+  ```
 ***
 
-### Some Functions
+### Useful Functions
 - `fs.writeFileSync('file_name.extension', data)`  
 Overwrites the data into the given file.
 
