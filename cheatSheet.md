@@ -150,6 +150,46 @@ $ node app.js add --title="Things to buy"
 > *See **yargs** under **Useful NPM Modules** for further use...*
 ***
 
+### JSON
+JSON (JavaScript Object Notation) is a lightweight data-interchange format. It is easy for humans to read and write. It is easy for machines to parse and generate. JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages, including C, C++, C#, Java, JavaScript, Perl, Python, and many others. These properties make JSON an ideal data-interchange language.
+> For *fs (file system)* to be able to store the data, it must be a string. Since it's much more easier to store things as objects in terms of referring to its specified parts we need to change it constantly between *object* and *string*. That's when **JSON** comes into use.
+```javascript
+const book = {
+  title: 'Ego is the Enemy',
+  author: 'Ryan Holiday'
+}
+```
+1- `JSON.stringfy(object)`  
+Used to turn the object into JSON string:
+```javascript
+const bookJSON = JSON.stringify(book)
+```
+2- `JSON.parse(objectJSON)`  
+Used to turn it back into object (parse the JSON formatted string):
+```javascript
+const parsedData = JSON.stringify(bookJSON)
+```
+An example usage that makes the transformations, writes and reads *(makes all the stuff)*:
+Respectively
+- *Read*
+1. Read the file as a buffer
+1. Turn the buffer into string
+1. Parse the JSON formatted string back to object
+- *Modify...*
+- *Write*
+1. Stringify the object
+1. Write it to the file as a JSON formatted string
+```javascript
+// Read
+const dataBuffer = fs.readFileSync('1-json.json')
+const dataJSON = dataBuffer.toString()
+const book = JSON.parse(dataJSON)
+// Modify...
+// Write Back
+const bookJSON = JSON.stringify(book)
+fs.writeFileSync('1-json.json', bookJSON)
+```
+***
 
 ### Useful NPM Modules
 - [**validator**](https://www.npmjs.com/package/validator)  
@@ -260,3 +300,10 @@ Appends the data into the given file.
 
 - `fs.appendFile('file_name.extension', data)`  
 Appends the data into the given file. *Asynchronous version!*
+
+- `fs.writeFileSync('file_name.extension')` - *`var.toString()`*  
+Reads the file but as a ***buffer***! To get it as a string we should use as:
+```javascript
+const dataBuffer = fs.readFileSync('file_name.extension')
+dataBuffer.toString()
+```
