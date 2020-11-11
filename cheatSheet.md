@@ -173,8 +173,9 @@ Parses us users' command line inputs
 Some commands:  
 `$ node app.js --help` - `console.log(yargs.argv)` - `yargs.version('5.2.0')` - `yargs.command({ command: 'command_name', describe: 'description_of_the_command' })`  
 Example usage:
-Command `console.log(yargs.argv)` included in the *app.js*:
-With yargs, in other words with `console.log(yargs.argv)`:
+  ```javascript
+  console.log(yargs.argv)
+  ```
   ```bash
   $ node app.js
   { _: [], '$0': 'app.js' }
@@ -205,12 +206,35 @@ With yargs, in other words with `console.log(yargs.argv)`:
   yargs.command({
     command: 'add',
     describe: 'Adds a new note',
-    handler: function() {
-      log('Adding the note!')
+    builder: {
+      title: {
+        describe: 'Note title',
+        demandOption: true,
+        type: 'string'
+      }
+    },
+    handler: function(argv) {
+      log('Adding the note!', argv)
     }
   })
   ```
-  Here *command* keyword is of course for the name of our new command, *describe* to explain its function within *help*, and lastly but most importantly ***handler*** is the part that is going to be executed when the command is used!
+  - ***PS:*** In order for line `log('Adding the note!', argv)` to succesfully parse the argument and log itwe have to call the following command once within our file:
+    ```javascript
+    yargs.parse()
+    ```
+  
+  In the code up above,  
+  *`command`* keyword is of course for the name of our new command,  
+  *`describe`* to explain its function within *help*,  
+  *`builder`*'s value is an object and in that object, we can define all of the options we want this given command to support.
+  >We can create various properties for the options at this point:  
+  *`describe`* lets us to define its function,  
+  *`demandOption`* lets us to set the option as a **required** one or not, *(false by default)*  
+  *`type`* lets us to specify the supported types for the option, *(boolean by default)*  
+
+  
+
+  *`handler`* is the part that is going to be executed when the command is used!
   ```bash
   $ node app.js --help
   app.js [command]

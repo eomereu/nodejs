@@ -11,8 +11,20 @@ yargs.version('5.2.0')
 yargs.command({
   command: 'add',
   describe: 'Adds a new note',
-  handler: function() {
-    log('Adding the note!')
+  builder: { /*contains objects of options*/
+    title: {
+      describe: 'Note title',
+      demandOption: true,
+      type: 'string'
+    },
+    body: {
+      describe: 'Note content',
+      demandOption: true,
+      type: 'string'
+    }
+  },
+  handler: function(argv) {
+    log('Note successfully added!', '\nTitle:', argv.title, '\nBody:', argv.body)
   }
 })
 
@@ -43,4 +55,4 @@ yargs.command({
   }
 })
 
-log(yargs.argv)
+yargs.parse()
