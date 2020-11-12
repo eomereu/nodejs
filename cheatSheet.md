@@ -42,6 +42,13 @@ $ node app.js
 utils.js
 Mike
 ```
+> Exporting more than one property/method:
+```javascript
+module.exports = {
+  getNotes: getNotes,
+  addNote: addNote
+}
+```
 
 Regardless of it is a built-in, npm or self-made module, we use `require()` function:
 1. **Built-in Modules**
