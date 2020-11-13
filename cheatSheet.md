@@ -310,7 +310,15 @@ Appends the data into the given file. *Asynchronous version!*
 
 - `fs.writeFileSync('file_name.extension')` - *`var.toString()`*  
 Reads the file but as a ***buffer***! To get it as a string we should use as:
-```javascript
-const dataBuffer = fs.readFileSync('file_name.extension')
-dataBuffer.toString()
-```
+  ```javascript
+  const dataBuffer = fs.readFileSync('file_name.extension')
+  dataBuffer.toString()
+  ```
+
+- `array.filter(function(arg){ if(condition){ return true } else { return false }})`  
+Filters the array taking the *function(argv){...}* into consideration. Inside function runs for every item on the given array and if it returns *true* then the current item is filtered and chosen! Below it adds the filtered ones to the *duplicateNotes* array:
+  ```javascript
+  const duplicateNotes = notes.filter(function(note) {
+    return note.title === title
+  })
+  ```
