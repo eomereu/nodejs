@@ -315,10 +315,33 @@ Reads the file but as a ***buffer***! To get it as a string we should use as:
   dataBuffer.toString()
   ```
 
-- `array.filter(function(arg){ if(condition){ return true } else { return false }})`  
-Filters the array taking the *function(argv){...}* into consideration. Inside function runs for every item on the given array and if it returns *true* then the current item is filtered and chosen! Below it adds the filtered ones to the *duplicateNotes* array:
+- `array.filter(function(arg){...})`  
+Filters the array taking the *function(argv){...}* into consideration. Some example usages:
   ```javascript
+  // 1
   const duplicateNotes = notes.filter(function(note) {
     return note.title === title
   })
+  if(duplicateNotes.length === 0) {
+    notes.push({
+      title: title,
+      body: body
+    })
+    saveNotes(notes)
+    log(chalk.green('Note added!'))
+  } else {
+    log(chalk.red('Note title already taken!'))
+  }
+
+  // 2
+  const notes = loadNotes()
+  const titleUnmatchedNotes = notes.filter(function(note) {
+    return note.title !== title
+  })
+  if(notes.length === titleUnmatchedNotes.length) {
+    log(chalk.red.inverse('Note with the given title doesn\'t exist. No note deleted!'))
+  } else {
+    log(chalk.green.inverse('Note with title: \"' + title + '\" deleted!'))
+    saveNotes(titleUnmatchedNotes)
+  }
   ```
