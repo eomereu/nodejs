@@ -26,14 +26,14 @@ const addNote = function(title, body) {
 
 const removeNote = function(title) {
   const notes = loadNotes()
-  const titleUnmatchedNotes = notes.filter(function(note) {
+  const notesToKeep = notes.filter(function(note) {
     return note.title !== title
   })
-  if(notes.length === titleUnmatchedNotes.length) {
+  if(notes.length === notesToKeep.length) {
     log(chalk.red.inverse('Note with the given title doesn\'t exist. No note deleted!'))
   } else {
     log(chalk.green.inverse('Note with title: \"' + title + '\" deleted!'))
-    saveNotes(titleUnmatchedNotes)
+    saveNotes(notesToKeep)
   }
 }
 

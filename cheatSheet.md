@@ -7,7 +7,9 @@ Of course there are slight differences between JavaScript on browser and on Node
 ***
 
 ### [Install](https://www.youtube.com/watch?v=OsaMcvF1xaE&ab_channel=Chaitanya) & Uninstall
-- To install the tar.xz file, after extracting and assuming the folder name is *node*, on the directory of the folder, *which is generally the 'Downloads' folder,*
+- To download, go to:
+  > https://nodejs.org/en/
+- After downloading, to install the tar.xz file, after extracting and assuming the folder name is *node*, on the directory of the folder, *which is generally the 'Downloads' folder,*
   ```bash
   $ sudo cp -r node/{bin,include,lib,share} /usr/
   ```
@@ -86,14 +88,14 @@ When we first install Node on our machine, npm is also installed with it automat
     
     The folder of the module is automatically created under the *node_modules* folder with its module name and none of the files here are subject to change.
 
-    Cloning any project with NPM modules in it will arrive without *node_modules* folder undoubtfully. Since its untouchablity and size when a project with it is to be pushed to Git or to any repository, the mentiones foler is deleted. So after cloning the project because we need the folder, we can simply install it via the command:  
+    Cloning any project with NPM modules in it will arrive without *node_modules* folder undoubtfully. Since its untouchablity and size when a project with it is to be pushed to Git or to any repository, the mentiones folder is deleted. So after cloning the project because we need the folder, we can simply install it via the command:  
     ```bash
     $ npm install
     ``` 
     within the root directory. It will use the *package.json* and *package-lock.json* files as a reference to install the folder.  
 
 4. Global NPM Packages  
-    These will allow us to get a nwe command on terminal. When we install a global package, we don't load it into our file with *require* etc. instead we install it globally via terminal by,
+    These will allow us to get a new command on terminal. When we install a global package, we don't load it into our file with *require* etc. instead we install it globally via terminal by,
     ```bash
     $ sudo npm i global_package_name -g
     ```
@@ -139,7 +141,7 @@ console.log(process.argv[2])
 Will return merely our argument as expected.
 > We can provide as many arguments as we want!
 
-However when we provide an argument it won't parse it by yourself. So at the end of the day we will need an NPM module to accomplish this called as ***yargs***.  
+However when we provide an argument it won't parse it by itself. So at the end of the day we will need an NPM module to accomplish this called as ***yargs***.  
 Without yargs, in other words with `console.log(process.argv)`:
 ```bash
 $ node app.js add --title="Things to buy"
@@ -174,7 +176,7 @@ const bookJSON = JSON.stringify(book)
 2- `JSON.parse(objectJSON)`  
 Used to turn it back into object (parse the JSON formatted string):
 ```javascript
-const parsedData = JSON.stringify(bookJSON)
+const parsedData = JSON.parse(bookJSON)
 ```
 An example usage that makes the transformations, writes and reads *(makes all the stuff)*:
 Respectively
@@ -265,7 +267,7 @@ Example usage:
     }
   })
   ```
-  - ***PS:*** In order for line `log('Adding the note!', argv)` to succesfully parse the argument and log itwe have to call the following command once within our file:
+  - ***PS:*** In order for line `log('Adding the note!', argv)` to succesfully parse the argument and log it we have to call the following command once within our file:
     ```javascript
     yargs.parse()
     ```
@@ -308,7 +310,7 @@ Appends the data into the given file.
 - `fs.appendFile('file_name.extension', data)`  
 Appends the data into the given file. *Asynchronous version!*
 
-- `fs.writeFileSync('file_name.extension')` - *`var.toString()`*  
+- `fs.readFileSync('file_name.extension')` - *`var.toString()`*  
 Reads the file but as a ***buffer***! To get it as a string we should use as:
   ```javascript
   const dataBuffer = fs.readFileSync('file_name.extension')
