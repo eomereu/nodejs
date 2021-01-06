@@ -108,11 +108,62 @@ When we first install Node on our machine, npm is also installed with it automat
   $ node file_name.js
   ```
 
-- A more practical usage on logging to console,
+- More practical usage on logging to console,
   ```javascript
   const log = console.log
   log('Hello!')
   ```
+
+- **Standard functions** create its own *'this' keyword binding* while **arrow functions** don't create its own. The following code is written based on this principal. Outer one is a standard function to be able to have a 'this' keyword binding and the inner one is an arrow function so that by using 'this' binding we can refer to the object itself not the one that inside the array that we are iterating over:
+  ```javascript
+  const event = {
+    name: "Birthday Party",
+    guestList: ["Ahmet", "Mehmet", "Hasan"],
+    printGuestList(){
+        console.log(this.name + ' Guest List:')
+        this.guestList.forEach((guest) => {
+            console.log(guest + ' is attending ' + this.name)
+        })
+    }
+  }
+  event.printGuestList() 
+  ```
+
+- Standard function syntax,
+  ```javascript
+  const greet = function(arg){
+    console.log("Hi")
+  }
+  ```
+
+- Standard function syntax inside an object (method),
+  ```javascript
+  ...
+    greet: function(){
+      console.log("Hi")
+    }
+  ...
+  ```
+
+- More compact standard function syntax inside an object (method),
+  ```javascript
+  ...
+    greet() {
+      console.log("Hi")
+    }
+  ...
+  ```
+  *PS: Also called as "ES6 Definition Syntax"*
+
+- Shorter arrow function syntax if only one command,
+  ```javascript
+  const square = (x) => x * x
+  /* OR */
+  const square = (x) => console.log('Square of ' + x + ' is')
+  ```
+  *PS: **'return'** keyword is not written in this case!*
+
+- It's a better practice not to have 'function' keyword through the code with the help of simplified usages above.
 ***
 
 ### Getting User Input via Command Line Arguments 
