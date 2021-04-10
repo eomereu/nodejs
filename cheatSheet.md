@@ -88,7 +88,7 @@ When we first install Node on our machine, npm is also installed with it automat
     
     The folder of the module is automatically created under the *node_modules* folder with its module name and none of the files here are subject to change.
 
-    Cloning any project with NPM modules in it will arrive without *node_modules* folder undoubtfully. Since its untouchablity and size when a project with it is to be pushed to Git or to any repository, the mentiones folder is deleted. So after cloning the project because we need the folder, we can simply install it via the command:  
+    Cloning any project with NPM modules in it will arrive without *node_modules* folder undoubtfully. Since its untouchablity and size when a project with it is to be pushed to Git or to any repository, the mentioned folder is deleted. So after cloning the project because we need the folder, we can simply install it via the command:  
     ```bash
     $ npm install
     ``` 
@@ -128,7 +128,8 @@ When we first install Node on our machine, npm is also installed with it automat
   }
   event.printGuestList() 
   ```
-
+  > So arrow functions are not well suited for methods when we want to access **'this'**
+  
 - Standard function syntax,
   ```javascript
   const greet = function(arg){
