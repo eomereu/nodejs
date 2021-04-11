@@ -156,13 +156,32 @@ When we first install Node on our machine, npm is also installed with it automat
   ```
   *PS: Also called as "ES6 Definition Syntax"*
 
-- Shorter arrow function syntax if only one command,
+- Arrow function syntax,
+  ```javascript
+  const removeNote = (title) => {
+    ...
+  }
+  ```
+
+- Simpler arrow function syntax if only there is one argument,
+  ```javascript
+  const readNote = (title) => {
+    ...
+  }
+  ```
+
+- Shorter arrow function syntax if only gonna **return** one command,
   ```javascript
   const square = (x) => x * x
   /* OR */
   const square = (x) => console.log('Square of ' + x + ' is')
   ```
   *PS: **'return'** keyword is not written in this case!*
+
+- **Simpler** and **Shorter** versions of arrow function combined,
+  ```javascript
+  const desiredNote = notes.find(note => note.title === title)
+  ```
 
 - It's a better practice not to have 'function' keyword through the code with the help of simplified usages above.
 ***
@@ -369,8 +388,8 @@ Reads the file but as a ***buffer***! To get it as a string we should use as:
   dataBuffer.toString()
   ```
 
-- `array.filter(function(arg){...})`  
-Filters the array taking the *function(argv){...}* into consideration. Some example usages:
+- `array.filter((arg) => {...})`  
+Filters the array taking the *(argv) => {...}* into consideration. Iterates all of the elements no matter what *(Performs extra redundant iterations)*. Returns the matched ones as an array. Some example usages:
   ```javascript
   // 1
   const duplicateNotes = notes.filter(function(note) {
@@ -397,5 +416,25 @@ Filters the array taking the *function(argv){...}* into consideration. Some exam
   } else {
     log(chalk.green.inverse('Note with title: \"' + title + '\" deleted!'))
     saveNotes(titleUnmatchedNotes)
+  }
+  ```
+
+- `array.find((arg) => {...})`
+Searchs the elements in the array taking the *(argv) => {...}* into consideration. Iterates only until finding the matched element *(No extra redundant iterations)*. Returns the matched element only. Ex *(More convenient way of the one above)* :
+  ```javascript
+  const addNote = (title, body) => {
+    const notes = loadNotes()
+    const duplicateNote = notes.find((note) => note.title === title)
+  
+    if(!duplicateNote) { //if there's no duplicateNote
+      notes.push({
+        title: title,
+        body: body
+      })
+      saveNotes(notes)
+      log(chalk.green('Note added!'))
+    } else {
+      log(chalk.red('Note title already taken!'))
+    }
   }
   ```
