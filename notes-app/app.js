@@ -50,7 +50,7 @@ yargs.command({
   command: 'list',
   describe: 'Lists all existing notes',
   handler() {
-    log('Here are your notes:')
+    notes.listNotes()
   }
 })
 

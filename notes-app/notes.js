@@ -9,7 +9,7 @@ const getNotes = () => {
 const addNote = (title, body) => {
   const notes = loadNotes()
   const duplicateNotes = notes.filter((note) => note.title === title)
-
+  
   if(duplicateNotes.length === 0) {
     notes.push({
       title: title,
@@ -33,6 +33,15 @@ const removeNote = (title) => {
   }
 }
 
+const listNotes = () => {
+  const notes = loadNotes()
+  log(chalk.bgBlue('Your notes:'))
+  notes.forEach((note) => {
+    log(note.title)
+  });
+}
+
+/* Inside Used Functions */
 const loadNotes = () => {
   try {
     const dataBuffer = fs.readFileSync('notes.json')
@@ -50,6 +59,7 @@ const saveNotes = (notes) => {
 
 module.exports = {
   getNotes: getNotes,
+  listNotes: listNotes,
   addNote: addNote,
   removeNote: removeNote
 }
