@@ -309,6 +309,10 @@ fs.writeFileSync('1-json.json', bookJSON)
 - Whenever we encounter an error message after running our app, we can simply see the type and the reason of the error and right below it, we will be seeing the stack trace. Here the most explicit one *(with the line and func. name specified)* is at the top and downside it goes to the internals.
 ***
 
+### Asynchronous NodeJS
+- Asynchronous NodeJs will allow us to do lots of jobs simultaneously. For example while waiting for a database request, in the meantime we will be able to handle very other requests from various users.
+***
+
 ### Useful NPM Modules
 - [**validator**](https://www.npmjs.com/package/validator)  
 A library of string validators and sanitizers.  
@@ -476,3 +480,6 @@ Searchs the elements in the array taking the *(argv) => {...}* into consideratio
     }
   }
   ```
+
+- `setTimeout((arg) => {...}, miliseconds)`  
+***ASYN*** Allows us to run some code after a specified time has passed *(1000 ms = 1 sec)*
