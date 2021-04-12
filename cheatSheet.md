@@ -311,6 +311,22 @@ fs.writeFileSync('1-json.json', bookJSON)
 
 ### Asynchronous NodeJS
 - Asynchronous NodeJs will allow us to do lots of jobs simultaneously. For example while waiting for a database request, in the meantime we will be able to handle very other requests from various users.
+
+- **Call Stack** keeps track of the individual functions that is executed. *PS: In a synchronous only application, solely this stack is being used!*
+
+- **Node APIs** keeps registrations of new events *(event-callback pairs)*. So asynchronous functions that require some time sits and waits here.  
+*In other words, keeps registrations and waits of **asynchronous functions***
+
+- The job of the **Callback Queue** is to maintain a list of all of the callback functions that are rady to get executed
+
+- **Event Loop** constantly watch for both **Call Stack** and **Callback Queue**. If the *call stack* is empty then it's going to run items from *callback queue*.
+
+- *Call Stack - NodeAPIs - Callback Queue - Event Loop:*
+<img src="https://i.ibb.co/2vkKSHx/CS-NA-CQ-EL.png">
+
+- In regular synchronous scripts, everything ends with the ending of the execution of *`main()`* function. But it's not the case with asynchronous programs. Because *event loop* can just start to do its job: takes the things in *callback queue* and puts into the *call stack*
+
+- None of the asynchronous functions is going to run before the *`main()`* function is done!
 ***
 
 ### Useful NPM Modules
