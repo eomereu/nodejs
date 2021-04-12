@@ -220,6 +220,8 @@ When we first install Node on our machine, npm is also installed with it automat
   ```
 
 - When we're finished with the whole debugging process we simply quit the **`debug> `** process by double **Ctrl + C**
+
+- Whenever we encounter an error message after running our app, we can simply see the type and the reason of the error and right below it, we will be seeing the stack trace. Here the most explicit one *(with the line and func. name specified)* is at the top and downside it goes to the internals.
 ***
 
 ### Getting User Input via Command Line Arguments 
