@@ -186,44 +186,6 @@ When we first install Node on our machine, npm is also installed with it automat
 - It's a better practice not to have 'function' keyword through the code with the help of simplified usages above.
 ***
 
-### Debugging
-- In debugging phase, we may use *`console.log()`* to print out and check the variables we are working on.
-
-- For further and more advanced way is to add **`debugger`** keyword into the lines that we want to to hold on a second and inspect what's going on via debugging tools. Firstly after adding the mentioned keyword but running the app normally, won't provide the execution to stop at the desired point. In order to make this happen, we are to run the app by adding **`inspect`** keyword right after *`node`* :
-  ```bash
-  $ node inspect app.js add --title="t" --body="b"
-  ```
-  *PS: Here if bumped into an error like "Timeout (2000) waiting for..." then the following version is to be used:*
-  ```bash
-  $ node --inspect-brk app.js add --title="t" --body="b"
-  ```
-
-- After running the application with *`inspect`* keyword in debugging mode, we switch to Google Chrome and type:
-  ```
-  chrome://inspect
-  ```
-  By hitting Enter we should see our app under **Remote Target** headline. If nothing is to be seen there, then we may need to configure Chrome by ourselves. To do this, hit the **Configure...** button and add following two IP adress and port values:
-  ```
-  localhost:9229
-  127.0.0.1:9229
-  ```
-
-- Then when we hit **inspect** link under our app there under the **Remote Target** headline, it will open us a workspace like window. Within the window we can add our workspace folder from the left panel and reach all our content.
-
-- In the meantime we can simply show and hide the **Console** at the bottom by simply using **ESC** key.
-
-- The debugger is by default paused at the beginning of our app. If we hit the blue play button at the right hand side. It will keep running the app until it's told not to or until hitting our pre-placed **`debugger`** keyword.
-
-- After debugging ends and we close out the Chrome Workspace (Debugging) Window, we will no longer see our app under the **Remote Target** headline. To make it be there again, we need to go back to our terminal and run **`restart`** command:
-  ```bash
-  debug> restart
-  ```
-
-- When we're finished with the whole debugging process we simply quit the **`debug> `** process by double **Ctrl + C**
-
-- Whenever we encounter an error message after running our app, we can simply see the type and the reason of the error and right below it, we will be seeing the stack trace. Here the most explicit one *(with the line and func. name specified)* is at the top and downside it goes to the internals.
-***
-
 ### Getting User Input via Command Line Arguments 
 Simply to get inputs from user via command line we need `console.log(process.argv)`...
 Here *argv* stands for **argument vector** and contains all of the arguments provided while running the node script. So by adding the mentioned code piece into our js file and running it by,
@@ -307,6 +269,44 @@ const book = JSON.parse(dataJSON)
 const bookJSON = JSON.stringify(book)
 fs.writeFileSync('1-json.json', bookJSON)
 ```
+***
+
+### Debugging
+- In debugging phase, we may use *`console.log()`* to print out and check the variables we are working on.
+
+- For further and more advanced way is to add **`debugger`** keyword into the lines that we want to to hold on a second and inspect what's going on via debugging tools. Firstly after adding the mentioned keyword but running the app normally, won't provide the execution to stop at the desired point. In order to make this happen, we are to run the app by adding **`inspect`** keyword right after *`node`* :
+  ```bash
+  $ node inspect app.js add --title="t" --body="b"
+  ```
+  *PS: Here if bumped into an error like "Timeout (2000) waiting for..." then the following version is to be used:*
+  ```bash
+  $ node --inspect-brk app.js add --title="t" --body="b"
+  ```
+
+- After running the application with *`inspect`* keyword in debugging mode, we switch to Google Chrome and type:
+  ```
+  chrome://inspect
+  ```
+  By hitting Enter we should see our app under **Remote Target** headline. If nothing is to be seen there, then we may need to configure Chrome by ourselves. To do this, hit the **Configure...** button and add following two IP adress and port values:
+  ```
+  localhost:9229
+  127.0.0.1:9229
+  ```
+
+- Then when we hit **inspect** link under our app there under the **Remote Target** headline, it will open us a workspace like window. Within the window we can add our workspace folder from the left panel and reach all our content.
+
+- In the meantime we can simply show and hide the **Console** at the bottom by simply using **ESC** key.
+
+- The debugger is by default paused at the beginning of our app. If we hit the blue play button at the right hand side. It will keep running the app until it's told not to or until hitting our pre-placed **`debugger`** keyword.
+
+- After debugging ends and we close out the Chrome Workspace (Debugging) Window, we will no longer see our app under the **Remote Target** headline. To make it be there again, we need to go back to our terminal and run **`restart`** command:
+  ```bash
+  debug> restart
+  ```
+
+- When we're finished with the whole debugging process we simply quit the **`debug> `** process by double **Ctrl + C**
+
+- Whenever we encounter an error message after running our app, we can simply see the type and the reason of the error and right below it, we will be seeing the stack trace. Here the most explicit one *(with the line and func. name specified)* is at the top and downside it goes to the internals.
 ***
 
 ### Useful NPM Modules
@@ -411,13 +411,13 @@ Example usage:
 Overwrites the data into the given file.
 
 - `fs.writeFile('file_name.extension', data)`  
-Overwrites the data into the given file. *Asynchronous version!*
+***ASYN*** Overwrites the data into the given file.
 
 - `fs.appendFileSync('file_name.extension', data)`  
 Appends the data into the given file.
 
 - `fs.appendFile('file_name.extension', data)`  
-Appends the data into the given file. *Asynchronous version!*
+***ASYN*** Appends the data into the given file.
 
 - `fs.readFileSync('file_name.extension')` - *`var.toString()`*  
 Reads the file but as a ***buffer***! To get it as a string we should use as:
@@ -457,7 +457,7 @@ Filters the array taking the *(argv) => {...}* into consideration. Iterates all 
   }
   ```
 
-- `array.find((arg) => {...})`
+- `array.find((arg) => {...})`  
 Searchs the elements in the array taking the *(argv) => {...}* into consideration. Iterates only until finding the matched element *(No extra redundant iterations)*. Returns the matched element only. Ex *(More convenient way of the one above)* :
   ```javascript
   const addNote = (title, body) => {
