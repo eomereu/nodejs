@@ -450,14 +450,27 @@ After signing up freely, it provides 1000 requests a day which is more than enou
   access_key=8cf78b463a4dccfcc6ef49cda44bf3a0
   query=48.2082,16.3738
   ```
-  Some usages:  
+  Some parameters:  
   1. **`access_key=`*`API Access Key`***
   1. **`query=`*`Latitude,Longtitude`***
-  1. **`response.body.current:`** *accesses current weather information*
-  1. **`units=`*`m/s/f`*** *m(metric/Celcius) - s(scientific/metric/Kelvin) - f(mile/inch/Fahrenheit)*
+  1. **`units=`*`m/s/f`*** m(metric/Celcius) - s(scientific/metric/Kelvin) - f(mile/inch/Fahrenheit)
+  Some return values:
+  1. **`response.body.current:`** accesses current weather information
 
 - [Google Chrome JSON Formatter](https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa?hl=en)  
 Simply shows the parsed format of a JSON webpage.
+
+- [Mapbox](https://www.mapbox.com/)  
+Provides lots of location services. The one we are going to use for now is [*Geocoding*](https://docs.mapbox.com/api/search/geocoding/). In the documentation, it is under *Search Service*. There are two types of geocoding as *forward* and *reverse*. [*Forward geocoding*](https://docs.mapbox.com/api/search/geocoding/#forward-geocoding) takes the address and returns latitude and longtitude pair as *reverse geocoding* does vice versa.  
+  Some parameters:
+  1. **`access_token=`*`API Access Token`***
+  1. **`language=`*`en/de/...`*** specifies user's language
+  1. **`limit=`*`5/1/2/.../10`*** specifies the maximum number of results to return
+  Some return values:
+  1. **`response.body.features`** array, it will return us the most relevant 5 matches relating to our search term from the most to the least relevant one.
+  1. **`response.body.features[0]`** returns the most relevant one.
+  1. **`response.body.features[0].place_name`** returns the place name with state and country included
+  1. **`response.body.features[0].center`** returns longtitude and latitude respectively. ***Controray to the usual***
 
 ### Useful Functions
 - `fs.writeFileSync('file_name.extension', data)`  
