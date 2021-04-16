@@ -76,7 +76,11 @@ When we first install Node on our machine, npm is also installed with it automat
     # initialization
     $ npm init
     ```
-    Initialization process will create a *package.json* file inside our directory and while creating it, it will want some information for us right after hitting Enter for `npm init` command. We can simply give nothing and keep on hitting Enter to those details and answering *'yes'* to the last *'Is this OK?'* question for the time being.
+    Initialization process will create a *package.json* file inside our directory and while creating it, it will want some information for us right after hitting Enter for `npm init` command. We can simply give nothing and keep on hitting Enter to those details and answering *'yes'* to the last *'Is this OK?'* question for the time being. Instead we can simply type and enter:
+    ```bash
+    # quicker initialization
+    $ npm init -y
+    ```
 
     *PS: Here 'json' stands for 'Java Script Object Notation' and inside, we are couraged to use double quotes instead of single ones*
 
@@ -184,6 +188,11 @@ When we first install Node on our machine, npm is also installed with it automat
   ```
 
 - It's a better practice not to have 'function' keyword through the code with the help of simplified usages above.
+
+- At the address, after ***question mark (?)*** key value pairs are given as ***key=value&key2=value2***:
+  ```
+  api.weatherstack.com/current?access_key=8c7f87sd4f68es4561w8r4&query
+  ```
 ***
 
 ### Getting User Input via Command Line Arguments 
@@ -424,7 +433,20 @@ Example usage:
     --help    Show help                         [boolean]
     --version Show version number               [boolean]
   ```
+
+- [**request**](https://www.npmjs.com/package/request)  
+An NPM module provides us to make simplified HTTP requests. ***However*** since it's been deprecated [**postman-request**](https://www.npmjs.com/package/postman-request) can be used but **request** is still fine and working. Ex. usage:
+`request({ url: url }, (error, response) => {...})` - `response.body`
 ***
+
+### Useful External Services/APIs
+
+- [Weatherstack](https://weatherstack.com/) - http://api.weatherstack.com/  
+After signing up freely, it provides 1000 requests a day which is more than enough. Also provides just the current weather *endpoint* in the free plan. Some key value pairs: `access_key=*API Access Key* query=*Latitude*,*Longtitude*` - `data.current`
+  ```
+  access_key=8cf78b463a4dccfcc6ef49cda44bf3a0
+  query=48.2082,16.3738
+  ```
 
 ### Useful Functions
 - `fs.writeFileSync('file_name.extension', data)`  
