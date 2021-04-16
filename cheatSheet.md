@@ -435,18 +435,29 @@ Example usage:
   ```
 
 - [**request**](https://www.npmjs.com/package/request)  
-An NPM module provides us to make simplified HTTP requests. ***However*** since it's been deprecated [**postman-request**](https://www.npmjs.com/package/postman-request) can be used but **request** is still fine and working. Ex. usage:
-`request({ url: url }, (error, response) => {...})` - `response.body`
+An NPM module provides us to make simplified HTTP requests. ***However*** since it's been deprecated [**postman-request**](https://www.npmjs.com/package/postman-request) can be used but **request** is still fine and working. Ex. usage:  
+`request({ url: url }, (error, response) => {...})` - `response.body`  
+  Some options:
+  1. **`url:`** Sends the requested URL
+  1. **`json:`** If set true, automatically parses the JSON that we receive from the URL
 ***
 
 ### Useful External Services/APIs
 
 - [Weatherstack](https://weatherstack.com/) - http://api.weatherstack.com/  
-After signing up freely, it provides 1000 requests a day which is more than enough. Also provides just the current weather *endpoint* in the free plan. Some key value pairs: `access_key=*API Access Key* query=*Latitude*,*Longtitude*` - `data.current`
+After signing up freely, it provides 1000 requests a day which is more than enough. Also provides just the current weather *endpoint* in the free plan. Examples:
   ```
   access_key=8cf78b463a4dccfcc6ef49cda44bf3a0
   query=48.2082,16.3738
   ```
+  Some usages:  
+  1. **`access_key=`*`API Access Key`***
+  1. **`query=`*`Latitude,Longtitude`***
+  1. **`response.body.current:`** *accesses current weather information*
+  1. **`units=`*`m/s/f`*** *m(metric/Celcius) - s(scientific/metric/Kelvin) - f(mile/inch/Fahrenheit)*
+
+- [Google Chrome JSON Formatter](https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa?hl=en)  
+Simply shows the parsed format of a JSON webpage.
 
 ### Useful Functions
 - `fs.writeFileSync('file_name.extension', data)`  
