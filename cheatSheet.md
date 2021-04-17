@@ -437,6 +437,28 @@ Example usage:
 - [**request**](https://www.npmjs.com/package/request)  
 An NPM module provides us to make simplified HTTP requests. ***However*** since it's been deprecated [**postman-request**](https://www.npmjs.com/package/postman-request) can be used but **request** is still fine and working. Ex. usage:  
 `request({ url: url }, (error, response) => {...})` - `response.body`  
+  
+  **Error Handling**  
+  When something goes wrong with the request, **response** returns as *undefined* and **error** returns as specifying the error. This can be used withing the error handling logic. Ex:  
+    ```javascript
+    if (error) {
+      console.log("Unable to connect to service!")
+    } else {
+      ...
+    }
+    ``` 
+  Note that this is just a precaution against lower level errors like no internet connection or downed services. To handle logic level errors like invalid input so the ones returning from the service within the response we should inspect it by intentionally giving wrong input and see what's returning as object and how the error is defined within that JSON. After inspecting we should handle it accordingly like the following. ***Please note that it really depends on the API and should be checked.*** *The following one is for `weatherstack API`*.  So:  
+    ```javascript
+    if (error) {
+      console.log("Unable to connect to service!")
+    } else if (response.body.error) { //this property depends on the API
+      console.log(response.body.error.info) //this one also depends on the API
+    } else {
+      ...
+    }
+    ``` 
+  *PS: Sometimes you may require more than 1 else if like giving no input, giving wrong type of input etc.*  
+
   Some options:
   1. **`url:`** Sends the requested URL
   1. **`json:`** If set true, automatically parses the JSON that we receive from the URL
@@ -445,15 +467,15 @@ An NPM module provides us to make simplified HTTP requests. ***However*** since 
 ### Useful External Services/APIs
 
 - [Weatherstack](https://weatherstack.com/) - http://api.weatherstack.com/  
-After signing up freely, it provides 1000 requests a day which is more than enough. Also provides just the current weather *endpoint* in the free plan. Examples:
-  ```
-  access_key=8cf78b463a4dccfcc6ef49cda44bf3a0
-  query=48.2082,16.3738
-  ```
+After signing up freely, it provides 1000 requests a day which is more than enough. Also provides just the current weather *endpoint* in the free plan.  
+  Example URL:  
+  `http://api.weatherstack.com/current?&access_key=775e4c063b64198f98ab8aed99a1e566&query=48.2082,16.3738`  
+
   Some parameters:  
   1. **`access_key=`*`API Access Key`***
   1. **`query=`*`Latitude,Longtitude`***
-  1. **`units=`*`m/s/f`*** m(metric/Celcius) - s(scientific/metric/Kelvin) - f(mile/inch/Fahrenheit)
+  1. **`units=`*`m/s/f`*** m(metric/Celcius) - s(scientific/metric/Kelvin) - f(mile/inch/Fahrenheit)  
+
   Some return values:
   1. **`response.body.current:`** accesses current weather information
 
@@ -462,15 +484,19 @@ Simply shows the parsed format of a JSON webpage.
 
 - [Mapbox](https://www.mapbox.com/)  
 Provides lots of location services. The one we are going to use for now is [*Geocoding*](https://docs.mapbox.com/api/search/geocoding/). In the documentation, it is under *Search Service*. There are two types of geocoding as *forward* and *reverse*. [*Forward geocoding*](https://docs.mapbox.com/api/search/geocoding/#forward-geocoding) takes the address and returns latitude and longtitude pair as *reverse geocoding* does vice versa.  
+  Example URL:  
+  `https://api.mapbox.com/geocoding/v5/mapbox.places/Los%20Angeles.json?access_token=pk.eyJ1IjoiZW9tZXJldSIsImEiOiJja25rd3R6ZWgwOWt1Mm5wcjIwcmVzNnZ5In0.RkkSfwuQvNE1eSmjc8Q7kA&limit=1`  
+  
   Some parameters:
   1. **`access_token=`*`API Access Token`***
   1. **`language=`*`en/de/...`*** specifies user's language
-  1. **`limit=`*`5/1/2/.../10`*** specifies the maximum number of results to return
+  1. **`limit=`*`5/1/2/.../10`*** specifies the maximum number of results to return  
+
   Some return values:
   1. **`response.body.features`** array, it will return us the most relevant 5 matches relating to our search term from the most to the least relevant one.
   1. **`response.body.features[0]`** returns the most relevant one.
   1. **`response.body.features[0].place_name`** returns the place name with state and country included
-  1. **`response.body.features[0].center`** returns longtitude and latitude respectively. ***Controray to the usual***
+  1. **`response.body.features[0].center`** returns longtitude and latitude respectively. ***Contrary to the usual***
 
 ### Useful Functions
 - `fs.writeFileSync('file_name.extension', data)`  
