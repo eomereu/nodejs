@@ -1,14 +1,14 @@
 const request = require('request')
 
-
 const geocode = (address, callback) => {
-  const url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(address) + '.json?access_token=pk.eyJ1IjoiZW9tZXJldSIsImEiOiJja25rd3R6ZWgwOWt1Mm5wcjIwcmVzNnZ5In0.RkkSfwuQvNE1eSmjc8Q7kAw&limit=1'
+  const access_token = 'pk.eyJ1IjoiZW9tZXJldSIsImEiOiJja25rd3R6ZWgwOWt1Mm5wcjIwcmVzNnZ5In0.RkkSfwuQvNE1eSmjc8Q7kA'
+  const url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(address) + '.json?access_token=' + access_token + '&limit=1'
 
   request({ url: url, json: true }, (error, response) => {
     if (error) {
       callback("Unable to connect to location service!", undefined)
     } else if (response.body.message) {
-      callback("No search term given!", undefined)
+      callback("No search term given!\nPS: If you are getting this error, although a serach term already given, then please check your access token!", undefined)
     } else if (response.body.features.length === 0) {
       callback("Unable to find the place. Try another search!", undefined)
     } else {
