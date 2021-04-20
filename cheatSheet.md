@@ -472,7 +472,15 @@ We use,
 ```javascript
 name,
 ```  
-as shown above.
+as shown above.  
+
+More common usage of this feature:
+```javascript
+request({ url, json: true }, (error, {body} = {}) => {
+  ...
+}
+```
+Up above, we have used just **`url,`** instead of **`url: url,`** by using ***object property shorthand***.
 ***
 
 ### Object Destructuring
@@ -518,6 +526,32 @@ By destructuring we can do another nice things:
 
     transaction('order', product)
     ```
+
+Common usages of this feature:
+```javascript
+request({ url, json: true }, (error, {body} = {}) => {
+  ...
+}
+```
+```javascript
+geocode(address, (error, {latitude, longtitude, location} = {})) = {
+  ...
+}
+```
+
+**Error Handling**  
+As a precaution against an error occurance we need to set a default value as we give destructured object to a ***function*** like **`request`** where there is an **`error`** parameter. Because if an error occurs, it will take a value but the other arguement will be **`undefined`** and trying to destructure an **`undefined`** value will end up in an error. So here is an example to prevent this:
+```javascript
+geocode(address, (error, {latitude, longtitude, location} = {})) = {
+  ...
+}
+```
+Up above if an error occurs, our second argument will be an ***empty object*** instead of an **`undefined`** value so we will get rid of the error.
+```javascript
+request({ url, json: true }, (error, {body} = {}) => {
+  ...
+}
+```
 ***
 
 ### Useful NPM Modules
