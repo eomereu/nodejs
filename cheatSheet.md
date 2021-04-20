@@ -429,6 +429,27 @@ add(1, 4, (sum) => {
 ```
 ***
 
+### Callback Chaining
+To chain callbacks, we can simply write them nestedly:
+```javascript
+geocode('Innsbruck', (error, data) => {
+  if (error) {
+    return console.log(error)
+  }
+  
+  forecast(data.latitude, data.longtitude, (error, forecastData) => {
+    if(error) {
+      return console.log(error)
+    }
+
+    console.log(data.location)
+    console.log(forecastData)
+  })
+})
+```
+> So here `if (error) { return log(error) }` part prevents the function to move on and try to execute the remaining part with undefined arguments by stopping and returning! This is the most commont way to provide this... We cannot just return stuff like `return 'message'`. **WE MUST BOTH RETURN AND CONSOLE.LOG**
+***
+
 ### Useful NPM Modules
 - [**validator**](https://www.npmjs.com/package/validator)  
 A library of string validators and sanitizers.  
