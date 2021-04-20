@@ -450,6 +450,76 @@ geocode('Innsbruck', (error, data) => {
 > So here `if (error) { return log(error) }` part prevents the function to move on and try to execute the remaining part with undefined arguments by stopping and returning! This is the most commont way to provide this... We cannot just return stuff like `return 'message'`. **WE MUST BOTH RETURN AND CONSOLE.LOG**
 ***
 
+### Object Property Shorthand
+When we assign a value to a property during defining an object and they both correspond to the same name, we can use shorthand syntax:
+```javascript
+const name = 'Omer'
+const userAge = 25
+
+const user = {
+  name,
+  age: userAge,
+  location: 'Wien'
+}
+```
+>So here since our object's first property **`name`** has its value from the variable above called also as **`name`** we were able to use shorthand syntax!  
+
+Thus, instead of:
+```javascript
+name: name,
+```  
+We use,
+```javascript
+name,
+```  
+as shown above.
+***
+
+### Object Destructuring
+Allows us to extract object's properties and their values into individual variables. Especially useful when working with complex objects that has lots of properties that is constantly referenced.
+```javascript
+const product = {
+    label: 'Red notebook',
+    price: 3,
+    stock: 2021,
+    salePrice: undefined
+}
+
+const {label, stock} = product
+```
+This provides us to reach the properties that we specified within the curly braces at the last line, directly without referring to the object like **`console.log(label)`**.  
+
+So instead of:
+```javascript
+const label = product.label
+const stock = product.stock
+```
+We use,
+```javascript
+const {label, stock} = product
+```
+as shown above.
+
+By destructuring we can do another nice things:
+1. We can rename the properties we are depacking. For example we rename **`label`** property of the object **`product`** as **`productLabel`**:
+    ```javascript
+    const {label:productLabel, stock} = product
+    ```
+2. We can set up a default value for the variables if there is no matching for that property within the object. So for example there is no **`rating`** property within the **`product`** object so we can set a default value while destructuring:
+    ```javascript
+    const {label, stock, rating = 4.7} = product
+    ```
+    > If there is a predefined value within the object then that predefined value is going to be used regardless of our default value during destructuring!
+3. We can destructure an object while giving it to a function as an argument if we want to use just specific properties of it or want a more practical use:
+    ```javascript
+    const transaction = (type, {label, stock}) => {
+      console.log(type, label, stock)
+    }
+
+    transaction('order', product)
+    ```
+***
+
 ### Useful NPM Modules
 - [**validator**](https://www.npmjs.com/package/validator)  
 A library of string validators and sanitizers.  
