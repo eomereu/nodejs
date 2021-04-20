@@ -373,7 +373,7 @@ fs.writeFileSync('1-json.json', bookJSON)
 ### Callback Function
 A callback is a function that we provide as an argument to another function to be called later on. This may be both in sync. and asyn. way.
 > As we progress and program things in asynchronous way, we gonna need to get rid of the *return statement* due to the fact that when it's used within an asyn. function and then called by assigning to a new variable, the asyn. function that contains it never going to be executed until the main function *(where we call it by assigning to a new variable)* ends. So we will get an *undefined*. Here instead of a classical *return statement* we need to use callback functions. 
- 
+
 > By the way that *return statement* just returns from that our inner asyn. function not from the outer function...
 
 The mistaken use:
@@ -662,3 +662,9 @@ Searchs the elements in the array taking the *(argv) => {...}* into consideratio
 
 - `setTimeout((arg) => {...}, miliseconds)`  
 ***ASYN*** Allows us to run some code after a specified time has passed *(1000 ms = 1 sec)*
+
+- `encoduURIComponent(arg)`  
+Encodes the data and prevents things from crashing. *For example "?" becomes "%3F"*. **Used when sending requests to APIs with strings within a URL!**
+  ```javascript
+    const url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(address) + '.json?access_token=pk.eyJ1IjoiZW9tZXJldSIsImEiOiJja25rd3R6ZWgwOWt1Mm5wcjIwcmVzNnZ5In0.RkkSfwuQvNE1eSmjc8Q7kA&limit=1'
+  ```
