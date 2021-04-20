@@ -237,6 +237,38 @@ $ node app.js add --title="Things to buy"
 { _: [ 'add' ], title: 'Things to buy', '$0': 'app.js' }
 ```
 > *See **yargs** under **Useful NPM Modules** for further use...*
+
+- **Callback Function:** A callback function is nothing more than a function that we provide as an argument to another function with the intention to be called later on. It doesn't have to be an asynchronous point/function that we use them. i.e. within setTimeout, filter etc. 
+
+- **Callback Pattern:** We need to use *callback functions* whilst asyn. programming. An example usage of a ***callback pattern:***
+  ```javascript
+  const geocode = (address, callback) => {
+    setTimeout(() => {
+      const location = {
+        latitude: 0,
+        longtitude: 0
+      }
+      callback(location)
+    }, 2000)
+  }
+  geocode('Wien', (data) => {
+    console.log(data)
+  })
+  ```
+  > When we use this pattern, as seen we need to take an argument as *callback* and call it with the value we want to return!
+
+  Another example:
+  ```javascript
+  add = (a, b, callback) => {
+    setTimeout(() => {
+      callback(a + b)
+    }, 2000)
+  }
+
+  add(1, 4, (sum) => {
+    console.log(sum)
+  })
+  ```
 ***
 
 ### JSON
@@ -336,6 +368,65 @@ fs.writeFileSync('1-json.json', bookJSON)
 - In regular synchronous scripts, everything ends with the ending of the execution of *`main()`* function. But it's not the case with asynchronous programs. Because *event loop* can just start to do its job: takes the things in *callback queue* and puts into the *call stack*
 
 - None of the asynchronous functions is going to run before the *`main()`* function is done!
+***
+
+### Callback Function
+A callback is a function that we provide as an argument to another function to be called later on. This may be both in sync. and asyn. way.
+> As we progress and program things in asynchronous way, we gonna need to get rid of the *return statement* due to the fact that when it's used within an asyn. function and then called by assigning to a new variable, the asyn. function that contains it never going to be executed until the main function *(where we call it by assigning to a new variable)* ends. So we will get an *undefined*. Here instead of a classical *return statement* we need to use callback functions. 
+ 
+> By the way that *return statement* just returns from that our inner asyn. function not from the outer function...
+
+The mistaken use:
+```javascript
+const geocode = (address) => {
+  setTimeout(() => {
+    const data = {
+      latitude: 0,
+      longtitude: 0
+    }
+    return data
+  }, 2000)
+}
+const data = geocode('Wien')
+console.log(data)
+```
+```bash
+$ node app.js
+undefined
+```
+Correct use with ***callback function***
+```javascript
+const geocode = (address, callback) => {
+  setTimeout(() => {
+    const location = {
+      latitude: 0,
+      longtitude: 0
+    }
+    callback(location)
+  }, 2000)
+}
+geocode('Wien', (data) => {
+  console.log(data)
+})
+```
+```bash
+$ node app.js
+{ latitude: 0, longtitude: 0 }
+```
+> In conclusion, instead of ***`return value`*** we need to give in the value that we want to return as ***`callback(value)`***
+
+Another example:
+```javascript
+add = (a, b, callback) => {
+  setTimeout(() => {
+    callback(a + b)
+  }, 2000)
+}
+
+add(1, 4, (sum) => {
+  console.log(sum)
+})
+```
 ***
 
 ### Useful NPM Modules
