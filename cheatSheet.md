@@ -269,6 +269,12 @@ $ node app.js add --title="Things to buy"
     console.log(sum)
   })
   ```
+
+- ***BONUS:*** During making an HTTP request with core modules:
+  - **`const request = http.request(url, (response) => { ... })`** Creates the request object by firing the request. Inside stands `response.on()` statements
+  - **`response.on('data'/'end'/'error', (chunk/ /error) => {...})`** Opens an event listener with given option-argument pairings
+  - As we receive data, we take it as buffer. So it needs to be converted. *See 6-raw-http.js* under *playground* directory.
+  - **`request.end()`** Ends the request
 ***
 
 ### JSON
