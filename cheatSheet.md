@@ -275,6 +275,26 @@ $ node app.js add --title="Things to buy"
   - **`response.on('data'/'end'/'error', (chunk/ /error) => {...})`** Opens an event listener with given option-argument pairings
   - As we receive data, we take it as buffer. So it needs to be converted. *See 6-raw-http.js* under *playground* directory.
   - **`request.end()`** Ends the request
+
+- Within project folders we better keep our all js scripts inside ***src*** folder.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ***
 
 ### JSON
@@ -559,6 +579,55 @@ request({ url, json: true }, (error, {body} = {}) => {
 }
 ```
 ***
+
+### [ExpressJS](http://expressjs.com/)
+Instead of needing to run commands from terminal to interact with our app we will be able to visit a url with the help of node server. To create our node server we will use a very tool: ExpressJS!  
+
+It is one of the original npm packages and definitely helps put JS on the map because it made it so easy to create web servers whether we want to serve yp something like a static website or whether we want to create a complex HTTP-JSON based AAPI to serve as the back end for something like a mobile or web application.  
+
+To install:
+```bash
+$ npm i express
+```
+
+As soon as we call **`express()`** function it creates our express application. So after importing we simply:
+```javascript
+const express = require('express')
+
+const app = express()
+```
+
+After this we start to configure everything via functions and arguments:
+1. `app.get('route', (req, res) => {...})`
+Here **`route`** represents that tai on our url. So for homepage it is **`''`**, for help page *(app.com/help)* it is **`'/help'`**. The function specifies what we want to do when the page is accessed. This function has two important arguments. First one is **`req`** is an object containing information about the incoming request to the server. The other argument is **`res`** and contains bunch of methods allowing us to customize what we're gonna send back to the requester
+    1. `res.send()` allows us to send something back to requester
+1. `app.listen(port, () => {...})` starts the server up via the specified port. Here the common development port is **`3000`**. The second argument is optional but generally preffered to log to the console to notify that server is started.  
+Wit the web server, it is never going to stop running unless we tell it to stop. Its job is to stay up and running and assess incoming requests constantly.  
+    To reach the server that we run our local machine we simply enter the following address to the browser:
+    ```
+    localhost:3000
+    ```
+    After starting the server and making some changes within or js file, instead of constantly shutting down and starting up the server again and again we can simply run our script with **`nodemon`** that we learned earlier.
+***
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Useful NPM Modules
 - [**validator**](https://www.npmjs.com/package/validator)  
