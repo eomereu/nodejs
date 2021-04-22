@@ -299,6 +299,22 @@ $ node app.js add --title="Things to buy"
 
 ***
 
+### Foldering
+Under root directory:
+- **public**  
+  Contains HTML files (static stuff) that users access
+  - **css**  
+  Contains stylesheets
+  - **img**  
+  Contains images
+  - **js**  
+  Contains client side scripts
+- **src**  
+  Contains our backend scripts (the main program and components)
+- **views**  
+  Contains templates (.hbs files/dynamic stuff) 
+***
+
 ### JSON
 JSON (JavaScript Object Notation) is a lightweight data-interchange format. It is easy for humans to read and write. It is easy for machines to parse and generate. JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages, including C, C++, C#, Java, JavaScript, Perl, Python, and many others. These properties make JSON an ideal data-interchange language.
 > For *fs (file system)* to be able to store the data, it must be a string. Since it's much more easier to store things as objects in terms of referring to its specified parts we need to change it constantly between *object* and *string*. That's when **JSON** comes into use.
@@ -624,6 +640,20 @@ Here `route` represents that tai on our url. So for homepage it is `''`, for hel
               ```javascript
               const publicDirectoryPath = path.join(__dirname, '../public')
               ```
+    1. `res.render('hbs_file_name', {dynamic_variables})` renders our ***handlebar (.hbs)*** files and sends back to the user. Used with `app.get()`:
+        ```javascript
+        app.get('', (req, res) => {
+          res.render('index', {
+            title: 'Homepage',
+            header: 'Weather App',
+            creator: 'E.Omer EROL'
+          })
+        })
+        ```
+        So here `title`, `header` and `creator` variables that we inject to our template file *(.hbs file)* to take advantage and use them there.  
+        >*PS: To make use of these variables within the view (.hbs file) we need to use variable names within `{{}}`*
+
+        >*See 'Templating' for further information.*
 1. `app.listen(port, () => {...})` starts the server up via the specified port. Here the common development port is `3000`. The second argument is optional but generally preffered to log to the console to notify that server is started.  
 Wit the web server, it is never going to stop running unless we tell it to stop. Its job is to stay up and running and assess incoming requests constantly.  
     To reach the server that we run our local machine we simply enter the following address to the browser:
@@ -632,9 +662,46 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     ```
     After starting the server and making some changes within or js file, instead of constantly shutting down and starting up the server again and again we can simply run our script with `nodemon` that we learned earlier.
 1. `app.use()`
-1. `express.static(pathToStaticFile)` takes the path we wanna serve up and returns accordingly to be used
+1. `express.static(pathToStaticFile)` takes the path we wanna serve up and returns accordingly to be used:
+    ```javascript
+    app.use(express.static(publicDirectoryPath))
+    ```
+1. `app.set('', '')` allows us to set a value for the given Express setting. In our case we set our view engine. To do so:
+    ```javascript
+    app.set('view engine', 'hbs')
+    ```
 ***
 
+### Templating
+A **template engine** is a tool that renders dynamic webpages. We will use ***handlebars***. It's going to allow us to do 2 very important things:
+  1. As mentioned it's going to allow us to render dynamic documents as opposed to the static ones
+  1. Allows us to create code we can easily use accross the pages.  
+
+Naturally we want to set footer and header information for all the pages of our website the same. Wİthout a *template engine* we have to copy and paste these to all our html documents. Of course this is not ideal, because when a change is needed, we need to go and alter every individual piece to make it happen. Instead of this by using a *template engine* we are able to specify a markup for a piece and just by modifying that markup, making the change accross all our pages.
+So normally we would use [**handlebars**](https://www.npmjs.com/package/handlebars) templating tool for this purpose. But it's a low level library and it doesn't support a use with express but supports with only javascript. Due to the fact that we want to use it with express we are to use another handlebar library which is kinda plug in for express which integrates *handlebars* into express. That is [**hbs**](https://www.npmjs.com/package/hbs). It uses *handlebars* behind the scenes but just makes it really easy to integrate with express.  
+After installing, all we need to do is to tell the express which templating engine we installed and we do it by using `app.set()`:
+```javascript
+app.set('view engine', 'hbs')
+```
+>All our *views* are supposed to live in the directory **views** right inside our root directory!
+After injecting our values to our *.hbs file* all we need to do to use them is to put them inside `{{}}`:
+```javascript
+// injecting from app.js
+app.get('', (req, res) => {
+  res.render('index', {
+    title: 'Homepage',
+    header: 'Weather App',
+    creator: 'E.Omer EROL'
+  })
+})
+```
+Our view file *index.hbs:*
+```html
+<title>{{title}}</title>
+<h2>{{header}}</h2>
+<p>Created by {{creator}}</p>
+```
+***
 
 
 
@@ -778,6 +845,17 @@ An NPM module provides us to make simplified HTTP requests. ***However*** since 
   Some options:
   1. **`url:`** Sends the requested URL
   1. **`json:`** If set true, automatically parses the JSON that we receive from the URL
+
+- [**handlebars**](https://www.npmjs.com/package/handlebars)  
+Simply it's like an HTML file, but allows us to inject dynamic variables inside... A templating tool to use only with javascript. Keeps the view and the code seperated.
+  >*See 'Templating' for detailed explanation.*
+
+- [**hbs**](https://www.npmjs.com/package/hbs)  
+Simply integrates *handlebars* into Express... Uses *handlebars* behind the scenes by integrating it with Express:
+  ```javascript
+  app.set('view engine', 'hbs')
+  ```
+  >*See 'Templating' for detailed explanation.*
 ***
 
 ### Useful External Services/APIs
