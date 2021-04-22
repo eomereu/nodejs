@@ -278,6 +278,8 @@ $ node app.js add --title="Things to buy"
 
 - Within project folders we better keep our all js scripts inside ***src*** folder.
 
+- It's a good practice to require core modules on top of the npm modules, at the begininng of the script.
+
 
 
 
@@ -615,6 +617,13 @@ Here `route` represents that tai on our url. So for homepage it is `''`, for hel
           }])
         })
         ```
+        In terms of serving up static assets, we need to specify the exact path to the served files. At this point node provides us 2 very handy variables and a core module ***path***:
+          1. `__dirname` gives the complete path to the directory that script lies in
+          1. `__filename` gives the complete path to the file itself
+          1. `path.join(path, 'path_string')` allows us to manipulate paths by joining the strings/paths we provide. Ex:
+              ```javascript
+              const publicDirectoryPath = path.join(__dirname, '../public')
+              ```
 1. `app.listen(port, () => {...})` starts the server up via the specified port. Here the common development port is `3000`. The second argument is optional but generally preffered to log to the console to notify that server is started.  
 Wit the web server, it is never going to stop running unless we tell it to stop. Its job is to stay up and running and assess incoming requests constantly.  
     To reach the server that we run our local machine we simply enter the following address to the browser:
@@ -622,6 +631,8 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     localhost:3000
     ```
     After starting the server and making some changes within or js file, instead of constantly shutting down and starting up the server again and again we can simply run our script with `nodemon` that we learned earlier.
+1. `app.use()`
+1. `express.static(pathToStaticFile)` takes the path we wanna serve up and returns accordingly to be used
 ***
 
 

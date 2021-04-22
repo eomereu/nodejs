@@ -1,28 +1,11 @@
+const path = require('path')
 const express = require('express')
 
-// create the server
 const app = express()
+const publicDirectoryPath = path.join(__dirname, '../public')
 
-//app.com
-app.get('', (req, res) => {
-  res.send('<h2>Hello</h2>')
-})
+app.use(express.static(publicDirectoryPath))
 
-//app.com/help
-app.get('/help', (req, res) => {
-  res.send([{
-    name: 'Omer'
-  },{
-    name: 'Erol'
-  }])
-})
-
-//app.com/about
-app.get('/about', (req, res) => {
-  res.send('<h3>Weather</h3>')
-})
-
-//app.com/weather
 app.get('/weather', (req, res) => {
   res.send({
     forecast: 'Sunny',
