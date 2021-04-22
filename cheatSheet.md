@@ -670,6 +670,10 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     ```javascript
     app.set('view engine', 'hbs')
     ```
+    To set the path to modified views folder:
+    ```javascript
+    app.set('views', viewsPath)
+    ```
 ***
 
 ### Templating
@@ -683,8 +687,12 @@ After installing, all we need to do is to tell the express which templating engi
 ```javascript
 app.set('view engine', 'hbs')
 ```
->All our *views* are supposed to live in the directory **views** right inside our root directory!
-After injecting our values to our *.hbs file* all we need to do to use them is to put them inside `{{}}`:
+By default all our *views* are supposed to live in the directory **views** right inside our root directory. If we prefer to modify it i.e. changing its name, we should set it:  
+```javascript
+const viewsPath = path.join(__dirname, '../templates')
+app.set('views', viewsPath)
+```
+Injecting and using:
 ```javascript
 // injecting from app.js
 app.get('', (req, res) => {
@@ -695,7 +703,7 @@ app.get('', (req, res) => {
   })
 })
 ```
-Our view file *index.hbs:*
+After injecting our values to our *.hbs file* all we need to do to use them is to put them inside `{{}}` So our view file *index.hbs:*
 ```html
 <title>{{title}}</title>
 <h2>{{header}}</h2>
