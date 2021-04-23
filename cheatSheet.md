@@ -297,6 +297,14 @@ $ node app.js add --title="Things to buy"
 
 
 
+
+
+
+
+
+
+
+
 ***
 
 ### Foldering
@@ -311,8 +319,11 @@ Under root directory:
   Contains client side scripts
 - **src**  
   Contains our backend scripts (the main program and components)
-- **views**  
-  Contains templates (.hbs files/dynamic stuff) 
+- **templates**  
+  - **partials**  
+    Contains partials
+  - **views**  
+    Contains views
 ***
 
 ### JSON
@@ -687,6 +698,7 @@ After installing, all we need to do is to tell the express which templating engi
 ```javascript
 app.set('view engine', 'hbs')
 ```
+**Views:**  
 By default all our *views* are supposed to live in the directory **views** right inside our root directory. If we prefer to modify it i.e. changing its name, we should set it:  
 ```javascript
 const viewsPath = path.join(__dirname, '../templates')
@@ -709,6 +721,19 @@ After injecting our values to our *.hbs file* all we need to do to use them is t
 <h2>{{header}}</h2>
 <p>Created by {{creator}}</p>
 ```
+
+**Partials:**
+Allows us to create a little template which is part of a big webpage. Especially when we are in need of using that part again and again accross all pages *(like headers or footers)*, then we can specify it as a *partial* and make use. To register our partials, within *app.js*:
+```javascript
+hbs.registerPartials(partialsPath)
+```
+To render a partial, within views:
+```html
+{{>partialFileName}}
+```
+>Just file name is enough. No extension or path needed.
+
+>We can render our injected values also within partials for sure.
 ***
 
 
@@ -743,8 +768,15 @@ Example usage:
 - [**nodemon** *-global*](https://www.npmjs.com/package/nodemon)  
 nodemon is a tool that helps develop node.js based applications by automatically restarting the node application when file changes in the directory are detected. To use nodemon, replace the word node on the command line when executing your script.  
 Usage (start/exit):  
-`$ nodemon app.js`  
-  `Ctrl+C`  
+```bash
+$ nodemon app.js
+Ctrl+C
+```
+Normally nodemon just watches for our .js extensions and when we save it, it restarts things. But if we want to restart our server whenever we make a change also on other files, for example *.hbs* files, then we need to run it as the following:
+```bash
+$ nodemon app.js -e js,hbs
+```
+>We can keep adding the extensions we desire such as ***.css .html*** etc.
 
 - [**yargs**](https://www.npmjs.com/package/yargs)  
 Parses us users' command line inputs  
@@ -864,6 +896,12 @@ Simply integrates *handlebars* into Express... Uses *handlebars* behind the scen
   app.set('view engine', 'hbs')
   ```
   >*See 'Templating' for detailed explanation.*
+  
+  To register partials:
+  ```javascript
+  const hbs = require('hbs')
+  hbs.registerPartials(partialsPath)
+  ```
 ***
 
 ### Useful External Services/APIs

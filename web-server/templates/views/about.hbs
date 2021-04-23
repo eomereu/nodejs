@@ -3,13 +3,17 @@
 <head>
 
   <link rel="stylesheet" href="./css/styles.css">
-	<title>{{title}}</title>
+	{{>title}}
 
 </head>
 <body>
 
-  <h2>{{header}}</h2>
+  {{>navbar}}
+  {{>header}}
+  <br>
   <img src="./img/gentleman.jpg">
+  <br>
+  {{>footer}}
 
 </body>
 </html>
