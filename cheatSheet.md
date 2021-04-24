@@ -665,6 +665,22 @@ Here `route` represents that tai on our url. So for homepage it is `''`, for hel
         >*PS: To make use of these variables within the view (.hbs file) we need to use variable names within `{{}}`*
 
         >*See 'Templating' for further information.*
+
+    - To create a ***404 Page*** we need to add the following to the end of *app.get()* calls:
+      ```javascript
+      app.get('*', (req, res) => {
+        res.render('404')
+      })
+      ```
+      This wildcart means, match anything that hasn't been matched so far. So this is also why we should add it at the end of *app.get()* calls. More complicated not found routes:
+      ```javascript
+      app.get('/help/*', (req, res) => {
+        res.render('404', {
+          errorMessage: 'Article not found'
+        })
+      })
+      ```
+
 1. `app.listen(port, () => {...})` starts the server up via the specified port. Here the common development port is `3000`. The second argument is optional but generally preffered to log to the console to notify that server is started.  
 Wit the web server, it is never going to stop running unless we tell it to stop. Its job is to stay up and running and assess incoming requests constantly.  
     To reach the server that we run our local machine we simply enter the following address to the browser:
@@ -685,6 +701,22 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     ```javascript
     app.set('views', viewsPath)
     ```
+
+**404 Page**  
+To create a ***404 Page*** we need to add the following to the end of *app.get()* calls:
+```javascript
+app.get('*', (req, res) => {
+  res.render('404')
+})
+```
+This wildcart means, match anything that hasn't been matched so far. So this is also why we should add it at the end of *app.get()* calls. More complicated not found routes:
+```javascript
+app.get('/help/*', (req, res) => {
+  res.render('404', {
+    errorMessage: 'Article not found'
+  })
+})
+```
 ***
 
 ### Templating
