@@ -1,11 +1,38 @@
-h1 {
-    color: grey;
+@import url('https://fonts.googleapis.com/css2?family=Acme&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');
+
+body {
+    color: #333333;
+    font-family: 'Source Sans Pro', sans-serif;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-h2 {
-    color: darkred;
+header {
+    margin-top: 1%;
+    margin-bottom: 1%;
 }
 
-img {
+.container-fluid {
+    flex-grow: 1;
+}
+
+footer {
+    color: #888888;
+    font-style: italic;
+    border-top: 1px solid #eeeeee;
+    margin-top: 1%;
+    margin-left: 6px;
+    padding-left: 0.3%;
+}
+
+.person {
     width: 250px;
+}
+
+#main-img {
+    width: 550px;
+    margin-bottom: 0.7%;
 }

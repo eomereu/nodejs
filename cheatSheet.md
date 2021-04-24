@@ -193,6 +193,113 @@ When we first install Node on our machine, npm is also installed with it automat
   ```
   api.weatherstack.com/current?access_key=8c7f87sd4f68es4561w8r4&query
   ```
+
+- **Callback Function:** A callback function is nothing more than a function that we provide as an argument to another function with the intention to be called later on. It doesn't have to be an asynchronous point/function that we use them. i.e. within setTimeout, filter etc. 
+
+- **Callback Pattern:** We need to use *callback functions* whilst asyn. programming. An example usage of a ***callback pattern:***
+  ```javascript
+  const geocode = (address, callback) => {
+    setTimeout(() => {
+      const location = {
+        latitude: 0,
+        longtitude: 0
+      }
+      callback(location)
+    }, 2000)
+  }
+  geocode('Wien', (data) => {
+    console.log(data)
+  })
+  ```
+  > When we use this pattern, as seen we need to take an argument as *callback* and call it with the value we want to return!
+
+  Another example:
+  ```javascript
+  add = (a, b, callback) => {
+    setTimeout(() => {
+      callback(a + b)
+    }, 2000)
+  }
+
+  add(1, 4, (sum) => {
+    console.log(sum)
+  })
+  ```
+
+- ***BONUS:*** During making an HTTP request with core modules:
+  - `const request = http.request(url, (response) => { ... })` Creates the request object by firing the request. Inside stands `response.on()` statements
+  - `response.on('data'/'end'/'error', (chunk/ /error) => {...})` Opens an event listener with given option-argument pairings
+  - As we receive data, we take it as buffer. So it needs to be converted. *See 6-raw-http.js* under *playground* directory.
+  - `request.end()` Ends the request
+
+- Within project folders we better keep our all js scripts inside ***src*** folder.
+
+- It's a good practice to require core modules on top of the npm modules, at the begininng of the script.
+
+- ***Frontend*** If Google Fonts won't work: Check whether your css file is loaded after vendor stylesheets. For example, bootstrap.css should be before your css file.
+
+- ***Frontend*** In CSS:
+  ```css
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .container-class {
+    flex-grow: 1;
+  }
+  ```  
+  Within the code above:
+    - `display: flex` sets the display type to flex *(flexbox)*
+    - `flex-direction: column;` sets the direction as column *(it's row by default)*
+    - `vh` stands for *view height* and used to provide body to cover all seen height *i.e. to push the footer to the bottom*
+    - `flex-grow: 1;` makes the flex cover as needed area. *Here 1 sets as all*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+***
+### Foldering
+Under root directory:
+- **public**  
+  Contains HTML files (static stuff) that users access
+  - **css**  
+  Contains stylesheets
+  - **img**  
+  Contains images
+  - **js**  
+  Contains client side scripts
+- **src**  
+  Contains our backend scripts (the main program and components)
+- **templates**  
+  - **partials**  
+    Contains partials
+  - **views**  
+    Contains views
 ***
 
 ### Getting User Input via Command Line Arguments 
@@ -237,93 +344,6 @@ $ node app.js add --title="Things to buy"
 { _: [ 'add' ], title: 'Things to buy', '$0': 'app.js' }
 ```
 > *See **yargs** under **Useful NPM Modules** for further use...*
-
-- **Callback Function:** A callback function is nothing more than a function that we provide as an argument to another function with the intention to be called later on. It doesn't have to be an asynchronous point/function that we use them. i.e. within setTimeout, filter etc. 
-
-- **Callback Pattern:** We need to use *callback functions* whilst asyn. programming. An example usage of a ***callback pattern:***
-  ```javascript
-  const geocode = (address, callback) => {
-    setTimeout(() => {
-      const location = {
-        latitude: 0,
-        longtitude: 0
-      }
-      callback(location)
-    }, 2000)
-  }
-  geocode('Wien', (data) => {
-    console.log(data)
-  })
-  ```
-  > When we use this pattern, as seen we need to take an argument as *callback* and call it with the value we want to return!
-
-  Another example:
-  ```javascript
-  add = (a, b, callback) => {
-    setTimeout(() => {
-      callback(a + b)
-    }, 2000)
-  }
-
-  add(1, 4, (sum) => {
-    console.log(sum)
-  })
-  ```
-
-- ***BONUS:*** During making an HTTP request with core modules:
-  - **`const request = http.request(url, (response) => { ... })`** Creates the request object by firing the request. Inside stands `response.on()` statements
-  - **`response.on('data'/'end'/'error', (chunk/ /error) => {...})`** Opens an event listener with given option-argument pairings
-  - As we receive data, we take it as buffer. So it needs to be converted. *See 6-raw-http.js* under *playground* directory.
-  - **`request.end()`** Ends the request
-
-- Within project folders we better keep our all js scripts inside ***src*** folder.
-
-- It's a good practice to require core modules on top of the npm modules, at the begininng of the script.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-***
-
-### Foldering
-Under root directory:
-- **public**  
-  Contains HTML files (static stuff) that users access
-  - **css**  
-  Contains stylesheets
-  - **img**  
-  Contains images
-  - **js**  
-  Contains client side scripts
-- **src**  
-  Contains our backend scripts (the main program and components)
-- **templates**  
-  - **partials**  
-    Contains partials
-  - **views**  
-    Contains views
 ***
 
 ### JSON
