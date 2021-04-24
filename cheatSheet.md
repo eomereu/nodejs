@@ -649,57 +649,92 @@ const app = express()
 After this we start to configure everything via functions and arguments:
 1. `app.get('route', (req, res) => {...})`
 Here `route` represents that tai on our url. So for homepage it is `''`, for help page *(app.com/help)* it is `'/help'`. The function specifies what we want to do when the page is accessed. This function has two important arguments. First one is `req` is an object containing information about the incoming request to the server. The other argument is `res` and contains bunch of methods allowing us to customize what we're gonna send back to the requester
-    1. `res.send()` allows us to send something back to requester.  
-    To send basic HTML and JSON:
-        ```javascript
-        app.get('', (req, res) => {
-          res.send('<h2>Hello</h2>')
-        })
 
-        app.get('/help', (req, res) => {
-          res.send([{
-            name: 'Omer'
-          },{
-            name: 'Erol'
-          }])
+1. `req.query` it returns an object that contains all the query properties inside:  
+    Browser:
+    ```
+    localhost:3000/products?search=games&rating=5
+    ```
+    app.js:
+    ```javascript
+    app.get('/products', (req, res) => {
+      console.log(req.query)
+      console.log(req.query.search)
+    })
+    ```
+    Console:
+    ```bash
+    { search: 'games', rating: '5' }
+    games
+    ```
+    If we want to enforce a key-value pair to be used. Then we can use the following pattern:
+    ```javascript
+    app.get('/products', (req, res) => {
+      if(!req.query.search) {
+        return res.send({
+          error: 'You must provide a serach term.'
         })
-        ```
-        In terms of serving up static assets, we need to specify the exact path to the served files. At this point node provides us 2 very handy variables and a core module ***path***:
-          1. `__dirname` gives the complete path to the directory that script lies in
-          1. `__filename` gives the complete path to the file itself
-          1. `path.join(path, 'path_string')` allows us to manipulate paths by joining the strings/paths we provide. Ex:
-              ```javascript
-              const publicDirectoryPath = path.join(__dirname, '../public')
-              ```
-    1. `res.render('hbs_file_name', {dynamic_variables})` renders our ***handlebar (.hbs)*** files and sends back to the user. Used with `app.get()`:
-        ```javascript
-        app.get('', (req, res) => {
-          res.render('index', {
-            title: 'Homepage',
-            header: 'Weather App',
-            creator: 'E.Omer EROL'
-          })
-        })
-        ```
-        So here `title`, `header` and `creator` variables that we inject to our template file *(.hbs file)* to take advantage and use them there.  
-        >*PS: To make use of these variables within the view (.hbs file) we need to use variable names within `{{}}`*
-
-        >*See 'Templating' for further information.*
-
-    - To create a ***404 Page*** we need to add the following to the end of *app.get()* calls:
-      ```javascript
-      app.get('*', (req, res) => {
-        res.render('404')
+      }
+      
+      res.send({
+          products: []
       })
-      ```
-      This wildcart means, match anything that hasn't been matched so far. So this is also why we should add it at the end of *app.get()* calls. More complicated not found routes:
-      ```javascript
-      app.get('/help/*', (req, res) => {
-        res.render('404', {
-          errorMessage: 'Article not found'
-        })
+    })
+    ```
+    Up above we provide our function/request to terminate by adding `return` statement just we did before. **At this point this is required to prevent the error message *"Cannot set headers after they are sent to the client"* which causes due to the fact that we are trying to send two responses to one request!**
+
+1. `res.send()` allows us to send something back to requester.  
+To send basic HTML and JSON:
+    ```javascript
+    app.get('', (req, res) => {
+      res.send('<h2>Hello</h2>')
+    })
+
+    app.get('/help', (req, res) => {
+      res.send([{
+        name: 'Omer'
+      },{
+        name: 'Erol'
+      }])
+    })
+    ```
+    In terms of serving up static assets, we need to specify the exact path to the served files. At this point node provides us 2 very handy variables and a core module ***path***:
+    1. `__dirname` gives the complete path to the directory that script lies in
+    1. `__filename` gives the complete path to the file itself
+    1. `path.join(path, 'path_string')` allows us to manipulate paths by joining the strings/paths we provide. Ex:
+        ```javascript
+        const publicDirectoryPath = path.join(__dirname, '../public')
+        ```
+
+1. `res.render('hbs_file_name', {dynamic_variables})` renders our ***handlebar (.hbs)*** files and sends back to the user. Used with `app.get()`:
+    ```javascript
+    app.get('', (req, res) => {
+      res.render('index', {
+        title: 'Homepage',
+        header: 'Weather App',
+        creator: 'E.Omer EROL'
       })
-      ```
+    })
+    ```
+    So here `title`, `header` and `creator` variables that we inject to our template file *(.hbs file)* to take advantage and use them there.  
+    >*PS: To make use of these variables within the view (.hbs file) we need to use variable names within `{{}}`*
+
+    >*See 'Templating' for further information.*
+
+- To create a ***404 Page*** we need to add the following to the end of *app.get()* calls:
+  ```javascript
+  app.get('*', (req, res) => {
+    res.render('404')
+  })
+  ```
+  This wildcart means, match anything that hasn't been matched so far. So this is also why we should add it at the end of *app.get()* calls. More complicated not found routes:
+  ```javascript
+  app.get('/help/*', (req, res) => {
+    res.render('404', {
+      errorMessage: 'Article not found'
+    })
+  })
+  ```
 
 1. `app.listen(port, () => {...})` starts the server up via the specified port. Here the common development port is `3000`. The second argument is optional but generally preffered to log to the console to notify that server is started.  
 Wit the web server, it is never going to stop running unless we tell it to stop. Its job is to stay up and running and assess incoming requests constantly.  
