@@ -1,6 +1,7 @@
 const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
+const { isAbsolute } = require('path')
 
 // Create Express application
 const app = express()
@@ -19,13 +20,17 @@ hbs.registerPartials(partialsPath)
 app.use(express.static(publicDirectoryPath))
 
 var date = new Date()
+var mainBtn = 'nav-link'
+var aboutBtn = 'nav-link'
 
 app.get('', (req, res) => {
   res.render('index', {
     title: 'Homepage',
     header: 'Weather App',
     creator: 'E.Omer EROL',
-    date
+    date,
+    mainBtn: 'nav-link active',
+    aboutBtn
   })
 })
 
@@ -33,7 +38,9 @@ app.get('/about', (req, res) => {
   res.render('about', {
     title: 'About',
     header: 'About Us',
-    date
+    date,
+    mainBtn,
+    aboutBtn: 'nav-link active'
   })
 })
 
@@ -42,7 +49,9 @@ app.get('/help', (req, res) => {
     title: 'Help',
     header: 'Help Desk',
     helpText: 'So how can we help you?',
-    date
+    date,
+    mainBtn,
+    aboutBtn
   })
 })
 
@@ -57,8 +66,10 @@ app.get('/help/*', (req, res) => {
   res.render('404', {
     title: '404',
     header: 'Article Not Found',
-    errorMessage: 'The article you are looking for doesn\'t exist. Please proceed to a valid one:',
-    date
+    errorMessage: 'The article you are looking for doesn\'t exist. Please choose a valid one',
+    date,
+    mainBtn,
+    aboutBtn
   })
 })
 
@@ -66,8 +77,10 @@ app.get('*', (req, res) => {
   res.render('404', {
     title: '404',
     header: '404 Page Not Found',
-    errorMessage: 'The page you are looking for doesn\'t exist. Please proceed to a valid page:',
-    date
+    errorMessage: 'The page you are looking for doesn\'t exist. Please proceed to a valid page',
+    date,
+    mainBtn,
+    aboutBtn
   })
 })
 

@@ -2,18 +2,20 @@
 <html>
 <head>
 
-  <link rel="stylesheet" href="/css/styles.css">
-	{{>title}}
-  <script src="/js/app.js"></script>
+  {{>imports}}
+  {{>title}}
 
 </head>
 <body>
 
   {{>navbar}}
-  {{>header}}
-  <p>Created by {{creator}}</p>
   <br>
-  {{>footer}}
+  <div class="container-fluid">
+    {{>header}}
+    <p>Created by {{creator}}</p>
+    <br>
+    {{>footer}}
+  </div>
   
 </body>
 </html>

@@ -2,18 +2,22 @@
 <html>
 <head>
 
-  <link rel="stylesheet" href="./css/styles.css">
+  {{>imports}}
 	{{>title}}
 
 </head>
 <body>
 
   {{>navbar}}
-  {{>header}}
   <br>
-  <img src="./img/gentleman.jpg">
-  <br>
-  {{>footer}}
+  <div class="container-fluid">
+    {{>header}}
+    <br>
+    <img src="./img/gentleman.jpg">
+    <br>
+    <br>
+    {{>footer}}
+  </div>
 
 </body>
 </html>

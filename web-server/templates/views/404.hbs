@@ -2,17 +2,20 @@
 <html>
 <head>
 
-  <link rel="stylesheet" href="/css/styles.css">
+  {{>imports}}
 	{{>title}}
 
 </head>
 <body>
 
-  {{>header}}
-  <p>{{errorMessage}}</p>
   {{>navbar}}
   <br>
-  {{>footer}}
-  
+  <div class="container-fluid">
+    {{>header}}
+    <p>{{errorMessage}}</p>
+    <br>
+    {{>footer}}
+  </div>
+
 </body>
 </html>
