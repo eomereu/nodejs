@@ -26,7 +26,7 @@ var aboutBtn = 'nav-link'
 
 app.get('', (req, res) => {
   res.render('index', {
-    title: 'Homepage',
+    title: 'Weather',
     header: 'Weather App',
     creator: 'E.Omer EROL',
     date,
@@ -66,13 +66,13 @@ app.get('/weather', (req, res) => {
     if(error) {
       return res.send({ error })
     }
-    forecast(lat, long, (error, forecastData) => {
+    forecast(lat, long, (error, forecast) => {
       if(error) {
         return res.send({ error })
       }
       return res.send({
         location,
-        forecastData
+        forecast
       })
     })
   }) 

@@ -774,6 +774,18 @@ app.get('/help/*', (req, res) => {
 ```
 ***
 
+### Getting Requests From Client-Side Javascript
+In order to get requests from client-side javascript *(/public/js/app.js)* we will be using ***fetch API***. This is not a NodeJS script, it's a browser based script so that's why it only works by client-side and not in backend. Calling it, will start an asynchronous i/o operation like, request in the backend. The following piece, fetches a JSON and writes it onto the console after parsing:
+```javascript
+fetch('http://puzzle.mead.io/puzzle').then((response) => {
+  response.json().then((data) => {
+    console.log(data)
+  })
+})
+```
+So it's like, first *fetch* *then* execute the function...
+***
+
 ### Templating
 A **template engine** is a tool that renders dynamic webpages. We will use ***handlebars***. It's going to allow us to do 2 very important things:
   1. As mentioned it's going to allow us to render dynamic documents as opposed to the static ones
@@ -1015,15 +1027,26 @@ Provides lots of location services. The one we are going to use for now is [*Geo
   `https://api.mapbox.com/geocoding/v5/mapbox.places/Los%20Angeles.json?access_token=pk.eyJ1IjoiZW9tZXJldSIsImEiOiJja25rd3R6ZWgwOWt1Mm5wcjIwcmVzNnZ5In0.RkkSfwuQvNE1eSmjc8Q7kA&limit=1`  
   
   Some parameters:
-  1. **`access_token=`*`API Access Token`***
-  1. **`language=`*`en/de/...`*** specifies user's language
-  1. **`limit=`*`5/1/2/.../10`*** specifies the maximum number of results to return  
+  1. `access_token=`*`API Access Token`*
+  1. `language=`*`en/de/...`* specifies user's language
+  1. `limit=`*`5/1/2/.../10`* specifies the maximum number of results to return  
 
   Some return values:
-  1. **`response.body.features`** array, it will return us the most relevant 5 matches relating to our search term from the most to the least relevant one.
-  1. **`response.body.features[0]`** returns the most relevant one.
-  1. **`response.body.features[0].place_name`** returns the place name with state and country included
-  1. **`response.body.features[0].center`** returns longtitude and latitude respectively. ***Contrary to the usual***
+  1. `response.body.features` array, it will return us the most relevant 5 matches relating to our search term from the most to the least relevant one.
+  1. `response.body.features[0]` returns the most relevant one.
+  1. `response.body.features[0].place_name` returns the place name with state and country included
+  1. `response.body.features[0].center` returns longtitude and latitude respectively. ***Contrary to the usual***
+
+- `fetch('url-link').then((response) => { ... })`  
+Lets us to get requests from client-side javascript. The following piece, fetches a JSON and writes it onto the console after parsing:
+  ```javascript
+  fetch('http://puzzle.mead.io/puzzle').then((response) => {
+    response.json().then((data) => {
+      console.log(data)
+    })
+  })
+  ```
+***
 
 ### Useful Functions
 - `fs.writeFileSync('file_name.extension', data)`  
