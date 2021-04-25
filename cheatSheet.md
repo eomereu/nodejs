@@ -784,6 +784,21 @@ fetch('http://puzzle.mead.io/puzzle').then((response) => {
 })
 ```
 So it's like, first *fetch* *then* execute the function...
+```javascript
+const weatherForm = document.querySelector('form')
+const search = document.querySelector('input')
+
+weatherForm.addEventListener('submit', (e) => {
+  e.preventDefault()
+
+  const location = search.value
+
+  console.log('testing!')
+})
+```
+Up above:  
+- `e.preventDefault()` prevents submit button to reload the page after submitting!
+- `.value` extracts the value of the input
 ***
 
 ### Templating

@@ -3,7 +3,6 @@
 <head>
 
   {{>imports}}
-  <script src="/js/app.js"></script>
 
 </head>
 <body>
@@ -12,9 +11,23 @@
   <div class="container-fluid">
     {{>header}}
     <img id="main-img" src="/img/weather-forecast.jpg">
-    <p>Created by {{creator}}</p>
+    <form id="weather-form">
+      <div class="row g-2 align-items-center">
+        <div class="col-auto">
+          <label class="col-form-label">Address</label>
+        </div>
+        <div class="col-auto">
+          <input id="address" class="form-control" type="text" placeholder="Wien, Washington DC, London" aria-label="default input example">
+        </div> 
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>      
+      </div>
+      <div id="emailHelp" class="form-text">Please provide a valid location to get the weather information.</div>
+    </form>
   </div>
   {{>footer}}
   
+  <script src="/js/app.js"></script>
 </body>
 </html>
