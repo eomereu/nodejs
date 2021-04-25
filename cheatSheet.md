@@ -774,37 +774,6 @@ app.get('/help/*', (req, res) => {
 ```
 ***
 
-### Getting Requests From Client-Side Javascript
-In order to get requests from client-side javascript *(/public/js/app.js)* we will be using ***fetch API***. This is not a NodeJS script, it's a browser based script so that's why it only works by client-side and not in backend. Calling it, will start an asynchronous i/o operation like, request in the backend. The following piece, fetches a JSON and writes it onto the console after parsing:
-```javascript
-fetch('http://puzzle.mead.io/puzzle').then((response) => {
-  response.json().then((data) => {
-    console.log(data)
-  })
-})
-```
-So it's like, first *fetch* *then* execute the function...
-```javascript
-const weatherForm = document.querySelector('form')
-const search = document.querySelector('input')
-const paragraph = document.querySelector('p')
-
-paragraph.textContent = 'Message 1'
-
-weatherForm.addEventListener('submit', (e) => {
-  e.preventDefault()
-
-  const location = search.value
-
-  console.log('testing!')
-})
-```
-Up above:  
-- `.textContent` alters the inners of *p* with pure text
-- `e.preventDefault()` prevents submit button to reload the page after submitting!
-- `.value` extracts the value of the input
-***
-
 ### Templating
 A **template engine** is a tool that renders dynamic webpages. We will use ***handlebars***. It's going to allow us to do 2 very important things:
   1. As mentioned it's going to allow us to render dynamic documents as opposed to the static ones
@@ -854,8 +823,51 @@ To render a partial, within views:
 >We can render our injected values also within partials for sure.
 ***
 
+### Getting Requests From Client-Side Javascript
+In order to get requests from client-side javascript *(/public/js/app.js)* we will be using ***fetch API***. This is not a NodeJS script, it's a browser based script so that's why it only works by client-side and not in backend. Calling it, will start an asynchronous i/o operation like, request in the backend. The following piece, fetches a JSON and writes it onto the console after parsing:
+```javascript
+fetch('http://puzzle.mead.io/puzzle').then((response) => {
+  response.json().then((data) => {
+    console.log(data)
+  })
+})
+```
+So it's like, first *fetch* *then* execute the function...
+```javascript
+const weatherForm = document.querySelector('form')
+const search = document.querySelector('input')
+const paragraph = document.querySelector('p')
 
+paragraph.textContent = 'Message 1'
 
+weatherForm.addEventListener('submit', (e) => {
+  e.preventDefault()
+
+  const location = search.value
+
+  console.log('testing!')
+})
+```
+Up above:  
+- `.textContent` alters the inners of *p* with pure text
+- `e.preventDefault()` prevents submit button to reload the page after submitting!
+- `.value` extracts the value of the input
+***
+
+### Application Deployment
+We will be using [Heroku](https://www.heroku.com/) for free to deploy our websites. Heroku has some useful command line tools called as [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli).  
+Simply to install in Ubuntu:
+```bash
+$ sudo snap install --classic heroku
+```
+To check the current version
+```bash
+$ heroku -v
+```
+To login type the following and after hitting Enter, it will ask to press any key to open a new window to log in to Heroku CLI or *q* to exit. So press any key other than *q* and click *Log In*. Then close that window and come back to the terminal, now we will see that we're logged in.
+```bash
+$ heroku login
+```
 
 
 
