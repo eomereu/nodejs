@@ -787,6 +787,9 @@ So it's like, first *fetch* *then* execute the function...
 ```javascript
 const weatherForm = document.querySelector('form')
 const search = document.querySelector('input')
+const paragraph = document.querySelector('p')
+
+paragraph.textContent = 'Message 1'
 
 weatherForm.addEventListener('submit', (e) => {
   e.preventDefault()
@@ -797,6 +800,7 @@ weatherForm.addEventListener('submit', (e) => {
 })
 ```
 Up above:  
+- `.textContent` alters the inners of *p* with pure text
 - `e.preventDefault()` prevents submit button to reload the page after submitting!
 - `.value` extracts the value of the input
 ***

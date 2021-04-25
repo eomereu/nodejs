@@ -32,6 +32,10 @@ footer {
     width: 250px;
 }
 
+#messages {
+    margin-top: 4%;
+}
+
 #main-img {
     width: 550px;
     margin-bottom: 0.7%;
