@@ -256,7 +256,11 @@ When we first install Node on our machine, npm is also installed with it automat
     - `vh` stands for *view height* and used to provide body to cover all seen height *i.e. to push the footer to the bottom*
     - `flex-grow: 1;` makes the flex cover as needed area. *Here 1 sets as all*
 
-- ***Git*** Generally the first commit within a project messaged as ***Init commit***
+- ***Git*** Generally the first commit within a project messaged as ***Init commit***  
+  To list all remotes *(`-v` flag optional; it prints out git repo links as well)*:
+  ```bash
+  $ git remote -v
+  ```
 
 - ***SSH*** To check existing SSH keys on our machine:
   ```bash
@@ -907,7 +911,7 @@ weatherForm.addEventListener('submit', (e) => {
   messageOne.textContent = 'Loading...'
   messageTwo.textContent = ''
 
-  fetch('http://localhost:3000/weather?address=' + location).then((response) => {
+  fetch('/weather?address=' + location).then((response) => {
     response.json().then((data) => {
       if(data.error) {
         return messageOne.textContent = data.error
@@ -920,7 +924,7 @@ weatherForm.addEventListener('submit', (e) => {
 ```
 ***
 
-### Application Deployment
+### Deploying Application to [Heroku](https://www.heroku.com/)
 We will be using [Heroku](https://www.heroku.com/) for free to deploy our websites. Heroku has some useful command line tools called as [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli).  
 Simply to install in Ubuntu:
 ```bash
@@ -934,6 +938,54 @@ To login type the following and after hitting Enter, it will ask to press any ke
 ```bash
 $ heroku login
 ```
+To add our ssh key to Heroku:
+```bash
+$ heroku keys:add
+```
+>After hitting Enter, it's gonna look at our SSH keys at the default folder *(~/.ssh)* and asks to add or not if finds any. 
+
+To create our application on Heroku *(like initializing git repository)* we need to run the following command **at the root** of our project:
+```bash
+$ heroku create "application-name"
+```
+> Heroku application names must be unique along all the applications on it! Thus it may be a great practice to begin its name with our last name...  
+As creating the project it also sets up git remote as `heroku` and logs two urls to the console:  
+The left one is a location where we can view our application  
+The right one is the git repository where we will be pushing our code:  
+https://erol-weather-app.herokuapp.com/ | https://git.heroku.com/erol-weather-app.git
+
+In order Heroku to start our application:
+1. First we have to tell it which file to run. So to make this happen first we need to navigate to ***package.json*** file. And inside it modify the `scripts` objects as following:
+    ```javascript
+    scripts: {
+      "start": "node src/app.js"
+    }
+    ```
+    >Actully at this point, Heroku is going to run `$ npm run start` command on its servers as we would to start on our machine.
+2. We need to specify *port* as making the following changes:
+    ```javascript
+    const port = process.env.PORT || 3000
+
+    app.listen(port, () => {
+      console.log('Server is up on port ' + port)
+    })
+    ```
+    >`process.env.PORT` extracts the value that Heroku provides. `env` is an object where we can access environment variables.  
+    `|| 3000` part *(where `||` called as **or logical operator**)* provides that if no value for the first one *(the one comes from Heroku; this happens when we run it locally)* then we assign *3000* value to the `port`.
+- This one is app-specific... Delete the `http://localhost:3000` part of the `fetch` within client-side javascript file. So new version:
+    ```javascript
+    fetch('/weather?address=' + location).then((response) => {
+      ...
+    }
+    ```
+    >Now it will fetch data accordingly based on the environment our app running: locally or on Heroku or somewhere else.
+
+To push our code to automatically generated git remote `heroku` after adding and commiting to git:
+```bash
+$ git push heroku master
+```
+>Please note that if the application lies in a subdirectory of a git project, Heroku won't set up the remote in any ways and won't be able to run the application.  
+**So it is crucial that application folder is the root folder!**
 
 
 
@@ -947,8 +999,7 @@ $ heroku login
 
 
 
-
-
+***
 
 ### Useful NPM Modules
 - [**validator**](https://www.npmjs.com/package/validator)  
