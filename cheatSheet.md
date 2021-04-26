@@ -256,6 +256,41 @@ When we first install Node on our machine, npm is also installed with it automat
     - `vh` stands for *view height* and used to provide body to cover all seen height *i.e. to push the footer to the bottom*
     - `flex-grow: 1;` makes the flex cover as needed area. *Here 1 sets as all*
 
+- ***Git*** Generally the first commit within a project messaged as ***Init commit***
+
+- ***SSH*** To check existing SSH keys on our machine:
+  ```bash
+  $ ls -a -l ~/.ssh
+  ```
+  To generate one:
+  ```bash
+  $ ssh-keygen -t rsa -b 4096 -C "email@address.com"
+  ```
+  `-t`: type
+  `rsa`: rsa protocol
+  `-b`: byte
+  `-C`: to label
+  >*id_rsa* is a secret file which we will be keeping on our machine. However *id_rsa.pub* is a public one whcih we will be sharing third party sites *like GitHub, Heroku*.  
+  
+  To start ssh agent:
+  ```bash
+  $ eval "$(ssh-agent -s)"
+  ```
+  >**PS:** In Windows do not use quotes!  
+
+  To register the *id_rsa* file to the agent:
+  ```bash
+  $ ssh-add ~/.ssh/id_rsa
+  ```
+  >**PS:** In MAC/Windows add `-K` flag after `ssh-add`  
+
+  To test an SSH connection to a website *(GitHUb here)*:
+  ```bash
+  $ ssh -T git@github.com
+  ```
+
+
+
 
 
 
@@ -294,7 +329,9 @@ Under root directory:
   - **js**  
   Contains client side scripts
 - **src**  
-  Contains our backend scripts (the main program and components)
+  Contains our backend script *(the main program)*
+  - **utils**  
+  Contains our backend scripts *(components)*
 - **templates**  
   - **partials**  
     Contains partials
@@ -851,7 +888,36 @@ weatherForm.addEventListener('submit', (e) => {
 Up above:  
 - `.textContent` alters the inners of *p* with pure text
 - `e.preventDefault()` prevents submit button to reload the page after submitting!
-- `.value` extracts the value of the input
+- `.value` extracts the value of the input  
+
+A client-side *.js file* example:
+```javascript
+console.log('Client side javascript file is loaded!')
+
+const weatherForm = document.querySelector('#weather-form')
+const search = document.querySelector('#address')
+const messageOne = document.querySelector('#message-1')
+const messageTwo = document.querySelector('#message-2')
+
+weatherForm.addEventListener('submit', (e) => {
+  e.preventDefault()
+
+  const location = search.value
+
+  messageOne.textContent = 'Loading...'
+  messageTwo.textContent = ''
+
+  fetch('http://localhost:3000/weather?address=' + location).then((response) => {
+    response.json().then((data) => {
+      if(data.error) {
+        return messageOne.textContent = data.error
+      }
+      messageOne.textContent = data.location
+      messageTwo.textContent = data.forecast
+    })
+  })
+})
+```
 ***
 
 ### Application Deployment
