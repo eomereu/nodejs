@@ -24,12 +24,13 @@ app.use(express.static(publicDirectoryPath))
 var date = new Date()
 var mainBtn = 'nav-link'
 var aboutBtn = 'nav-link'
+const creator = 'E.Omer EROL'
 
 app.get('', (req, res) => {
   res.render('index', {
     title: 'Weather',
     header: 'Weather App',
-    creator: 'E.Omer EROL',
+    creator,
     date,
     mainBtn: 'nav-link active',
     aboutBtn
@@ -40,6 +41,7 @@ app.get('/about', (req, res) => {
   res.render('about', {
     title: 'About',
     header: 'About Us',
+    creator,
     date,
     mainBtn,
     aboutBtn: 'nav-link active'
