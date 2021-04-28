@@ -293,7 +293,24 @@ When we first install Node on our machine, npm is also installed with it automat
   $ ssh -T git@github.com
   ```
 
+- It's a better practice to not have any global npm packages within our project. Instead we should install them locally in order for some other developer to not have issues during usage *(see "nodemon" under "Useful NPM Packages" for detailed explanation)* and just simply install all dependencies with a single `$ npm i` after getting our repository/project. If we installed it earlier globally, the solution is to uninstall it and reinstall locally.  
 
+- To uninstall an npm package:
+```bash
+$ npm uninstall npm_package_name
+```
+
+- To uninstall a global npm package:
+```bash
+$ npm uninstall -g npm_package_name
+```
+
+- To install a global package as locally *(as a dev dependency)*:
+```bash
+$ npm i global_npm_package_name --save-dev
+```
+
+- Dev dependencies `"devDependencies: { ... }"` are dependencies we only need on our local machines while developing. They are not installed within a production environment such as Heroku. And it saves us time to install a package just required for developing as a dev dependency instead of a normal dependency.
 
 
 
@@ -961,7 +978,7 @@ In order Heroku to start our application:
       "start": "node src/app.js"
     }
     ```
-    >Actully at this point, Heroku is going to run `$ npm run start` command on its servers as we would to start on our machine.
+    >Actully at this point, Heroku is going to run `$ npm run start` command on its servers as we would to start on our machine. ***PS: See "nodemon" under "Useful NPM Modules" to find out the addition in order to use "nodemon" startup in a more practical and shorter way!***
 2. We need to specify *port* as making the following changes:
     ```javascript
     const port = process.env.PORT || 3000
@@ -1015,15 +1032,41 @@ Example usage:
 - [**nodemon** *-global*](https://www.npmjs.com/package/nodemon)  
 nodemon is a tool that helps develop node.js based applications by automatically restarting the node application when file changes in the directory are detected. To use nodemon, replace the word node on the command line when executing your script.  
 Usage (start/exit):  
-```bash
-$ nodemon app.js
-Ctrl+C
-```
-Normally nodemon just watches for our .js extensions and when we save it, it restarts things. But if we want to restart our server whenever we make a change also on other files, for example *.hbs* files, then we need to run it as the following:
-```bash
-$ nodemon app.js -e js,hbs
-```
->We can keep adding the extensions we desire such as ***.css .html*** etc.
+  ```bash
+  $ nodemon app.js
+  Ctrl+C
+  ```
+  Normally nodemon just watches for our .js extensions and when we save it, it restarts things. But if we want to restart our server whenever we make a change also on other files, for example *.hbs* files, then we need to run it as the following:
+  ```bash
+  $ nodemon src/app.js -e js,hbs
+  ```
+  >We can keep adding the extensions we desire such as ***.css .html*** etc.  
+
+  In order not to type everytime that long tail `src/app.js -e js,hbs` we can make use of ***package.json***:
+  ```javascript
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js -e js,hbs,css,html"
+  }
+  ```
+  Right after making this change, now we can simply run the following command where we add the `dev` key we have just provided:
+  ```bash
+  $ npm run dev
+  ```
+  The reason we can run it, is the reason we have installed it globally. However if someone else tries to run this command on his/her own machine, he/she may not know that it's a global package and needed to be setup so this is why if we use things like this, it's best to install them locally! If we installed it earlier globally, the solution is to uninstall it and reinstall locally.  
+  Uninstall:
+  ```bash
+  $ npm uninstall -g nodemon
+  ```
+  Reinstall locally *(as a dev dependency)*:
+  ```bash
+  $ npm i nodemon --save-dev
+  ```
+  However after this process we won't be able to run `nodemon` command as before just through the terminal because it's not global anymore but instead we will be using
+  ```bash
+  $ npm run dev
+  ```
+  since we made the required changes *(especially within `"scripts"` object)*
 
 - [**yargs**](https://www.npmjs.com/package/yargs)  
 Parses us users' command line inputs  
