@@ -1006,7 +1006,7 @@ $ git push heroku master
 ***
 
 ### [MongoDB](https://www.mongodb.com/)
-MongoDB is a NoSQL database. NoSQL stands for *non-SQL*, *non-relational* or *not only SQL*. It provides an npm module for NodeJS developers to easily read and write from and to database.  
+MongoDB is a NoSQL database. NoSQL stands for *non-SQL*, *non-relational* or *not only SQL*. It provides an npm module for NodeJS developers to easily read and write from and to database. By the way, Javascript is used to manipulate the database.  
 Some structural differences between SQL and NoSQL:
 <img src="https://i.ibb.co/FqDTwZ0/SQL-vs-No-SQL.png">  
 
@@ -1026,8 +1026,18 @@ Some structural differences between SQL and NoSQL:
     >By default MongoDB expects us to create a data directory at the root of the hard drive and in there it expects a db directory. It's not ideal because we may encounter so many permission issues so that's why we moved the extracted foler and created data folder in the user folder and started the server by specifying the path to there.
 - After running it, we will be seeing a message within the last rows as: ***"... waiting for connections on port 27017"***. Also we may understand from here that default port is ***27017***
 
-
-
+**GUI Viewer - [Robo 3T](https://robomongo.org/)**  
+Robo 3T is a MongoDB admin tool that provides a graphical user interface to manage our database.  
+1. Download from https://robomongo.org/download  
+1. After downloading and extracting *tar.gz* folder for Linux head over to *bin* folder and crack open *robo3t* file
+1. On the pop up window *MongoDB Connections*, click *Create* link,
+1. From the just opened window *Connection Settings*, *Name* it as desired and set *Address* as ***localhost*** and *port* as ***27017*** for a local and default setup.
+1. At this point we can click on *Test* button at the bottom left to confirm that connection settings are working.
+1. Lastly hit *Save* button.
+1. From the listed connections, double click on the one we've just created to open the connection
+1. After connecting, to open shell, right click on the *Name* at the left top *(which is Local MongoDB Database at this point)* and hit *Open Shell*
+1. Here we can write commands against MongoDB. After typing the command, hit the *green play button* at the top left to run the command.
+    - `db.version()` returns the version of MongoDB
 
 
 ***
