@@ -1003,12 +1003,12 @@ $ git push heroku master
 ```
 >Please note that if the application lies in a subdirectory of a git project, Heroku won't set up the remote in any ways and won't be able to run the application.  
 **So it is crucial that application folder is the root folder!**
+***
 
-
-
-
-
-
+### [MongoDB](https://www.mongodb.com/)
+MongoDB is a NoSQL database. NoSQL stands for *non-SQL*, *non-relational* or *not only SQL*. It provides an npm module for NodeJS developers to easily read and write from and to database.  
+Some structural differences between SQL and NoSQL:
+<img src="https://i.ibb.co/FqDTwZ0/SQL-vs-No-SQL.png">
 
 
 
@@ -1017,6 +1017,19 @@ $ git push heroku master
 
 
 ***
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Useful NPM Modules
 - [**validator**](https://www.npmjs.com/package/validator)  
