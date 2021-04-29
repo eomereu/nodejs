@@ -1008,9 +1008,23 @@ $ git push heroku master
 ### [MongoDB](https://www.mongodb.com/)
 MongoDB is a NoSQL database. NoSQL stands for *non-SQL*, *non-relational* or *not only SQL*. It provides an npm module for NodeJS developers to easily read and write from and to database.  
 Some structural differences between SQL and NoSQL:
-<img src="https://i.ibb.co/FqDTwZ0/SQL-vs-No-SQL.png">
+<img src="https://i.ibb.co/FqDTwZ0/SQL-vs-No-SQL.png">  
 
-
+**Download and Install**
+1. Download it from https://www.mongodb.com/try/download/community. On the page choose the OS and the appropriate extension for the installer. ***Ubuntu 20.04 and tgz is for us***.
+1. Extract tgz file
+1. Rename the extracted folder as *mongodb*
+1. Move it to the home/user directory
+1. Create a new folder as *mongodb-data* within the home/user folder where *mongodb* folder lives.
+1. Open the terminal
+1. Start server by running mongodb/bin/mongod and specifying the path the server is going to be put inside *(our mongodb-data folder)*:
+    ```bash
+    $ pwd
+    /home/eomer
+    $ /home/eomer/mongodb/bin/mongod --dbpath=/home/eomer/mongodb-data
+    ```
+    >By default MongoDB expects us to create a data directory at the root of the hard drive and in there it expects a db directory. It's not ideal because we may encounter so many permission issues so that's why we moved the extracted foler and created data folder in the user folder and started the server by specifying the path to there.
+- After running it, we will be seeing a message within the last rows as: ***"... waiting for connections on port 27017"***. Also we may understand from here that default port is ***27017***
 
 
 
