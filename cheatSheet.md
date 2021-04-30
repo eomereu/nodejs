@@ -226,7 +226,7 @@ When we first install Node on our machine, npm is also installed with it automat
   })
   ```
 
-- ***BONUS:*** During making an HTTP request with core modules:
+- ***Bonus*** During making an HTTP request with core modules:
   - `const request = http.request(url, (response) => { ... })` Creates the request object by firing the request. Inside stands `response.on()` statements
   - `response.on('data'/'end'/'error', (chunk/ /error) => {...})` Opens an event listener with given option-argument pairings
   - As we receive data, we take it as buffer. So it needs to be converted. *See 6-raw-http.js* under *playground* directory.
@@ -312,7 +312,9 @@ $ npm i global_npm_package_name --save-dev
 
 - Dev dependencies `"devDependencies: { ... }"` are dependencies we only need on our local machines while developing. They are not installed within a production environment such as Heroku. And it saves us time to install a package just required for developing as a dev dependency instead of a normal dependency.
 
+- CRUD Operations: Create Read Update Delete *(Database term)*
 
+- Connecting to a database is a synchronous function. Actually `MongoCLient.connect()` is...
 
 
 
@@ -1039,6 +1041,56 @@ Robo 3T is a MongoDB admin tool that provides a graphical user interface to mana
 1. Here we can write commands against MongoDB. After typing the command, hit the *green play button* at the top left to run the command.
     - `db.version()` returns the version of MongoDB
 
+**Connecting and Inserting Documents**
+We will be using [**mongodb npm module**](https://www.npmjs.com/package/mongodb) *(which is a MongoDB Native Driver)* to interact our database from Node i.e. to insert and manipulate documents.
+>*The documentation for Node.js MongoDB Driver API can be found [**here**](http://mongodb.github.io/node-mongodb-native/3.6/api/).*
+
+MongoClient is gonna give us necessary functions to perform CRUD Operations. Initializing:
+```javascript
+const mongodb = require('mongodb')
+const MongoClient = mongodb.MongoClient
+```
+Before starting the connection we need to specify connection URL, connection port and database name:
+```javascript
+const connectionURL = 'mongodb://127.0.0.1:27017'
+const databaseName = 'any-desired-name'
+```
+- Up above `127.0.0.1` stands for the IP Address of **localhost**. And of course `27017` is the port
+
+Connect
+```javascript
+MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) => {
+  if (error) {
+    return console.log('Unable to connect to database!')
+  }
+
+  const db = client.db(databaseName)
+  ...
+})
+```
+- `MongoClient.connect( , , )` takes 3 arguments: 1. connection URL 2. options object 3. callback function *(either returns error or client)*
+
+  > *Actually it opens up more than just one connection behind the scenes so even multiple operations performed at the same time, they are to be handled.*  
+
+- `client.db(databaseName)` connects us to the specified database. If no database exists with the given name, it automaticallly creates one. *Typically it's assigned to constant `db`.*
+
+Insert a document *(inside `MongoClient.connect()`)*
+```javascript
+  const db = client.db(databaseName)
+
+  db.collection('users').insertOne({
+    name: 'Omer',
+    age: 25
+  })
+```
+  - `db.collection('collection-name')` selects/creates a collection
+  - `.insertOne({ ... })` inserts one document to the selected collection. Takes the whole document as an object with fields *(properties)* defined inside.
+
+    > As we insert a new document it automatically gets a unique ***_id*** field.  
+  *PS: After inserting a document we can simply view it via Robo 3T*
+
+
+
 
 ***
 
@@ -1229,6 +1281,30 @@ Simply integrates *handlebars* into Express... Uses *handlebars* behind the scen
   const hbs = require('hbs')
   hbs.registerPartials(partialsPath)
   ```
+
+- [**mongodb**](https://www.npmjs.com/package/mongodb)  
+A MongoDB Native Driver that provides us to communicate with and manipulate our database from Node.js.
+  ```javascript
+  const mongodb = require('mongodb')
+  const MongoClient = mongodb.MongoClient
+
+  const connectionURL = 'mongodb://127.0.0.1:27017'
+  const databaseName = 'task-manager'
+
+  MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) => {
+    if (error) {
+      return console.log('Unable to connect to database!')
+    }
+
+    const db = client.db(databaseName)
+
+    db.collection('users').insertOne({
+      name: 'Omer',
+      age: 25
+    })
+  })
+  ```
+  > *See "Connecting and Inserting Documents" under "MongoDB" for detailed explanation of the functions and usages above*
 ***
 
 ### Useful External Services/APIs
