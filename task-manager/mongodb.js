@@ -1,10 +1,15 @@
-// CRUD create read update delete
-
-const mongodb = require('mongodb')
-const MongoClient = mongodb.MongoClient
+const { MongoClient, ObjectID } = require('mongodb')
 
 const connectionURL = 'mongodb://127.0.0.1:27017'
 const databaseName = 'task-manager'
+
+const id = new ObjectID()
+console.log(id)
+console.log(id.getTimestamp())
+console.log(id.id)
+console.log(id.id.length)
+console.log(id.toHexString())
+console.log(id.toHexString().length)
 
 MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: true }, (error, client) => {
   if (error) {
@@ -14,8 +19,9 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: 
   const db = client.db(databaseName)
 
   db.collection('users').insertOne({
-    name: 'Omer',
-    age: 25
+    _id: id,
+    name: 'Mehmet',
+    age: 18
   }, (error, result) => {
     if(error) {
       return console.log('Unable to insert user!')
@@ -25,23 +31,23 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: 
     console.log(result.insertedCount)
   })
 
-  // db.collection('users').insertMany([
-  //   {
-  //     name: 'Ali',
-  //     age: 22
-  //   },
-  //   {
-  //     name: 'Veli',
-  //     age: 28
-  //   }
-  // ], (error, result) => {
-  //   if(error) {
-  //     return console.log('Unable to insert documents!')
-  //   }
+  db.collection('users').insertMany([
+    {
+      name: 'Ali',
+      age: 22
+    },
+    {
+      name: 'Veli',
+      age: 28
+    }
+  ], (error, result) => {
+    if(error) {
+      return console.log('Unable to insert documents!')
+    }
 
-  //   console.log(result.ops)
-  //   console.log(result.insertedCount)
-  // })
+    console.log(result.ops)
+    console.log(result.insertedCount)
+  })
 
   db.collection('tasks').insertMany([
     {

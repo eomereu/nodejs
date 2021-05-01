@@ -674,7 +674,7 @@ geocode(address, (error, {latitude, longtitude, location} = {})) = {
 }
 ```
 
-**Error Handling**  
+#### **Error Handling**  
 As a precaution against an error occurance we need to set a default value as we give destructured object to a ***function*** like **`request`** where there is an **`error`** parameter. Because if an error occurs, it will take a value but the other arguement will be **`undefined`** and trying to destructure an **`undefined`** value will end up in an error. So here is an example to prevent this:
 ```javascript
 geocode(address, (error, {latitude, longtitude, location} = {})) = {
@@ -817,7 +817,7 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     app.set('views', viewsPath)
     ```
 
-**404 Page**  
+#### **404 Page**  
 To create a ***404 Page*** we need to add the following to the end of *app.get()* calls:
 ```javascript
 app.get('*', (req, res) => {
@@ -845,7 +845,7 @@ After installing, all we need to do is to tell the express which templating engi
 ```javascript
 app.set('view engine', 'hbs')
 ```
-**Views:**  
+#### **Views:**  
 By default all our *views* are supposed to live in the directory **views** right inside our root directory. If we prefer to modify it i.e. changing its name, we should set it:  
 ```javascript
 const viewsPath = path.join(__dirname, '../templates')
@@ -869,7 +869,7 @@ After injecting our values to our *.hbs file* all we need to do to use them is t
 <p>Created by {{creator}}</p>
 ```
 
-**Partials:**
+#### **Partials:**
 Allows us to create a little template which is part of a big webpage. Especially when we are in need of using that part again and again accross all pages *(like headers or footers)*, then we can specify it as a *partial* and make use. To register our partials, within *app.js*:
 ```javascript
 hbs.registerPartials(partialsPath)
@@ -1012,7 +1012,7 @@ MongoDB is a NoSQL database. NoSQL stands for *non-SQL*, *non-relational* or *no
 Some structural differences between SQL and NoSQL:
 <img src="https://i.ibb.co/FqDTwZ0/SQL-vs-No-SQL.png">  
 
-**Download and Install**
+#### **Download and Install**
 1. Download it from https://www.mongodb.com/try/download/community. On the page choose the OS and the appropriate extension for the installer. ***Ubuntu 20.04 and tgz is for us***.
 1. Extract tgz file
 1. Rename the extracted folder as *mongodb*
@@ -1028,7 +1028,7 @@ Some structural differences between SQL and NoSQL:
     >By default MongoDB expects us to create a data directory at the root of the hard drive and in there it expects a db directory. It's not ideal because we may encounter so many permission issues so that's why we moved the extracted foler and created data folder in the user folder and started the server by specifying the path to there.
 - After running it, we will be seeing a message within the last rows as: ***"... waiting for connections on port 27017"***. Also we may understand from here that default port is ***27017***
 
-**GUI Viewer - [Robo 3T](https://robomongo.org/)**  
+#### **GUI Viewer - [Robo 3T](https://robomongo.org/)**  
 Robo 3T is a MongoDB admin tool that provides a graphical user interface to manage our database.  
 1. Download from https://robomongo.org/download  
 1. After downloading and extracting *tar.gz* folder for Linux head over to *bin* folder and crack open *robo3t* file
@@ -1042,7 +1042,7 @@ Robo 3T is a MongoDB admin tool that provides a graphical user interface to mana
 - `db.version()` returns the version of MongoDB
 - `CTRL + R` refreshes the collection documents on the collection tab
 
-**Connecting and Inserting Documents**
+#### **Connecting and Inserting Documents**  
 We will be using [**mongodb npm module**](https://www.npmjs.com/package/mongodb) *(which is a MongoDB Native Driver)* to interact our database from Node i.e. to insert and manipulate documents.
 >*The documentation for Node.js MongoDB Driver API can be found [**here**](http://mongodb.github.io/node-mongodb-native/3.6/api/).*
 
@@ -1113,7 +1113,42 @@ Insert a document *(inside `MongoClient.connect()`)*
 
     - `result.insertedIds` returns the ids of the documents just inserted
 
+#### ObjectID
+Unlike in MySQL, giving records ids as 1,2,3,... MongoDB gives ids like "5c0fec243ef6bdfbe1d62e2d". These ids are called as ***GU (Globally Unique) Ids*** With the help of GU Ids, there is no way any two document two collate so this allows us to handle heavy traffic accross multiple database in a more comfortable manner.  
 
+We can create our own ObjectIDs:
+```javascript
+const { ObjectID } = require('mongodb')
+const id = new ObjectID()
+```
+Actually ObjectIDs are not fully random things. They have some meaning. The 12-byte ObjectId value consists of:
+
+- 4-byte timestamp value, representing the ObjectId's creation, measured in seconds since the Unix epoch
+- 5-byte random value
+- 3-byte incrementing counter, initialized to a random value
+
+Some methods on `const id = new ObjectID()`:
+- `id.getTimestamp()` returns the current time stamp
+- `id.id` returns the id in its original *(binary/buffer)* format
+- `id.toHexString()` returns the human readable format *(the default shown format)*
+
+To give our own generated id to a document:
+```javascript
+const id = new ObjectID()
+
+MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) => {
+  ...
+  const db = client.db(databaseName)
+
+  db.collection('users').insertOne({
+    _id: id,
+    name: 'Mehmet',
+    age: 18
+  }, (error, result) => {
+    ...
+  })
+```
+Normally ids are stored as binary values with the length of 12, but for a human friendly format it's turned into hex string and shown in that way. When it's turned, the size doubles and becomes 24.
 
 
 
