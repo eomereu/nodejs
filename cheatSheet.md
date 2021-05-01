@@ -1039,7 +1039,8 @@ Robo 3T is a MongoDB admin tool that provides a graphical user interface to mana
 1. From the listed connections, double click on the one we've just created to open the connection
 1. After connecting, to open shell, right click on the *Name* at the left top *(which is Local MongoDB Database at this point)* and hit *Open Shell*
 1. Here we can write commands against MongoDB. After typing the command, hit the *green play button* at the top left to run the command.
-    - `db.version()` returns the version of MongoDB
+- `db.version()` returns the version of MongoDB
+- `CTRL + R` refreshes the collection documents on the collection tab
 
 **Connecting and Inserting Documents**
 We will be using [**mongodb npm module**](https://www.npmjs.com/package/mongodb) *(which is a MongoDB Native Driver)* to interact our database from Node i.e. to insert and manipulate documents.
@@ -1074,6 +1075,8 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) =>
 
 - `client.db(databaseName)` connects us to the specified database. If no database exists with the given name, it automaticallly creates one. *Typically it's assigned to constant `db`.*
 
+  > If an error like *"(node:210379) [MONGODB DRIVER] Warning: Current Server Discovery and Monitoring engine is deprecated, and will be removed in a future version..."* is encountered. Do as suggested in the message and add `useUnifiedTopology: true` option within the second argument, options object.
+
 Insert a document *(inside `MongoClient.connect()`)*
 ```javascript
   const db = client.db(databaseName)
@@ -1081,13 +1084,35 @@ Insert a document *(inside `MongoClient.connect()`)*
   db.collection('users').insertOne({
     name: 'Omer',
     age: 25
+  }, (error, result) => {
+    if (error) {
+      return console.log('Unable to insert user!')
+    }
+
+    console.log(result.ops)
   })
 ```
   - `db.collection('collection-name')` selects/creates a collection
-  - `.insertOne({ ... })` inserts one document to the selected collection. Takes the whole document as an object with fields *(properties)* defined inside.
+  - `.insertOne({ ... }, (error, result) => { ... })` inserts one document to the selected collection. Takes the whole document as an object with fields *(properties)* defined inside. ***PS:** An `options` argument can be provided on demand as second argument.* 
 
-    > As we insert a new document it automatically gets a unique ***_id*** field.  
-  *PS: After inserting a document we can simply view it via Robo 3T*
+    > As we insert a new document it automatically gets a unique ***_id*** field.  ***PS:** After inserting a document we can simply view it via Robo 3T*
+
+    `.insertOne` is an asynchronous function so, we may want to know if the process ended up successfully or an error occured. To do so we improve it as giving a *callback function* as the second argument. *error* and *result* are two possible returns from the function
+
+    - `result.ops` returns the document just inserted *(including `_id`)*
+
+    - `result.insertedCount` returns the number of the document just inserted. *In this case it's equal to 1*
+
+    - `result.insertedId` returns the id of the document just inserted
+
+  - `.insertMany([{...}, {...}], (error, result) => { ... })` inserts more than one documents at the same time to the collection. An array of the objects to be inserted given as the first argument. ***PS:** An `options` argument can be provided on demand as second argument.*
+
+    - `result.ops` returns the document just inserted *(including `_id`)*
+
+    - `result.insertedCount` returns the number of the documents just inserted
+
+    - `result.insertedIds` returns the ids of the documents just inserted
+
 
 
 
@@ -1301,6 +1326,31 @@ A MongoDB Native Driver that provides us to communicate with and manipulate our 
     db.collection('users').insertOne({
       name: 'Omer',
       age: 25
+    }, (error, result) => {
+      if(error) {
+        return console.log('Unable to insert user!')
+      }
+
+      console.log(result.ops)
+      console.log(result.insertedCount)
+    })
+
+    db.collection('users').insertMany([
+      {
+        name: 'Ali',
+        age: 22
+      },
+      {
+        name: 'Veli',
+        age: 28
+      }
+    ], (error, result) => {
+      if(error) {
+        return console.log('Unable to insert documents!')
+      }
+
+      console.log(result.ops)
+      console.log(result.insertedCount)
     })
   })
   ```
