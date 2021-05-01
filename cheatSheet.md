@@ -1042,7 +1042,7 @@ Robo 3T is a MongoDB admin tool that provides a graphical user interface to mana
 - `db.version()` returns the version of MongoDB
 - `CTRL + R` refreshes the collection documents on the collection tab
 
-#### **Connecting and Inserting Documents**  
+#### **Connecting**  
 We will be using [**mongodb npm module**](https://www.npmjs.com/package/mongodb) *(which is a MongoDB Native Driver)* to interact our database from Node i.e. to insert and manipulate documents.
 >*The documentation for Node.js MongoDB Driver API can be found [**here**](http://mongodb.github.io/node-mongodb-native/3.6/api/).*
 
@@ -1077,6 +1077,7 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) =>
 
   > If an error like *"(node:210379) [MONGODB DRIVER] Warning: Current Server Discovery and Monitoring engine is deprecated, and will be removed in a future version..."* is encountered. Do as suggested in the message and add `useUnifiedTopology: true` option within the second argument, options object.
 
+#### **Create *(Inserting Documents)***
 Insert a document *(inside `MongoClient.connect()`)*
 ```javascript
   const db = client.db(databaseName)
@@ -1093,27 +1094,35 @@ Insert a document *(inside `MongoClient.connect()`)*
   })
 ```
   - `db.collection('collection-name')` selects/creates a collection
-  - `.insertOne({ ... }, (error, result) => { ... })` inserts one document to the selected collection. Takes the whole document as an object with fields *(properties)* defined inside. ***PS:** An `options` argument can be provided on demand as second argument.* 
+  - `.insertOne({ ... }, (error, result) => { ... })` inserts one document to the selected collection. Takes the whole document as an object with fields *(properties)* defined inside. Arguments:
+    1. ***Req*** Document *(object itself)*
+    1. ***Opt*** Options
+    1. ***Opt*** Callback Func *(error, result)*
 
     > As we insert a new document it automatically gets a unique ***_id*** field.  ***PS:** After inserting a document we can simply view it via Robo 3T*
 
     `.insertOne` is an asynchronous function so, we may want to know if the process ended up successfully or an error occured. To do so we improve it as giving a *callback function* as the second argument. *error* and *result* are two possible returns from the function
 
+    Methods on returning value `result` from callback:
     - `result.ops` returns the document just inserted *(including `_id`)*
 
     - `result.insertedCount` returns the number of the document just inserted. *In this case it's equal to 1*
 
     - `result.insertedId` returns the id of the document just inserted
 
-  - `.insertMany([{...}, {...}], (error, result) => { ... })` inserts more than one documents at the same time to the collection. An array of the objects to be inserted given as the first argument. ***PS:** An `options` argument can be provided on demand as second argument.*
+  - `.insertMany([{...}, {...}], (error, result) => { ... })` inserts more than one documents at the same time to the collection. An array of the objects to be inserted given as the first argument. Arguments:
+    1. ***Req*** Documents *(objects)*
+    1. ***Opt*** Options
+    1. ***Opt*** Callback Func *(error, result)*
 
+    Methods on returning value `result` from callback:
     - `result.ops` returns the document just inserted *(including `_id`)*
 
     - `result.insertedCount` returns the number of the documents just inserted
 
     - `result.insertedIds` returns the ids of the documents just inserted
 
-#### ObjectID
+#### **ObjectID**
 Unlike in MySQL, giving records ids as 1,2,3,... MongoDB gives ids like "5c0fec243ef6bdfbe1d62e2d". These ids are called as ***GU (Globally Unique) Ids*** With the help of GU Ids, there is no way any two document two collate so this allows us to handle heavy traffic accross multiple database in a more comfortable manner.  
 
 We can create our own ObjectIDs:
@@ -1150,8 +1159,56 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) =>
 ```
 Normally ids are stored as binary values with the length of 12, but for a human friendly format it's turned into hex string and shown in that way. When it's turned, the size doubles and becomes 24.
 
+#### **Read *(Querying Documents)***
+Read a document/documents *(inside `MongoClient.connect()`)*
+```javascript
+  const db = client.db(databaseName)
+
+  db.collection('users').findOne({ name: 'Veli' }, (error, user) => {
+    if (error) {
+      return console.log('Unable to fetch')
+    }
+
+    console.log(user)
+  })
+
+  db.collection('users').find({ age: 25 }).toArray((error, users) => {
+    if (error) {
+      return console.log('Unable to find')
+    }
+
+    console.log(users)
+  })
+```
+- `.findOne({ ... }, (error, user) => { ... })` finds and returns first matching document with given properties. So if more than one document exist with given criteria, it simply returns only the first one matching. Arguments:
+  1. ***Req*** Property(s)
+  1. ***Opt*** Options
+  1. ***Opt*** Callback Func *(error, user)*
+
+  > If there is no document matching, it returns `null` but not an error!
+
+- If we want to search a document by its id, we cannot simply copy its string version and give it in to the *.findOne* since it has a binary form behind the scenes. To do so:
+  ```javascript
+  db.collection('users').findOne({ _id: new ObjectID("608c98532be80535ce6c631d") }, (error, user) => {
+    if (error) {
+      return console.log('Unable to fetch')
+    }
+
+    console.log(user)
+  })
+  ```
+
+- `.find({ ... })` finds the matching documents. Arguments:
+  1. ***Opt*** Property(s)
+  1. ***Opt*** Options
 
 
+  Unlike, `.insertOne`, `.insertMany` or `.findOne`; `.find` it doesn't take a callback function as an argument **since** it returns not the documents but [**cursor**](http://mongodb.github.io/node-mongodb-native/3.6/api/Cursor.html). Cursor is not the data we ask for, it is a pointer to that data in the database.  
+  
+  The reason we get a cursor back is MongoDB isn't going to assume that everytime we use `.find` we always want to get back an array of those documents. There are lots of things that we may want like just get first five documents or just get the number of matching documents.
+
+  So when we got a cursor back, it opens up a lot of possibilities. Some methods we can use on `.find`:
+  - `.toArray((error, users) => { ... }` is going to allow us to get an array of the documents matching.
 ***
 
 
@@ -1344,52 +1401,8 @@ Simply integrates *handlebars* into Express... Uses *handlebars* behind the scen
 
 - [**mongodb**](https://www.npmjs.com/package/mongodb)  
 A MongoDB Native Driver that provides us to communicate with and manipulate our database from Node.js.
-  ```javascript
-  const mongodb = require('mongodb')
-  const MongoClient = mongodb.MongoClient
 
-  const connectionURL = 'mongodb://127.0.0.1:27017'
-  const databaseName = 'task-manager'
-
-  MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) => {
-    if (error) {
-      return console.log('Unable to connect to database!')
-    }
-
-    const db = client.db(databaseName)
-
-    db.collection('users').insertOne({
-      name: 'Omer',
-      age: 25
-    }, (error, result) => {
-      if(error) {
-        return console.log('Unable to insert user!')
-      }
-
-      console.log(result.ops)
-      console.log(result.insertedCount)
-    })
-
-    db.collection('users').insertMany([
-      {
-        name: 'Ali',
-        age: 22
-      },
-      {
-        name: 'Veli',
-        age: 28
-      }
-    ], (error, result) => {
-      if(error) {
-        return console.log('Unable to insert documents!')
-      }
-
-      console.log(result.ops)
-      console.log(result.insertedCount)
-    })
-  })
-  ```
-  > *See "Connecting and Inserting Documents" under "MongoDB" for detailed explanation of the functions and usages above*
+  > See "Connecting", "Create *(Inserting Documents)*", "Read *(Querying Documents)*", "Update" and "Delete" sections under "MongoDB" for detailed usage
 ***
 
 ### Useful External Services/APIs

@@ -3,6 +3,9 @@ const { MongoClient, ObjectID } = require('mongodb')
 const connectionURL = 'mongodb://127.0.0.1:27017'
 const databaseName = 'task-manager'
 
+//
+// ObjectID
+//
 const id = new ObjectID()
 console.log(id)
 console.log(id.getTimestamp())
@@ -18,6 +21,44 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: 
 
   const db = client.db(databaseName)
 
+  //
+  // Read
+  //
+  db.collection('users').findOne({ name: 'Veli' }, (error, user) => {
+    if (error) {
+      return console.log('Unable to fetch')
+    }
+
+    console.log(user)
+  })
+
+  db.collection('users').find({ age: 25 }).count((error, count) => {
+    if (error) {
+      return console.log('Unable to find')
+    }
+
+    console.log(count)
+  })
+
+  db.collection('tasks').findOne({ _id: new ObjectID("608ccb01e39f643cbe8585f2") }, (error, task) => {
+    if (error) {
+      return console.log('Unable to find')
+    }
+
+    console.log(task)
+  })
+
+  db.collection('tasks').find({ completed: false }).toArray((error, tasks) => {
+    if (error) {
+      return console.log('Unable to find')
+    }
+
+    console.log(tasks)
+  })
+
+  //
+  // Create
+  //
   db.collection('users').insertOne({
     _id: id,
     name: 'Mehmet',
@@ -25,24 +66,6 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: 
   }, (error, result) => {
     if(error) {
       return console.log('Unable to insert user!')
-    }
-
-    console.log(result.ops)
-    console.log(result.insertedCount)
-  })
-
-  db.collection('users').insertMany([
-    {
-      name: 'Ali',
-      age: 22
-    },
-    {
-      name: 'Veli',
-      age: 28
-    }
-  ], (error, result) => {
-    if(error) {
-      return console.log('Unable to insert documents!')
     }
 
     console.log(result.ops)
@@ -68,6 +91,7 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: 
     }
 
     console.log(result.ops)
+    console.log(result.insertedCount)
     console.log(result.insertedIds)
   })
 })
