@@ -1097,7 +1097,7 @@ Insert a document *(inside `MongoClient.connect()`)*
   - `.insertOne({ ... }, (error, result) => { ... })` inserts one document to the selected collection. Takes the whole document as an object with fields *(properties)* defined inside. Arguments:
     1. ***Req*** Document *(object itself)*
     1. ***Opt*** Options
-    1. ***Opt*** Callback Func *(error, result)*
+    1. ***Opt*** Callback Func *(error, result)* ***Promise if no callback passed***
 
     > As we insert a new document it automatically gets a unique ***_id*** field.  ***PS:** After inserting a document we can simply view it via Robo 3T*
 
@@ -1113,7 +1113,7 @@ Insert a document *(inside `MongoClient.connect()`)*
   - `.insertMany([{...}, {...}], (error, result) => { ... })` inserts more than one documents at the same time to the collection. An array of the objects to be inserted given as the first argument. Arguments:
     1. ***Req*** Documents *(objects)*
     1. ***Opt*** Options
-    1. ***Opt*** Callback Func *(error, result)*
+    1. ***Opt*** Callback Func *(error, result)* ***Promise if no callback passed***
 
     Methods on returning value `result` from callback:
     - `result.ops` returns the document just inserted *(including `_id`)*
@@ -1183,7 +1183,7 @@ Read a document/documents *(inside `MongoClient.connect()`)*
 - `.findOne({ ... }, (error, user) => { ... })` finds and returns first matching document with given properties. So if more than one document exist with given criteria, it simply returns only the first one matching. Arguments:
   1. ***Req*** Property(s)
   1. ***Opt*** Options
-  1. ***Opt*** Callback Func *(error, user)*
+  1. ***Opt*** Callback Func *(error, user)* ***Promise if no callback passed***
 
   > If there is no document matching, it returns `null` but not an error!
 
@@ -1209,6 +1209,30 @@ Read a document/documents *(inside `MongoClient.connect()`)*
 
   So when we got a cursor back, it opens up a lot of possibilities. Some methods we can use on `.find`:
   - `.toArray((error, users) => { ... }` is going to allow us to get an array of the documents matching.
+
+#### **Update**
+Update a document/documents *(inside `MongoClient.connect()`)*
+  ```javascript
+  db.collection('users').updateOne({
+    _id: new ObjectID("608b5e5397d5ef2edafbf4c7")
+  }, {
+    $set: {
+      name: 'Hasan'
+    }
+  }).then((result) => {
+    console.log(result)
+  }).catch((error) => {
+    console.log(error)
+  })
+  ```
+  - `updateOne({ ... }, { ... })` finds and updates the specified documents based on given arguments:
+    1. ***Req*** Filter Property
+    1. ***Req*** [Update Operations](https://docs.mongodb.com/manual/reference/operator/update/#update-operators-1)  
+        1. `$set: { ... }` sets the value of a field in a document
+        1. `$inc: { ... }` increments the value of the field by the speciffied amount
+        1. `$unset: { ... }` removes the specified field from a document
+        1. `$rename: { ... }` renames a field
+    1. ***Opt*** Callback Func *(error, result)*  ***Promise if no callback passed***
 ***
 
 ### Promises
