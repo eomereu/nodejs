@@ -1211,6 +1211,32 @@ Read a document/documents *(inside `MongoClient.connect()`)*
   - `.toArray((error, users) => { ... }` is going to allow us to get an array of the documents matching.
 ***
 
+### Promises
+Promises make it easy for us to manage our synchronous code. They are nothing more than an enhancement to callbacks but an important one.  
+1. In callback pattern there is only one function executes either for an error or for a result which leads us to add conditional logic to handle error. However in promises there are two seperates functions for error and result, which makes it easier and makes us get rid of conditional logic. Moreover, there are less code executed behind the scenes.  
+1. In callback function, if there are multiple `callback`s they are all executed. However in promises only the first `resolve`/`reject` is executed and the rest is ignored.
+1. More importantly during creating callback function, the order of arguments play a crucial role to define the situation (whether an error or not). However with promises, it is either a `resolve` to return the result or a `reject` to return the error with just providing that one argument.
+1. Promise has clearer semantics compared to callbacks. It is easier to understand intention of the code.
+- Normally we won't be creating the promise itself but just to be aware what's going on, here is how it's created:
+  ```javascript
+  const examplePromise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve([7, 4, 1])
+      // reject('Things went wrong!')
+    }, 2000)
+  })
+  ```
+- More importantly how it's called:
+  ```javascript
+  doWorkPromise.then((result) => {
+    console.log('Success!', result)
+  }).catch((error) => {
+    console.log('Error!', error)
+  })
+  ```
+  - `.then((result) => { ... })` allows us to register a function to run when things go well or in other words when `resolve` is called.
+  - `.catch((error) => { ... })` allows us to register a function to run when things go wrong or in other words when `reject` is called.
+***
 
 
 
