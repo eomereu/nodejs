@@ -1285,8 +1285,6 @@ Delete a document/documents *(inside `MongoClient.connect()`)*
     1. ***Req*** Filter Property  
     - ***Opt*** Options
     - ***Opt*** Callback Func *(error, result)*  ***Promise if no callback passed***
-
-
 ***
 
 ### Promises
@@ -1316,6 +1314,53 @@ Promises make it easy for us to manage our synchronous code. They are nothing mo
   - `.catch((error) => { ... })` allows us to register a function to run when things go wrong or in other words when `reject` is called.
 ***
 
+### [Mongoose](https://mongoosejs.com/)
+Mongoose falls into a broader category known as ODMs (Object Document Mapper)  
+
+Install NPM Module:
+```bash
+$ npm i mongoose
+```
+
+Model allows us to model something in the real world that we want to be able to store in the database. This could be a user, a task, a cat, simply anything:
+```javascript
+const mongoose = require('mongoose')
+
+// Connect to database
+mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
+})
+
+// Create model
+const User = mongoose.model('User', {
+  name: {
+    type: String
+  },
+  age: {
+    type: Number
+  }
+})
+
+// Create an instance of the model
+const me = new User({
+  name: 'Omer',
+  age: 25
+})
+
+// Save to database
+me.save().then(() => {
+  console.log(me)
+}).catch(() => {
+  console.log('Error!', error)
+})
+```
+- We don't specify databasename seperately unlike with MongoClient
+
+- `useCreateIndex: true` option is going to make sure when Mongoose works with MongoDB our indexes are created allowing us to quickly acces data wwe need to access.
+
+- Inside the return value of the object `__v:` attribute added automatically and handled by mongoose which stores the version of the document.
 
 
 
@@ -1327,6 +1372,9 @@ Promises make it easy for us to manage our synchronous code. They are nothing mo
 
 
 
+
+
+***
 
 ### Useful NPM Modules
 - [**validator**](https://www.npmjs.com/package/validator)  
@@ -1507,6 +1555,11 @@ Simply integrates *handlebars* into Express... Uses *handlebars* behind the scen
 A MongoDB Native Driver that provides us to communicate with and manipulate our database from Node.js.
 
   > See "Connecting", "Create *(Inserting Documents)*", "Read *(Querying Documents)*", "Update" and "Delete" sections under "MongoDB" for detailed usage
+
+- [**mongoose**](https://www.npmjs.com/package/mongoose)
+Mongoose is a MongoDB object modeling tool designed to work in an asynchronous environment. Mongoose supports both promises and callbacks.
+
+  > See "Mongoose" for detailed usage
 ***
 
 ### Useful External Services/APIs
