@@ -1362,6 +1362,8 @@ me.save().then(() => {
 
 - Inside the return value of the object `__v:` attribute added automatically and handled by mongoose which stores the version of the document.
 
+- Mongoose takes the model name we provide, lowercases and pluralizes and then name the collection with it. i.e. for our model **User** we see our automatically created collection name as **users**!
+
 
 
 
