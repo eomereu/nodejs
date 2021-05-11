@@ -1405,9 +1405,9 @@ age: {
 }
 ```
 Some sanitizators on `String`
-- `lowercase`: boolean, whether to always call .toLowerCase() on the value
-- `uppercase`: boolean, whether to always call .toUpperCase() on the value
-- `trim`: boolean, whether to always call .trim() on the value
+- `lowercase`: boolean, whether to always call .toLowerCase() on the value ***Lowercases the string***
+- `uppercase`: boolean, whether to always call .toUpperCase() on the value ***Uppercases the string***
+- `trim`: boolean, whether to always call .trim() on the value ***Trims the spaces at the beginning and at the end***
 - `minLength`: Number, creates a validator that checks if the value length is not less than the given number
 - `maxLength`: Number, creates a validator that checks if the value length is not greater than the given number
 

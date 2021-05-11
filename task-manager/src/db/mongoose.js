@@ -15,6 +15,17 @@ const User = mongoose.model('User', {
     required: true,
     trim: true
   },
+  password: {
+    type: String,
+    required: true,
+    minLength: 7,
+    trim: true,
+    validate(value){
+      if (validator.contains(value.toLowerCase(),'password')) {
+        throw new Error('Password may not contain \"password\"')
+      }
+    }
+  },
   email: {
     type: String,
     required: true,
@@ -37,24 +48,11 @@ const User = mongoose.model('User', {
   }
 })
 
-const Task = mongoose.model('Task', {
-  description: {
-    type: String
-  },
-  completed: {
-    type: Boolean
-  }
-})
-
 // Create an instance of the model
 const me = new User({
   name: '    Omer',
-  email: 'MYEMAIL@EOE.IO    '
-})
-
-const cleanRoom = new Task({
-  description: "Clean the room",
-  completed: false
+  email: 'MYEMAIL@EOE.IO    ',
+  password: '1PASSWORD23456'
 })
 
 // Save to database
@@ -63,6 +61,27 @@ me.save().then(() => {
 }).catch((error) => {
   console.log('Error!', error)
 })
+
+//
+//
+//
+const Task = mongoose.model('Task', {
+  description: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  completed: {
+    type: Boolean,
+    required: false,
+    default: false,
+  }
+})
+
+const cleanRoom = new Task({
+  description: "   Redundant work                ",
+})
+
 
 cleanRoom.save().then(() => {
   console.log(cleanRoom)
