@@ -1352,7 +1352,7 @@ const me = new User({
 // Save to database
 me.save().then(() => {
   console.log(me)
-}).catch(() => {
+}).catch((error) => {
   console.log('Error!', error)
 })
 ```
@@ -1363,6 +1363,66 @@ me.save().then(() => {
 - Inside the return value of the object `__v:` attribute added automatically and handled by mongoose which stores the version of the document.
 
 - Mongoose takes the model name we provide, lowercases and pluralizes and then name the collection with it. i.e. for our model **User** we see our automatically created collection name as **users**!
+
+#### **Data [Validation](https://mongoosejs.com/docs/validation.html#validation) and [Sanitization](https://mongoosejs.com/docs/schematypes.html#schematype-options)**
+With [validation](https://mongoosejs.com/docs/validation.html#validation) we can enforce that the data conforms to some rules. Like min, max, required etc:  
+```javascript
+name: {
+  type: String,
+  required: true,
+}
+```
+However there are not much built-in validators in Mongoose. So to create our custom validation:  
+```javascript
+age: {
+  type: Number,
+  validate(value) {
+    if (value < 0) {
+      throw new Error('Age must be a positive number')
+    }
+  }
+}
+```
+Nevertheless when it comes to validating more complex things like e-mails, passwords and so on, it's better to use a well tested library that handles all of that for us: [validator npm package](https://www.npmjs.com/package/validator):
+```javascript
+email: {
+  type: String,
+  required: true,
+  validate(value) {
+    if (!validator.isEmail(value)) {
+      throw new Error('Email is invalid')
+    }
+  }
+}
+```
+
+
+Data sanitization allows us to alter the data before sving it. For example, removing the empty spaces around user name; setting a default value if no value is provided etc:  
+```javascript
+age: {
+  type: Number,
+  default: 0,
+}
+```
+Some sanitizators on `String`
+- `lowercase`: boolean, whether to always call .toLowerCase() on the value
+- `uppercase`: boolean, whether to always call .toUpperCase() on the value
+- `trim`: boolean, whether to always call .trim() on the value
+- `minLength`: Number, creates a validator that checks if the value length is not less than the given number
+- `maxLength`: Number, creates a validator that checks if the value length is not greater than the given number
+
+Some sanitizators on `Number`
+- `min`: Number, creates a validator that checks if the value is greater than or equal to the given minimum.
+- `max`: Number, creates a validator that checks if the value is less than or equal to the given maximum.
+
+Some sanitizators on `Date`
+- `min`: Date
+- `max`: Date
+
+
+
+
+
 
 
 
