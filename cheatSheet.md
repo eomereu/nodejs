@@ -1418,18 +1418,15 @@ Some sanitizators on `Number`
 Some sanitizators on `Date`
 - `min`: Date
 - `max`: Date
+***
 
+### REST API
+REST API stands for **R**epresentational **S**tate **T**ransfer - **A**pplication **P**rogramming **I**nterface.  
+Common REST API structure:  
+<img src="https://i.ibb.co/zZ5yfLJ/The-Task-Resource.png">
 
-
-
-
-
-
-
-
-
-
-
+Inners of a Request/Response:  
+<img src="https://i.ibb.co/WcWXYR3/Req-Res.png">
 
 
 
@@ -1437,6 +1434,18 @@ Some sanitizators on `Date`
 
 
 ***
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Useful NPM Modules
 - [**validator**](https://www.npmjs.com/package/validator)  
