@@ -846,6 +846,21 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     }
     ```
 
+1. `req.params` allows us to access parameters on request.
+    ```javascript
+    app.get('/users/:id', (req, res) => {
+      console.log(req.params)
+      console.log(req.params.id)
+    })
+    ```
+
+#### **Route Parameters**
+They are part of the URL that are used to capture dynamic values and look like following:
+```javascript
+app.get('/users/:id')
+```
+After the colon we name the parameter
+
 #### **404 Page**  
 To create a ***404 Page*** we need to add the following to the end of *app.get()* calls:
 ```javascript
@@ -1106,6 +1121,10 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) =>
 
   > If an error like *"(node:210379) [MONGODB DRIVER] Warning: Current Server Discovery and Monitoring engine is deprecated, and will be removed in a future version..."* is encountered. Do as suggested in the message and add `useUnifiedTopology: true` option within the second argument, options object.
 
+#### **CRUD Operations\***
+*These are low level usages of CRUD operations compared to the ones with Mongoose. So see [***CRUD Operations***]() under [***REST API***]() for a more practical and in-life use. **However** methods covered here can be used to better understand [***Mongoose Methods***]() under [***Mongoose***]() headline.  
+
+The main reason we prefer **Mongoose** over **MongoDB** is to create our models and structure our data in a nice way.
 #### **Create *(Inserting Documents)***
 Insert a document *(inside `MongoClient.connect()`)*
 ```javascript
@@ -1151,7 +1170,7 @@ Insert a document *(inside `MongoClient.connect()`)*
 
     - `result.insertedIds` returns the ids of the documents just inserted
 
-#### **ObjectID**
+#### ***ObjectID***
 Unlike in MySQL, giving records ids as 1,2,3,... MongoDB gives ids like "5c0fec243ef6bdfbe1d62e2d". These ids are called as ***GU (Globally Unique) Ids*** With the help of GU Ids, there is no way any two document two collate so this allows us to handle heavy traffic accross multiple database in a more comfortable manner.  
 
 We can create our own ObjectIDs:
@@ -1214,7 +1233,7 @@ Read a document/documents *(inside `MongoClient.connect()`)*
   - ***Opt*** Options
   2. ***Opt*** Callback Func *(error, user)* ***Promise if no callback passed***
 
-  > If there is no document matching, it returns `null` but not an error!
+  > *If there is no document matching, it returns `null` but not an error! So do not forget to add conditional logic even in success scenario.*  
 
 - If we want to search a document by its id, we cannot simply copy its string version and give it in to the *.findOne* since it has a binary form behind the scenes. To do so:
   ```javascript
@@ -1231,6 +1250,9 @@ Read a document/documents *(inside `MongoClient.connect()`)*
   1. ***Opt*** Property(s)
   - ***Opt*** Options
 
+  > *If no property given within find as `.find({})` it's gonna return all documents.*  
+
+  > *If there is no document matching, it returns `null` but not an error! So do not forget to add conditional logic even in success scenario.*  
 
   Unlike, `.insertOne`, `.insertMany` or `.findOne`; `.find` it doesn't take a callback function as an argument **since** it returns not the documents but [**cursor**](http://mongodb.github.io/node-mongodb-native/3.6/api/Cursor.html). Cursor is not the data we ask for, it is a pointer to that data in the database.  
   
@@ -1344,7 +1366,7 @@ Promises make it easy for us to manage our synchronous code. They are nothing mo
 ***
 
 ### [Mongoose](https://mongoosejs.com/)
-Mongoose falls into a broader category known as ODMs (Object Document Mapper)  
+Mongoose falls into a broader category known as ODMs (Object Document Mapper). The main reason we prefer **Mongoose** over **MongoDB** is to create our models and structure our data in a nice way.  
 
 Install NPM Module:
 ```bash
@@ -1447,6 +1469,24 @@ Some sanitizators on `Number`
 Some sanitizators on `Date`
 - `min`: Date
 - `max`: Date
+
+#### [**Mongoose Methods**](https://mongoosejs.com/docs/queries.html)
+Mongoose provides us a series of methods similar to those we saw with MongoDB native driver. Each of these returns a mongoose `Query` object. We can both pass in a callback function, or chain a `.then()` promise.
+- `Model.deleteMany()`
+- `Model.deleteOne()`
+- `Model.find()`
+- `Model.findById()`
+- `Model.findByIdAndDelete()`
+- `Model.findByIdAndRemove()`
+- `Model.findByIdAndUpdate()`
+- `Model.findOne()`
+- `Model.findOneAndDelete()`
+- `Model.findOneAndRemove()`
+- `Model.findOneAndReplace()`
+- `Model.findOneAndUpdate()`
+- `Model.replaceOne()`
+- `Model.updateMany()`
+- `Model.updateOne()`
 ***
 
 ### REST API
@@ -1470,6 +1510,62 @@ Also *Status* - *Time* - *Size* are written in green as seen above.
 During creation of a resource on postman or in other words POSTing a request, we can send the required attriutes under ***Body*** tab by checking ***raw*** button, selecting ***JSON*** and typing in our attributes:  
 
 <img src="https://i.ibb.co/DL6pfPh/Post.png">  
+
+> *Don't forget to save a request by simply hitting `CTRL + S` or clicking **Save** button at top right.*
+
+> *If no `res.send()` is provided the request is gonna end up in a timeout.*
+
+#### **CRUD Examples**
+Create Endpoints:
+```javascript
+app.post('/users', (req, res) => {
+  const user = new User(req.body)
+
+  user.save().then(() => {
+    res.status(201).send(user)
+  }).catch((e) => {
+    res.status(400).send(e)
+  })
+})
+```
+
+Read Endpoints:
+```javascript
+// Fetching all items
+app.get('/users', (req, res) => {
+  User.find({}).then((users) => {
+    res.send(users)
+  }).catch((e) => {
+    res.status(500).send()
+  })
+})
+
+// Fetching an item by id
+app.get('/users/:id', (req, res) => {
+  const _id = req.params.id
+
+  User.findById(_id).then((user) => {
+    if (!user) { 
+      return res.status(404).send()
+    }
+
+    res.status(200).send(user)
+  }).catch((e) => {
+    res.status(500).send()
+  })
+})
+```
+> *The reason we didn't convert `_id` to an object like back in MongoDB, is **Mongoose** automatically makes that conversion.*
+
+Update Enpoints:
+```javascript
+
+```
+
+Delete Enpoints:
+```javascript
+
+```
 
 
 ***
