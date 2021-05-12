@@ -296,19 +296,19 @@ When we first install Node on our machine, npm is also installed with it automat
 - It's a better practice to not have any global npm packages within our project. Instead we should install them locally in order for some other developer to not have issues during usage *(see "nodemon" under "Useful NPM Packages" for detailed explanation)* and just simply install all dependencies with a single `$ npm i` after getting our repository/project. If we installed it earlier globally, the solution is to uninstall it and reinstall locally.  
 
 - To uninstall an npm package:
-```bash
-$ npm uninstall npm_package_name
-```
+  ```bash
+  $ npm uninstall npm_package_name
+  ```
 
 - To uninstall a global npm package:
-```bash
-$ npm uninstall -g npm_package_name
-```
+  ```bash
+  $ npm uninstall -g npm_package_name
+  ```
 
 - To install a global package as locally *(as a dev dependency)*:
-```bash
-$ npm i global_npm_package_name --save-dev
-```
+  ```bash
+  $ npm i global_npm_package_name --save-dev
+  ```
 
 - Dev dependencies `"devDependencies: { ... }"` are dependencies we only need on our local machines while developing. They are not installed within a production environment such as Heroku. And it saves us time to install a package just required for developing as a dev dependency instead of a normal dependency.
 
@@ -1628,6 +1628,9 @@ Simply integrates *handlebars* into Express... Uses *handlebars* behind the scen
   hbs.registerPartials(partialsPath)
   ```
 
+- [**express**](https://www.npmjs.com/package/express)  
+It is one of the original npm packages and definitely helps put JS on the map because it made it so easy to create web servers whether we want to serve yp something like a static website or whether we want to create a complex HTTP-JSON based AAPI to serve as the back end for something like a mobile or web application.  
+
 - [**mongodb**](https://www.npmjs.com/package/mongodb)  
 A MongoDB Native Driver that provides us to communicate with and manipulate our database from Node.js.
 
@@ -1673,15 +1676,8 @@ Provides lots of location services. The one we are going to use for now is [*Geo
   1. `response.body.features[0].place_name` returns the place name with state and country included
   1. `response.body.features[0].center` returns longtitude and latitude respectively. ***Contrary to the usual***
 
-- `fetch('url-link').then((response) => { ... })`  
-Lets us to get requests from client-side javascript. The following piece, fetches a JSON and writes it onto the console after parsing:
-  ```javascript
-  fetch('http://puzzle.mead.io/puzzle').then((response) => {
-    response.json().then((data) => {
-      console.log(data)
-    })
-  })
-  ```
+- [Postman](https://www.postman.com/downloads)  
+The goal of Postman isn't to replace a client, the goal is to allow us to test our REST API without having to also create a client to test it with. That's going to allow us to automatically test things like setting up a user with valid data and then signing them with valid data, making sure we get the correct response.  
 ***
 
 ### Useful Functions
@@ -1762,4 +1758,14 @@ Searchs the elements in the array taking the *(argv) => {...}* into consideratio
 Encodes the data and prevents things from crashing. *For example "?" becomes "%3F"*. **Used when sending requests to APIs with strings within a URL!**
   ```javascript
     const url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(address) + '.json?access_token=pk.eyJ1IjoiZW9tZXJldSIsImEiOiJja25rd3R6ZWgwOWt1Mm5wcjIwcmVzNnZ5In0.RkkSfwuQvNE1eSmjc8Q7kA&limit=1'
+  ```
+
+- `fetch('url-link').then((response) => { ... })`  
+Lets us to get requests from client-side javascript. The following piece, fetches a JSON and writes it onto the console after parsing:
+  ```javascript
+  fetch('http://puzzle.mead.io/puzzle').then((response) => {
+    response.json().then((data) => {
+      console.log(data)
+    })
+  })
   ```
