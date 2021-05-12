@@ -796,14 +796,14 @@ To send basic HTML and JSON:
   })
   ```
 
-1. `app.listen(port, () => {...})` starts the server up via the specified port. Here the common development port is `3000`. The second argument is optional but generally preffered to log to the console to notify that server is started.  
+5. `app.listen(port, () => {...})` starts the server up via the specified port. Here the common development port is `3000`. The second argument is optional but generally preffered to log to the console to notify that server is started.  
 Wit the web server, it is never going to stop running unless we tell it to stop. Its job is to stay up and running and assess incoming requests constantly.  
     To reach the server that we run our local machine we simply enter the following address to the browser:
     ```
     localhost:3000
     ```
     After starting the server and making some changes within or js file, instead of constantly shutting down and starting up the server again and again we can simply run our script with `nodemon` that we learned earlier.
-1. `app.use()`
+1. `app.use()` allows us to customize our server.
 1. `express.static(pathToStaticFile)` takes the path we wanna serve up and returns accordingly to be used:
     ```javascript
     app.use(express.static(publicDirectoryPath))
@@ -815,6 +815,35 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     To set the path to modified views folder:
     ```javascript
     app.set('views', viewsPath)
+    ```
+1. `app.use(express.json())` automatically parses incoming json to an object.
+1. `app.post('', (req, res) => { ... })` allows us to create resource:
+    ```javascript
+    app.post('/users', (req, res) => {
+      const user = new User(req.body)
+
+      user.save().then(() => {
+        res.send(user)
+      }).catch((e) => {
+        res.status(400).send(e)
+      })
+    })
+    ```
+    Once we return error message we also want to send the *Status code** accordingly [***among all http status codes***](https://httpstatuses.com/).
+    > *We must set status before we send error message!*
+
+1. `req.body` returns us the body of the request.
+    ```javascript
+    app.post('/users', (req, res) => {
+      console.log(req.body)
+    })
+    ```
+    ```bash
+    {
+      name: 'Omer',
+      email: 'myemail@email.com',
+      password: 'NoneOfUrBusiness!'
+    }
     ```
 
 #### **404 Page**  
@@ -1358,7 +1387,7 @@ me.save().then(() => {
 ```
 - We don't specify databasename seperately unlike with MongoClient
 
-- `useCreateIndex: true` option is going to make sure when Mongoose works with MongoDB our indexes are created allowing us to quickly acces data wwe need to access.
+- `useCreateIndex: true` option is going to make sure when Mongoose works with MongoDB our indexes are created allowing us to quickly acces data we need to access.
 
 - Inside the return value of the object `__v:` attribute added automatically and handled by mongoose which stores the version of the document.
 
@@ -1436,7 +1465,11 @@ After creating the *collection* and clickin on *create request*, from the opened
 
 <img src="https://i.ibb.co/XJX2bg9/Postman.png">  
 
-Also *Status* - *Time* - *Size* are written in green as seen above.
+Also *Status* - *Time* - *Size* are written in green as seen above.  
+
+During creation of a resource on postman or in other words POSTing a request, we can send the required attriutes under ***Body*** tab by checking ***raw*** button, selecting ***JSON*** and typing in our attributes:  
+
+<img src="https://i.ibb.co/DL6pfPh/Post.png">  
 
 
 ***
