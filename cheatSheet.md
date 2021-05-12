@@ -1429,8 +1429,14 @@ Inners of a Request/Response:
 <img src="https://i.ibb.co/WcWXYR3/Req-Res.png">
 
 
+#### [Postman](https://www.postman.com/downloads)
+The goal of Postman isn't to replace a client, the goal is to allow us to test our REST API without having to also create a client to test it with. That's going to allow us to automatically test things like setting up a user with valid data and then signing them with valid data, making sure we get the correct response.  
 
+After creating the *collection* and clickin on *create request*, from the opened tabs, we can configure the request type *(the default is GET)* on the left hand-side and can type the URL on the right hand-side. We can also give in the *key-value* pairs at the end of the URL, but also we can type them under ***Params*** tab.  
 
+<img src="https://i.ibb.co/XJX2bg9/Postman.png">  
+
+Also *Status* - *Time* - *Size* are written in green as seen above.
 
 
 ***
