@@ -823,13 +823,13 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
       const user = new User(req.body)
 
       user.save().then(() => {
-        res.send(user)
+        res.status(201).send(user)
       }).catch((e) => {
         res.status(400).send(e)
       })
     })
     ```
-    Once we return error message we also want to send the *Status code** accordingly [***among all http status codes***](https://httpstatuses.com/).
+    Once we return error message we also want to send the *Status code** accordingly [***among all http status codes***](https://httpstatuses.com/). Also we better to send the most clear status code back, which leads us to send `201` for creation.
     > *We must set status before we send error message!*
 
 1. `req.body` returns us the body of the request.
