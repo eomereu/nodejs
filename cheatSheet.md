@@ -1518,6 +1518,7 @@ During creation of a resource on postman or in other words POSTing a request, we
 #### **CRUD Examples**
 Create Endpoints:
 ```javascript
+// Endpoint: Creating an item
 app.post('/users', (req, res) => {
   const user = new User(req.body)
 
@@ -1531,7 +1532,7 @@ app.post('/users', (req, res) => {
 
 Read Endpoints:
 ```javascript
-// Fetching all items
+// Endpoint: Reading all items
 app.get('/users', (req, res) => {
   User.find({}).then((users) => {
     res.send(users)
@@ -1540,7 +1541,7 @@ app.get('/users', (req, res) => {
   })
 })
 
-// Fetching an item by id
+// Endpoint: Reading an item by id
 app.get('/users/:id', (req, res) => {
   const _id = req.params.id
 
@@ -1549,13 +1550,15 @@ app.get('/users/:id', (req, res) => {
       return res.status(404).send()
     }
 
-    res.status(200).send(user)
+    res.send(user)
   }).catch((e) => {
     res.status(500).send()
   })
 })
 ```
 > *The reason we didn't convert `_id` to an object like back in MongoDB, is **Mongoose** automatically makes that conversion.*
+
+> *The reason sometimes we get a **500 Error** instead of a **404 Error** when we give in a non existing ID: "The findById method will throw an error if the id you pass it is improperly formatted so you should see a 500 error most of the time. However, if you pass in an id that is validly formatted, but does not exist in the database then you will get the 404 sent back."*
 
 Update Enpoints:
 ```javascript
