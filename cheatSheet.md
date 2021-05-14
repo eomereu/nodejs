@@ -316,6 +316,44 @@ When we first install Node on our machine, npm is also installed with it automat
 
 - Connecting to a database is a synchronous function. Actually `MongoCLient.connect()` is...
 
+- If we don't return any value from a function explicitly, it's gonna return an `undefined` implicitly.
+
+- If we try to log the return value of a ***synchronous function*** that doesn't include a return value, we will get:
+  ```bash
+  undefined
+  ```
+
+- To create an async function simply add `async` keyword right before the function declaration:
+  ```javascript
+  const doWork = async () => {
+    return 'Omer'
+  }
+
+  doWork().then((result) => {
+    console.log('result', result)
+  }).catch((e) => {
+    console.log('e', e)
+  })
+  ```
+  > ***Async functions** always return a **Promise**! That Promise is fulfilled with the value we choose to return from the function.*
+
+- If we try to log the return value of an ***asynchronous function*** that doesn't include a return value, we will get:
+  ```bash
+  Promise { undefined }
+  ```
+
+- When we throw an error inside the async function, we simply ***reject*** the promise:
+  ```javascript
+  const doWork = async () => {
+    throw new Error('Something went wrong')
+  }
+
+  doWork().then((result) => {
+    console.log('result', result)
+  }).catch((e) => {
+    console.log('e', e)
+  })
+  ```
 
 
 
@@ -1403,6 +1441,36 @@ User.findByIdAndUpdate('609a9ae7cac38b46a572c1db', { age: 1 }).then((user) => {
   console.log(e)
 })
 ```
+
+#### **Async/Await**
+Async/Await allows us to create an **async** function and in that function we can use **await** feature. Actually it is to use instead of *promise chaining*!  
+
+It makes it so easy to work with our asynchronous promise based code. It makes our code that looks more synchronous than asynchronous. It is nearly a small set fo tools that makes it easy to work with promises.  
+
+To create an async function simply add `async` keyword right before the function declaration:
+```javascript
+const doWork = async () => {
+
+}
+```
+> *When working with Async/Await we don't have to change our Promise internally.*
+
+The `await` operator gets use with a promise:
+```javascript
+const doWork = async () => {
+  const sum = await add(1, 99)
+  const sum2 = await add(sum, 50)
+  const sum3 = await add(sum2, 3)
+  return sum3
+}
+```
+In conclusion, if we use ***async/await*** instead of ***promise chaining*** we get the following advantages:
+1. Easier to understand
+2. All return values from innner promises live in the same scope
+
+> *If any of the inner Promises rejects then none of the code below it is going to run and it will return the error.*
+
+> ***PS**: It doesn't make things faster but makes easier to work with.*
 ***
 
 ### [Mongoose](https://mongoosejs.com/)
