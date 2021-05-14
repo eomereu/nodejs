@@ -1122,7 +1122,7 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) =>
   > If an error like *"(node:210379) [MONGODB DRIVER] Warning: Current Server Discovery and Monitoring engine is deprecated, and will be removed in a future version..."* is encountered. Do as suggested in the message and add `useUnifiedTopology: true` option within the second argument, options object.
 
 #### **CRUD Operations\***
-*These are low level usages of CRUD operations compared to the ones with Mongoose. So see [***CRUD Operations***]() under [***REST API***]() for a more practical and in-life use. **However** methods covered here can be used to better understand [***Mongoose Methods***]() under [***Mongoose***]() headline.  
+\*These are low level usages of CRUD operations compared to the ones with Mongoose. So see [***CRUD Operations on Endpoints***]() under [***REST API***]() *or [***CREATING ENDPOINTS***]()* for a more practical and in-life use. **However** methods covered here can be used to better understand [***Mongoose Methods***]() under [***Mongoose***]() headline.  
 
 The main reason we prefer **Mongoose** over **MongoDB** is to create our models and structure our data in a nice way.
 #### **Create *(Inserting Documents)***
@@ -1564,8 +1564,9 @@ During creation of a resource on postman or in other words POSTing a request, we
 > *Don't forget to save a request by simply hitting `CTRL + S` or clicking **Save** button at top right.*
 
 > *If no `res.send()` is provided the request is gonna end up in a timeout.*
+***
 
-#### **CRUD Examples**
+#### **CRUD Operations on Endpoints**
 Create Endpoints:
 ```javascript
 // Endpoint: Creating an item
@@ -1634,6 +1635,155 @@ Delete Enpoints:
 
 
 
+
+
+
+### Useful Functions
+- `fs.writeFileSync('file_name.extension', data)`  
+Overwrites the data into the given file.
+
+- `fs.writeFile('file_name.extension', data)`  
+***ASYN*** Overwrites the data into the given file.
+
+- `fs.appendFileSync('file_name.extension', data)`  
+Appends the data into the given file.
+
+- `fs.appendFile('file_name.extension', data)`  
+***ASYN*** Appends the data into the given file.
+
+- `fs.readFileSync('file_name.extension')` - *`var.toString()`*  
+Reads the file but as a ***buffer***! To get it as a string we should use as:
+  ```javascript
+  const dataBuffer = fs.readFileSync('file_name.extension')
+  dataBuffer.toString()
+  ```
+
+- `array.filter((arg) => {...})`  
+Filters the array taking the *(argv) => {...}* into consideration. Iterates all of the elements no matter what *(Performs extra redundant iterations)*. Returns the matched ones as an array. Some example usages:
+  ```javascript
+  // 1
+  const duplicateNotes = notes.filter(function(note) {
+    return note.title === title
+  })
+  if(duplicateNotes.length === 0) {
+    notes.push({
+      title: title,
+      body: body
+    })
+    saveNotes(notes)
+    log(chalk.green('Note added!'))
+  } else {
+    log(chalk.red('Note title already taken!'))
+  }
+
+  // 2
+  const notes = loadNotes()
+  const titleUnmatchedNotes = notes.filter(function(note) {
+    return note.title !== title
+  })
+  if(notes.length === titleUnmatchedNotes.length) {
+    log(chalk.red.inverse('Note with the given title doesn\'t exist. No note deleted!'))
+  } else {
+    log(chalk.green.inverse('Note with title: \"' + title + '\" deleted!'))
+    saveNotes(titleUnmatchedNotes)
+  }
+  ```
+
+- `array.find((arg) => {...})`  
+Searchs the elements in the array taking the *(argv) => {...}* into consideration. Iterates only until finding the matched element *(No extra redundant iterations)*. Returns the matched element only. Ex *(More convenient way of the one above)* :
+  ```javascript
+  const addNote = (title, body) => {
+    const notes = loadNotes()
+    const duplicateNote = notes.find((note) => note.title === title)
+  
+    if(!duplicateNote) { //if there's no duplicateNote
+      notes.push({
+        title: title,
+        body: body
+      })
+      saveNotes(notes)
+      log(chalk.green('Note added!'))
+    } else {
+      log(chalk.red('Note title already taken!'))
+    }
+  }
+  ```
+
+- `setTimeout((arg) => {...}, miliseconds)`  
+***ASYN*** Allows us to run some code after a specified time has passed *(1000 ms = 1 sec)*
+
+- `encoduURIComponent(arg)`  
+Encodes the data and prevents things from crashing. *For example "?" becomes "%3F"*. **Used when sending requests to APIs with strings within a URL!**
+  ```javascript
+    const url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(address) + '.json?access_token=pk.eyJ1IjoiZW9tZXJldSIsImEiOiJja25rd3R6ZWgwOWt1Mm5wcjIwcmVzNnZ5In0.RkkSfwuQvNE1eSmjc8Q7kA&limit=1'
+  ```
+
+- `fetch('url-link').then((response) => { ... })`  
+Lets us to get requests from client-side javascript. The following piece, fetches a JSON and writes it onto the console after parsing:
+  ```javascript
+  fetch('http://puzzle.mead.io/puzzle').then((response) => {
+    response.json().then((data) => {
+      console.log(data)
+    })
+  })
+  ```
+***
+
+### CREATING ENDPOINTS
+Create Endpoints:
+```javascript
+// Endpoint: Creating an item
+app.post('/users', (req, res) => {
+  const user = new User(req.body)
+
+  user.save().then(() => {
+    res.status(201).send(user)
+  }).catch((e) => {
+    res.status(400).send(e)
+  })
+})
+```
+
+Read Endpoints:
+```javascript
+// Endpoint: Reading all items
+app.get('/users', (req, res) => {
+  User.find({}).then((users) => {
+    res.send(users)
+  }).catch((e) => {
+    res.status(500).send()
+  })
+})
+
+// Endpoint: Reading an item by id
+app.get('/users/:id', (req, res) => {
+  const _id = req.params.id
+
+  User.findById(_id).then((user) => {
+    if (!user) { 
+      return res.status(404).send()
+    }
+
+    res.send(user)
+  }).catch((e) => {
+    res.status(500).send()
+  })
+})
+```
+> *The reason we didn't convert `_id` to an object like back in MongoDB, is **Mongoose** automatically makes that conversion.*
+
+> *The reason sometimes we get a **500 Error** instead of a **404 Error** when we give in a non existing ID: "The findById method will throw an error if the id you pass it is improperly formatted so you should see a 500 error most of the time. However, if you pass in an id that is validly formatted, but does not exist in the database then you will get the 404 sent back."*
+
+Update Enpoints:
+```javascript
+
+```
+
+Delete Enpoints:
+```javascript
+
+```
+***
 
 ### Useful NPM Modules
 - [**validator**](https://www.npmjs.com/package/validator)  
@@ -1861,93 +2011,3 @@ Provides lots of location services. The one we are going to use for now is [*Geo
 - [Postman](https://www.postman.com/downloads)  
 The goal of Postman isn't to replace a client, the goal is to allow us to test our REST API without having to also create a client to test it with. That's going to allow us to automatically test things like setting up a user with valid data and then signing them with valid data, making sure we get the correct response.  
 ***
-
-### Useful Functions
-- `fs.writeFileSync('file_name.extension', data)`  
-Overwrites the data into the given file.
-
-- `fs.writeFile('file_name.extension', data)`  
-***ASYN*** Overwrites the data into the given file.
-
-- `fs.appendFileSync('file_name.extension', data)`  
-Appends the data into the given file.
-
-- `fs.appendFile('file_name.extension', data)`  
-***ASYN*** Appends the data into the given file.
-
-- `fs.readFileSync('file_name.extension')` - *`var.toString()`*  
-Reads the file but as a ***buffer***! To get it as a string we should use as:
-  ```javascript
-  const dataBuffer = fs.readFileSync('file_name.extension')
-  dataBuffer.toString()
-  ```
-
-- `array.filter((arg) => {...})`  
-Filters the array taking the *(argv) => {...}* into consideration. Iterates all of the elements no matter what *(Performs extra redundant iterations)*. Returns the matched ones as an array. Some example usages:
-  ```javascript
-  // 1
-  const duplicateNotes = notes.filter(function(note) {
-    return note.title === title
-  })
-  if(duplicateNotes.length === 0) {
-    notes.push({
-      title: title,
-      body: body
-    })
-    saveNotes(notes)
-    log(chalk.green('Note added!'))
-  } else {
-    log(chalk.red('Note title already taken!'))
-  }
-
-  // 2
-  const notes = loadNotes()
-  const titleUnmatchedNotes = notes.filter(function(note) {
-    return note.title !== title
-  })
-  if(notes.length === titleUnmatchedNotes.length) {
-    log(chalk.red.inverse('Note with the given title doesn\'t exist. No note deleted!'))
-  } else {
-    log(chalk.green.inverse('Note with title: \"' + title + '\" deleted!'))
-    saveNotes(titleUnmatchedNotes)
-  }
-  ```
-
-- `array.find((arg) => {...})`  
-Searchs the elements in the array taking the *(argv) => {...}* into consideration. Iterates only until finding the matched element *(No extra redundant iterations)*. Returns the matched element only. Ex *(More convenient way of the one above)* :
-  ```javascript
-  const addNote = (title, body) => {
-    const notes = loadNotes()
-    const duplicateNote = notes.find((note) => note.title === title)
-  
-    if(!duplicateNote) { //if there's no duplicateNote
-      notes.push({
-        title: title,
-        body: body
-      })
-      saveNotes(notes)
-      log(chalk.green('Note added!'))
-    } else {
-      log(chalk.red('Note title already taken!'))
-    }
-  }
-  ```
-
-- `setTimeout((arg) => {...}, miliseconds)`  
-***ASYN*** Allows us to run some code after a specified time has passed *(1000 ms = 1 sec)*
-
-- `encoduURIComponent(arg)`  
-Encodes the data and prevents things from crashing. *For example "?" becomes "%3F"*. **Used when sending requests to APIs with strings within a URL!**
-  ```javascript
-    const url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(address) + '.json?access_token=pk.eyJ1IjoiZW9tZXJldSIsImEiOiJja25rd3R6ZWgwOWt1Mm5wcjIwcmVzNnZ5In0.RkkSfwuQvNE1eSmjc8Q7kA&limit=1'
-  ```
-
-- `fetch('url-link').then((response) => { ... })`  
-Lets us to get requests from client-side javascript. The following piece, fetches a JSON and writes it onto the console after parsing:
-  ```javascript
-  fetch('http://puzzle.mead.io/puzzle').then((response) => {
-    response.json().then((data) => {
-      console.log(data)
-    })
-  })
-  ```
