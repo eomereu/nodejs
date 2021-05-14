@@ -1,5 +1,5 @@
 const express = require('express')
-require('./db/mongoose')
+require('./db/mongoose') // Makes the connection to the database
 const User = require('./models/user')
 const Task = require('./models/task')
 

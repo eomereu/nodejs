@@ -1363,6 +1363,46 @@ Promises make it easy for us to manage our synchronous code. They are nothing mo
   ```
   - `.then((result) => { ... })` allows us to register a function to run when things go well or in other words when `resolve` is called.
   - `.catch((error) => { ... })` allows us to register a function to run when things go wrong or in other words when `reject` is called.
+
+#### **Promise Chaning**
+The more asynchronous task we try to perform, the more nested and complex our code gets without promise chaining. For example instead of the following nested task:
+```javascript
+add(1, 2).then((sum) => {
+  console.log(sum)
+
+  add(sum, 5).then((sum2) => {
+    console.log(sum2)
+  }).catch((e) => {
+    console.log(e)
+  })
+}).catch((e) => {
+  console.log(e)
+})
+```
+We can write:
+```javascript
+add(1, 1).then((sum) => {
+  console.log(sum)
+  return add(sum, 4)
+}).then((sum2) => {
+  console.log(sum2)
+}).catch((e) => {
+  console.log(e)
+})
+```
+The first `.then` call runs when the promise `add(1, 1)` is fulfilled. The second `.then` call runs when `add(sum, 4)` promise -right after `return`- is fulfilled. *(At this point that `return` statement allows us to keep on chaining)*  
+
+Another example on promise chaining in Mongoose:
+```javascript
+User.findByIdAndUpdate('609a9ae7cac38b46a572c1db', { age: 1 }).then((user) => {
+  console.log(user)
+  return User.countDocuments({ age: 1 })
+}).then((count) => {
+  console.log(count)
+}).catch((e) => {
+  console.log(e)
+})
+```
 ***
 
 ### [Mongoose](https://mongoosejs.com/)
@@ -1381,7 +1421,8 @@ const mongoose = require('mongoose')
 mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true
+  useCreateIndex: true,
+  useFindAndModify: false
 })
 
 // Create model
@@ -1410,6 +1451,8 @@ me.save().then(() => {
 - We don't specify databasename seperately unlike with MongoClient
 
 - `useCreateIndex: true` option is going to make sure when Mongoose works with MongoDB our indexes are created allowing us to quickly acces data we need to access.
+
+- `useFindAndModify: false` option is needed to be set to `false` for Mongoose not to use that deprecated method but `.findOneAndUpdate()` or `.findOneAndDelete()` behind the scenes.
 
 - Inside the return value of the object `__v:` attribute added automatically and handled by mongoose which stores the version of the document.
 
@@ -1472,6 +1515,7 @@ Some sanitizators on `Date`
 
 #### [**Mongoose Methods**](https://mongoosejs.com/docs/queries.html)
 Mongoose provides us a series of methods similar to those we saw with MongoDB native driver. Each of these returns a mongoose `Query` object. We can both pass in a callback function, or chain a `.then()` promise.
+- `Model.countDocuments()`
 - `Model.deleteMany()`
 - `Model.deleteOne()`
 - `Model.find()`
@@ -1487,6 +1531,12 @@ Mongoose provides us a series of methods similar to those we saw with MongoDB na
 - `Model.replaceOne()`
 - `Model.updateMany()`
 - `Model.updateOne()`
+
+> *More detailed -all- methods that Mongoose provides us on **models** can be found [here](https://mongoosejs.com/docs/api/model.html). For example `.countDocuments()` method is taken from that page.*
+
+> *`.find...AndUpdate()` methods return the object as updating them whilst `.update...()` methods solely update the document.*
+
+> *Unlike back in **MongoDB Native Driver** we don't need to provide our desired to be updated properties within `#set: {}` block. Instead we simply set the attributes and **Mongoose** handles them.*
 ***
 
 ### REST API
