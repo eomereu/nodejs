@@ -400,14 +400,24 @@ Under root directory:
   - **js**  
   Contains client side scripts
 - **src**  
-  Contains our backend script *(the main program)*
+  Contains backend scripts
+  - **db**  
+  Contains *mongoose* code to connect to database
+  - **models**  
+  Contains models
+  - **routers**  
+  Contains routers
   - **utils**  
-  Contains our backend scripts *(components)*
+  Contains components
+  - ***app.js / index.js***  
+  Main script
 - **templates**  
   - **partials**  
     Contains partials
   - **views**  
     Contains views
+- ***package-lock.json***
+- ***package.json***
 ***
 
 ### Getting User Input via Command Line Arguments 
@@ -864,7 +874,7 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     ```javascript
     app.set('views', viewsPath)
     ```
-1. `app.use(express.json())` automatically parses incoming json to an object.
+1. `app.use(express.json())` automatically parses incoming json to an object. *i.e. `req.body`*
 1. `app.post('', (req, res) => { ... })` allows us to create resource:
     ```javascript
     app.post('/users', (req, res) => {
@@ -903,7 +913,7 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     ```
 
 #### **MAIN ONES**
-1. `app.post()` allows us to create a document:
+- `app.post()` allows us to create a document:
     ```javascript
     // Endpoint: Create an item
     app.post('/users', async (req, res) => {
@@ -917,7 +927,7 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     })
     ```
 
-1. `app.get()` allows us to read the documents from an existing resource:
+- `app.get()` allows us to read the documents from an existing resource:
     ```javascript
     // Endpoint: Read all items
     app.get('/users', async (req, res) => {
@@ -944,7 +954,7 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     })
     ```
 
-1. `app.patch()` allows us to update an existing resource:
+13. `app.patch()` allows us to update an existing resource:
     ```javascript
     // Enpoint: Update an item
     app.patch('/users/:id', async (req, res) => {
@@ -1011,6 +1021,41 @@ app.get('/help/*', (req, res) => {
   res.render('404', {
     errorMessage: 'Article not found'
   })
+})
+```
+
+#### Seperate Routing
+After seperating the files, we should replace `app` keywords with `router` as seen below:  
+*/routers/user.js*
+```javascript
+const express = require('express')
+const User = require('../models/user')
+const router = new express.Router()
+
+router.post('/users', async (req, res) => {})
+router.get('/users', async (req, res) => {})
+router.get('/users:id', async (req, res) => {})
+router.patch('/users:id', async (req, res) => {})
+router.delete('/users:id', async (req, res) => {})
+
+module.exports = router
+```
+- `new express.Router()` creates a new router  
+
+*index.js*
+```javascript
+const express = require('express')
+require('./db/mongoose')
+const userRouter = require('./routers/user')
+
+const app = express()
+const port = process.env.PORT || 3000
+
+app.use(express.json())
+app.use(userRouter)
+
+app.listen(port, () => {
+  console.log('Server is up on port ' + port)
 })
 ```
 ***
@@ -2055,6 +2100,39 @@ app.delete('/users/:id', async (req, res) => {
   } catch (e) {
     res.status(500).send(e)
   }
+})
+```
+
+#### Seperate Routing
+/routers/user.js
+```javascript
+const express = require('express')
+const User = require('../models/user')
+const router = new express.Router()
+
+router.post('/users', async (req, res) => {})
+router.get('/users', async (req, res) => {})
+router.get('/users:id', async (req, res) => {})
+router.patch('/users:id', async (req, res) => {})
+router.delete('/users:id', async (req, res) => {})
+
+module.exports = router
+```
+index.js
+```javascript
+const express = require('express')
+require('./db/mongoose')
+const User = require('./models/user')
+const userRouter = require('./routers/user')
+
+const app = express()
+const port = process.env.PORT || 3000
+
+app.use(express.json())
+app.use(userRouter)
+
+app.listen(port, () => {
+  console.log('Server is up on port ' + port)
 })
 ```
 ***
