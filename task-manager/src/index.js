@@ -48,7 +48,7 @@ app.get('/users/:id', async (req, res) => {
 // Enpoint: Update a user
 app.patch('/users/:id', async (req, res) => {
   const updates = Object.keys(req.body)
-  const allowedUpdates = ['name', 'email', 'password', 'age']
+  const allowedUpdates = Object.keys(User.schema.obj)
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
   console.log(updates)
@@ -60,7 +60,7 @@ app.patch('/users/:id', async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
     if (!user) {
-      res.status(404).send()
+      return res.status(404).send({ error: 'User not found!' })
     }
     res.send(user)
   } catch (e) {
@@ -110,4 +110,25 @@ app.get('/tasks/:id', async (req, res) => {
 
 app.listen(port, () => {
   console.log('Server is up on port ' + port)
+})
+
+// Enpoint: Update a task
+app.patch('/tasks/:id', async (req, res) => {
+  const updates = Object.keys(req.body)
+  const allowedUpdates = Object.keys(Task.schema.obj)
+  const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: 'Invalid updates!' })
+  }
+
+  try {
+    const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+    if (!task) {
+      return res.status(404).send({ error: 'Task not found!' })
+    }
+    res.send(task)
+  } catch (e) {
+    res.status(400).send(e)
+  }
 })

@@ -359,6 +359,8 @@ When we first install Node on our machine, npm is also installed with it automat
 
 - `Object.values(req.body)` extracts ***values*** from the body of request and creates an array
 
+- `Object.keys(Model.schema.obj)` extracts `keys`(`attributes`) of `Model`!
+
 - `array.every((item) => { ... })` iterates over every `item` of `array` and returns `true` if the evaluation within the function `{ ... }` for ***all*** items returns `true`. Returns `false` if even only a single return is `false`!
 
 
@@ -905,7 +907,7 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     // Enpoint: Update a user
     app.patch('/users/:id', async (req, res) => {
       const updates = Object.keys(req.body)
-      const allowedUpdates = ['name', 'email', 'password', 'age']
+      const allowedUpdates = Object.keys(User.schema.obj) // ['name', 'email', 'password', 'age']
       const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
       if (!isValidOperation) {
@@ -915,7 +917,7 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
       try {
         const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
         if (!user) {
-          res.status(404).send()
+          return res.status(404).send({ error: 'User not found!' })
         }
         res.send(user)
       } catch (e) {
@@ -923,7 +925,8 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
       }
     })
     ```
-    1. `Object.keys(req.body)` extracts ***keys*** from the body of request and creates an array
+    1. `Object.keys(req.body)` extracts `keys` from the body of request and creates an array
+    1. `Object.keys(Model.schema.obj)` extracts `keys`(`attributes`) of `Model`
     1. `array.every((item) => { ... })` iterates over every `item` of `array` and returns `true` if the evaluation within the function `{ ... }` for ***all*** items returns `true`. Returns `false` if even only a single return is `false`!
     1. `array.includes(item)` returns `true` if `item` is in `array`. `false` otherwise
     1. `new: true` option will return ***the latest version of the object***, not the version of it before the update
@@ -1724,7 +1727,7 @@ app.get('/users/:id', async (req, res) => {
   try {
     const user = await User.findById(_id)
     if (!user) {
-      return res.status(404).send()
+      return res.status(404).send({ error: 'User not found!' })
     }
     res.send(user)
   } catch (e) {
@@ -1749,7 +1752,7 @@ app.get('/users/:id', (req, res) => {
 
   User.findById(_id).then((user) => {
     if (!user) { 
-      return res.status(404).send()
+      return res.status(404).send({ error: 'User not found!' })
     }
 
     res.send(user)
@@ -1767,7 +1770,7 @@ Update Enpoints:
 // Enpoint: Update an item
 app.patch('/users/:id', async (req, res) => {
   const updates = Object.keys(req.body)
-  const allowedUpdates = ['name', 'email', 'password', 'age']
+  const allowedUpdates = Object.keys(User.schema.obj) // ['name', 'email', 'password', 'age']
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
   if (!isValidOperation) {
@@ -1777,7 +1780,7 @@ app.patch('/users/:id', async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
     if (!user) {
-      res.status(404).send()
+      return res.status(404).send({ error: 'User not found!' })
     }
     res.send(user)
   } catch (e) {
@@ -1935,7 +1938,7 @@ app.get('/users/:id', async (req, res) => {
   try {
     const user = await User.findById(_id)
     if (!user) {
-      return res.status(404).send()
+      return res.status(404).send({ error: 'User not found!' })
     }
     res.send(user)
   } catch (e) {
@@ -1952,7 +1955,7 @@ Update Enpoints:
 // Enpoint: Update an item
 app.patch('/users/:id', async (req, res) => {
   const updates = Object.keys(req.body)
-  const allowedUpdates = ['name', 'email', 'password', 'age']
+  const allowedUpdates = Object.keys(User.schema.obj) // ['name', 'email', 'password', 'age']
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
   if (!isValidOperation) {
@@ -1962,7 +1965,7 @@ app.patch('/users/:id', async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
     if (!user) {
-      res.status(404).send()
+      return res.status(404).send({ error: 'User not found!' })
     }
     res.send(user)
   } catch (e) {
