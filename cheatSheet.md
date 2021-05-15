@@ -1635,7 +1635,22 @@ During creation of a resource on postman or in other words POSTing a request, we
 ***
 
 #### **CRUD Operations on Endpoints**
-Create Endpoints:
+Create Endpoints:  
+*With Async/Await (PREFERRED)*
+```javascript
+// Endpoint: Creating an item
+app.post('/users', async (req, res) => {
+  const user = new User(req.body)
+
+  try {
+    await user.save()
+    res.status(201).send(user)
+  } catch (e) {
+    res.status(400).send(e)
+  }
+})
+```
+*With Promises (OLD-FASHIONED)*
 ```javascript
 // Endpoint: Creating an item
 app.post('/users', (req, res) => {
@@ -1649,7 +1664,35 @@ app.post('/users', (req, res) => {
 })
 ```
 
-Read Endpoints:
+Read Endpoints:  
+*With Async/Await (PREFERRED)*
+```javascript
+// Endpoint: Reading all items
+app.get('/users', async (req, res) => {
+  try {
+    const users = await User.find({})
+    res.send(users)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+
+// Endpoint: Reading an item by id
+app.get('/users/:id', async (req, res) => {
+  const _id = req.params.id
+
+  try {
+    const user = await User.findById(_id)
+    if (!user) {
+      return res.status(404).send()
+    }
+    res.send(user)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+```
+*With Promises (OLD-FASHIONED)*  
 ```javascript
 // Endpoint: Reading all items
 app.get('/users', (req, res) => {
@@ -1801,41 +1844,43 @@ Lets us to get requests from client-side javascript. The following piece, fetche
 Create Endpoints:
 ```javascript
 // Endpoint: Creating an item
-app.post('/users', (req, res) => {
+app.post('/users', async (req, res) => {
   const user = new User(req.body)
-
-  user.save().then(() => {
+  
+  try {
+    await user.save()
     res.status(201).send(user)
-  }).catch((e) => {
+  } catch (e) {
     res.status(400).send(e)
-  })
+  }
 })
 ```
 
 Read Endpoints:
 ```javascript
 // Endpoint: Reading all items
-app.get('/users', (req, res) => {
-  User.find({}).then((users) => {
+app.get('/users', async (req, res) => {
+  try {
+    const users = await User.find({})
     res.send(users)
-  }).catch((e) => {
-    res.status(500).send()
-  })
+  } catch (e) {
+    res.status(500).send(e)
+  }
 })
 
 // Endpoint: Reading an item by id
-app.get('/users/:id', (req, res) => {
+app.get('/users/:id', async (req, res) => {
   const _id = req.params.id
 
-  User.findById(_id).then((user) => {
-    if (!user) { 
+  try {
+    const user = await User.findById(_id)
+    if (!user) {
       return res.status(404).send()
     }
-
     res.send(user)
-  }).catch((e) => {
-    res.status(500).send()
-  })
+  } catch (e) {
+    res.status(500).send(e)
+  }
 })
 ```
 > *The reason we didn't convert `_id` to an object like back in MongoDB, is **Mongoose** automatically makes that conversion.*
