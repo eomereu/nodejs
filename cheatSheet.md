@@ -355,6 +355,14 @@ When we first install Node on our machine, npm is also installed with it automat
   })
   ```
 
+- `Object.keys(req.body)` extracts ***keys*** from the body of request and creates an array
+
+- `Object.values(req.body)` extracts ***values*** from the body of request and creates an array
+
+- `array.every((item) => { ... })` iterates over every `item` of `array` and returns `true` if the evaluation within the function `{ ... }` for ***all*** items returns `true`. Returns `false` if even only a single return is `false`!
+
+
+
 
 
 
@@ -891,6 +899,36 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
       console.log(req.params.id)
     })
     ```
+
+1. `app.patch()` allows us to update an existing resource:
+    ```javascript
+    // Enpoint: Update a user
+    app.patch('/users/:id', async (req, res) => {
+      const updates = Object.keys(req.body)
+      const allowedUpdates = ['name', 'email', 'password', 'age']
+      const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+
+      if (!isValidOperation) {
+        return res.status(400).send({ error: 'Invalid Updates!' })
+      }
+
+      try {
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+        if (!user) {
+          res.status(404).send()
+        }
+        res.send(user)
+      } catch (e) {
+        res.status(400).send(e)
+      }
+    })
+    ```
+    1. `Object.keys(req.body)` extracts ***keys*** from the body of request and creates an array
+    1. `array.every((item) => { ... })` iterates over every `item` of `array` and returns `true` if the evaluation within the function `{ ... }` for ***all*** items returns `true`. Returns `false` if even only a single return is `false`!
+    1. `array.includes(item)` returns `true` if `item` is in `array`. `false` otherwise
+    1. `new: true` option will return ***the latest version of the object***, not the version of it before the update
+    1. `runValidators: true` option is going to make sure we do run validation for the update.
+    - `Object.values(req.body)` extracts ***values*** from the body of request and creates an array
 
 #### **Route Parameters**
 They are part of the URL that are used to capture dynamic values and look like following:
@@ -1625,9 +1663,11 @@ After creating the *collection* and clickin on *create request*, from the opened
 
 Also *Status* - *Time* - *Size* are written in green as seen above.  
 
-During creation of a resource on postman or in other words POSTing a request, we can send the required attriutes under ***Body*** tab by checking ***raw*** button, selecting ***JSON*** and typing in our attributes:  
+During creation or update of a resource on postman or in other words POSTing or PATCHing a request, we can send the required attriutes under ***Body*** tab by checking ***raw*** button, selecting ***JSON*** and typing in our attributes:  
 
 <img src="https://i.ibb.co/DL6pfPh/Post.png">  
+
+> *Pay attention that both our **attribute names** and their **values** are wrapped by **quotes ("")**!*
 
 > *Don't forget to save a request by simply hitting `CTRL + S` or clicking **Save** button at top right.*
 
@@ -1724,8 +1764,28 @@ app.get('/users/:id', (req, res) => {
 
 Update Enpoints:
 ```javascript
+// Enpoint: Update an item
+app.patch('/users/:id', async (req, res) => {
+  const updates = Object.keys(req.body)
+  const allowedUpdates = ['name', 'email', 'password', 'age']
+  const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
+  if (!isValidOperation) {
+    return res.status(400).send({ error: 'Invalid Updates!' })
+  }
+
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+    if (!user) {
+      res.status(404).send()
+    }
+    res.send(user)
+  } catch (e) {
+    res.status(400).send(e)
+  }
+})
 ```
+> *If any of the properties that doesn't exist on the model tried to be updated, they will be completely ignored.*
 
 Delete Enpoints:
 ```javascript
@@ -1846,7 +1906,7 @@ Create Endpoints:
 // Endpoint: Creating an item
 app.post('/users', async (req, res) => {
   const user = new User(req.body)
-  
+
   try {
     await user.save()
     res.status(201).send(user)
@@ -1889,7 +1949,26 @@ app.get('/users/:id', async (req, res) => {
 
 Update Enpoints:
 ```javascript
+// Enpoint: Update an item
+app.patch('/users/:id', async (req, res) => {
+  const updates = Object.keys(req.body)
+  const allowedUpdates = ['name', 'email', 'password', 'age']
+  const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
+  if (!isValidOperation) {
+    return res.status(400).send({ error: 'Invalid Updates!' })
+  }
+
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+    if (!user) {
+      res.status(404).send()
+    }
+    res.send(user)
+  } catch (e) {
+    res.status(400).send(e)
+  }
+})
 ```
 
 Delete Enpoints:
