@@ -8,10 +8,11 @@ const port = process.env.PORT || 3000
 
 app.use(express.json())
 
-// Endpoint: Creating a user
+// User Model
+//
+// Endpoint: Create a user
 app.post('/users', async (req, res) => {
   const user = new User(req.body)
-
   try {
     await user.save()
     res.status(201).send(user)
@@ -20,7 +21,7 @@ app.post('/users', async (req, res) => {
   }
 })
 
-// Endpoint: Reading all users
+// Endpoint: Read all users
 app.get('/users', async (req, res) => {
   try {
     const users = await User.find({})
@@ -30,10 +31,9 @@ app.get('/users', async (req, res) => {
   }
 })
 
-// Endpoint: Reading a user by id
+// Endpoint: Read a user by id
 app.get('/users/:id', async (req, res) => {
   const _id = req.params.id
-
   try {
     const user = await User.findById(_id)
     if (!user) {
@@ -68,10 +68,27 @@ app.patch('/users/:id', async (req, res) => {
   }
 })
 
+// Endpoint: Delete a user
+app.delete('/users/:id', async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id)
+    if (!user) {
+      return res.status(404).send( { error: 'User not found!' } )
+    }
+    res.send(user)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
 
 
 
-// Enpoint: Creating a task
+
+
+
+// Task Model
+//
+// Enpoint: Create a task
 app.post('/tasks', async (req, res) => {
   const task = new Task(req.body)
 
@@ -83,7 +100,7 @@ app.post('/tasks', async (req, res) => {
   }
 })
 
-// Endpoint: Reading all tasks
+// Endpoint: Read all tasks
 app.get('/tasks', async (req, res) => {
   try {
     const tasks = await Task.find({})
@@ -93,7 +110,7 @@ app.get('/tasks', async (req, res) => {
   }
 })
 
-// Endpoint: Reading a task by id
+// Endpoint: Read a task by id
 app.get('/tasks/:id', async (req, res) => {
   const _id = req.params.id
 
@@ -130,5 +147,18 @@ app.patch('/tasks/:id', async (req, res) => {
     res.send(task)
   } catch (e) {
     res.status(400).send(e)
+  }
+})
+
+// Endpoint: Delete a task
+app.delete('/tasks/:id', async (req, res) => {
+  try {
+    const task = await Task.findByIdAndDelete(req.params.id)
+    if (!task) {
+      return res.status(404).send({ error: 'Task not found!' })
+    }
+    res.send(task)
+  } catch (e) {
+    res.status(500).send(e)
   }
 })

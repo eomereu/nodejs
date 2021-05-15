@@ -902,9 +902,51 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     })
     ```
 
+#### **MAIN ONES**
+1. `app.post()` allows us to create a document:
+    ```javascript
+    // Endpoint: Create an item
+    app.post('/users', async (req, res) => {
+      const user = new User(req.body)
+      try {
+        await user.save()
+        res.status(201).send(user)
+      } catch (e) {
+        res.status(400).send(e)
+      }
+    })
+    ```
+
+1. `app.get()` allows us to read the documents from an existing resource:
+    ```javascript
+    // Endpoint: Read all items
+    app.get('/users', async (req, res) => {
+      try {
+        const users = await User.find({})
+        res.send(users)
+      } catch (e) {
+        res.status(500).send(e)
+      }
+    })
+
+    // Endpoint: Read an item by id
+    app.get('/users/:id', async (req, res) => {
+      const _id = req.params.id
+      try {
+        const user = await User.findById(_id)
+        if (!user) {
+          return res.status(404).send()
+        }
+        res.send(user)
+      } catch (e) {
+        res.status(500).send(e)
+      }
+    })
+    ```
+
 1. `app.patch()` allows us to update an existing resource:
     ```javascript
-    // Enpoint: Update a user
+    // Enpoint: Update an item
     app.patch('/users/:id', async (req, res) => {
       const updates = Object.keys(req.body)
       const allowedUpdates = Object.keys(User.schema.obj) // ['name', 'email', 'password', 'age']
@@ -932,6 +974,22 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     1. `new: true` option will return ***the latest version of the object***, not the version of it before the update
     1. `runValidators: true` option is going to make sure we do run validation for the update.
     - `Object.values(req.body)` extracts ***values*** from the body of request and creates an array
+
+1. `app.delete()` allows us to delete a document:
+    ```javascript
+    // Endpoint: Delete an item
+    app.delete('/users/:id', async (req, res) => {
+      try {
+        const user = await User.findByIdAndDelete(req.params.id)
+        if (!user) {
+          return res.status(404).send( { error: 'User not found!' } )
+        }
+        res.send(user)
+      } catch (e) {
+        res.status(500).send(e)
+      }
+    })
+    ```
 
 #### **Route Parameters**
 They are part of the URL that are used to capture dynamic values and look like following:
@@ -1681,7 +1739,7 @@ During creation or update of a resource on postman or in other words POSTing or 
 Create Endpoints:  
 *With Async/Await (PREFERRED)*
 ```javascript
-// Endpoint: Creating an item
+// Endpoint: Create an item
 app.post('/users', async (req, res) => {
   const user = new User(req.body)
 
@@ -1695,7 +1753,7 @@ app.post('/users', async (req, res) => {
 ```
 *With Promises (OLD-FASHIONED)*
 ```javascript
-// Endpoint: Creating an item
+// Endpoint: Create an item *with promises (old-fashioned)*
 app.post('/users', (req, res) => {
   const user = new User(req.body)
 
@@ -1710,7 +1768,7 @@ app.post('/users', (req, res) => {
 Read Endpoints:  
 *With Async/Await (PREFERRED)*
 ```javascript
-// Endpoint: Reading all items
+// Endpoint: Read all items
 app.get('/users', async (req, res) => {
   try {
     const users = await User.find({})
@@ -1720,7 +1778,7 @@ app.get('/users', async (req, res) => {
   }
 })
 
-// Endpoint: Reading an item by id
+// Endpoint: Read an item by id
 app.get('/users/:id', async (req, res) => {
   const _id = req.params.id
 
@@ -1737,7 +1795,7 @@ app.get('/users/:id', async (req, res) => {
 ```
 *With Promises (OLD-FASHIONED)*  
 ```javascript
-// Endpoint: Reading all items
+// Endpoint: Read all items *with promises (old-fashioned)*
 app.get('/users', (req, res) => {
   User.find({}).then((users) => {
     res.send(users)
@@ -1746,7 +1804,7 @@ app.get('/users', (req, res) => {
   })
 })
 
-// Endpoint: Reading an item by id
+// Endpoint: Reading an item by id *with promises (old-fashioned)*
 app.get('/users/:id', (req, res) => {
   const _id = req.params.id
 
@@ -1792,7 +1850,18 @@ app.patch('/users/:id', async (req, res) => {
 
 Delete Enpoints:
 ```javascript
-
+// Endpoint: Delete an item
+app.delete('/users/:id', async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id)
+    if (!user) {
+      return res.status(404).send( { error: 'User not found!' } )
+    }
+    res.send(user)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
 ```
 
 
@@ -1906,7 +1975,7 @@ Lets us to get requests from client-side javascript. The following piece, fetche
 ### CREATING ENDPOINTS
 Create Endpoints:
 ```javascript
-// Endpoint: Creating an item
+// Endpoint: Create an item
 app.post('/users', async (req, res) => {
   const user = new User(req.body)
 
@@ -1921,7 +1990,7 @@ app.post('/users', async (req, res) => {
 
 Read Endpoints:
 ```javascript
-// Endpoint: Reading all items
+// Endpoint: Read all items
 app.get('/users', async (req, res) => {
   try {
     const users = await User.find({})
@@ -1931,10 +2000,9 @@ app.get('/users', async (req, res) => {
   }
 })
 
-// Endpoint: Reading an item by id
+// Endpoint: Read an item by id
 app.get('/users/:id', async (req, res) => {
   const _id = req.params.id
-
   try {
     const user = await User.findById(_id)
     if (!user) {
@@ -1976,7 +2044,18 @@ app.patch('/users/:id', async (req, res) => {
 
 Delete Enpoints:
 ```javascript
-
+// Endpoint: Delete an item
+app.delete('/users/:id', async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id)
+    if (!user) {
+      return res.status(404).send( { error: 'User not found!' } )
+    }
+    res.send(user)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
 ```
 ***
 
