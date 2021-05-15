@@ -12,3 +12,15 @@ User.findByIdAndUpdate('609a9ae7cac38b46a572c1db', { age: 1 }).then((user) => {
 }).catch((e) => {
   console.log(e)
 })
+
+const updateAgeAndCount = async (id, age) => {
+  await User.findByIdAndUpdate(id, { age })
+  const count = await User.countDocuments({ age })
+  return count
+}
+
+updateAgeAndCount('609c005ed33a7584937247fc', 1).then((count) => {
+  console.log(count)
+}).catch((e) => {
+  console.log(e)
+})
