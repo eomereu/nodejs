@@ -1,4 +1,4 @@
-## [Node.js](https://nodejs.org/en/)
+# [Node.js](https://nodejs.org/en/)
 Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, [npm](https://www.npmjs.com/) is the largest ecosystem of open source libraries in the world.
 
 Actually Chrome's V8 engine is written in C++ and also Chrome and Node.js is also mainly written in C++. While running the JavaScript codes, they both passes the C++ bindings and handles our code as may be seen in this [schema](https://ibb.co/7bx3rxF).
@@ -6,7 +6,7 @@ Actually Chrome's V8 engine is written in C++ and also Chrome and Node.js is als
 Of course there are slight differences between JavaScript on browser and on Node.js.
 ***
 
-### [Install](https://www.youtube.com/watch?v=OsaMcvF1xaE&ab_channel=Chaitanya) & Uninstall
+## [Install](https://www.youtube.com/watch?v=OsaMcvF1xaE&ab_channel=Chaitanya) & Uninstall
 - To download, go to:
   > https://nodejs.org/en/
 - After downloading, to install the tar.xz file, after extracting and assuming the folder name is *node*, on the directory of the folder, *which is generally the 'Downloads' folder,*
@@ -25,7 +25,7 @@ Of course there are slight differences between JavaScript on browser and on Node
   ```
 ***
 
-### Module System
+## Module System
 Module system is library like system that allows us to do specified and advanced objectives. Some are included globally (by default) like *console*, some require importing from directly the Node.js itself (see [docs](https://nodejs.org/dist/latest-v15.x/docs/api/)) and some are done by users and shared on [**npm**](https://www.npmjs.com/) mostly.
 
 > Every module has its very own scope for its own variables and constants! So importing one module into another does not provide its variables... If we want to do so, we must use `module.exports` and state those stuff to be shared explicitly:
@@ -106,7 +106,7 @@ When we first install Node on our machine, npm is also installed with it automat
     >When we install a package globally it won't make any changes on *package.json*, *package-lock.json* or in *node_modules* folder; instead it will directly install it into our operating system!
 ***
 
-### General
+## General
 - To simply run the script via terminal,
   ```bash
   $ node file_name.js
@@ -389,7 +389,7 @@ When we first install Node on our machine, npm is also installed with it automat
 
 
 ***
-### Foldering
+## Foldering
 Under root directory:
 - **public**  
   Contains HTML files (static stuff) that users access
@@ -420,7 +420,7 @@ Under root directory:
 - ***package.json***
 ***
 
-### Getting User Input via Command Line Arguments 
+## Getting User Input via Command Line Arguments 
 Simply to get inputs from user via command line we need `console.log(process.argv)`...
 Here *argv* stands for **argument vector** and contains all of the arguments provided while running the node script. So by adding the mentioned code piece into our js file and running it by,
 ```bash
@@ -464,7 +464,7 @@ $ node app.js add --title="Things to buy"
 > *See **yargs** under **Useful NPM Modules** for further use...*
 ***
 
-### JSON
+## JSON
 JSON (JavaScript Object Notation) is a lightweight data-interchange format. It is easy for humans to read and write. It is easy for machines to parse and generate. JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages, including C, C++, C#, Java, JavaScript, Perl, Python, and many others. These properties make JSON an ideal data-interchange language.
 > For *fs (file system)* to be able to store the data, it must be a string. Since it's much more easier to store things as objects in terms of referring to its specified parts we need to change it constantly between *object* and *string*. That's when **JSON** comes into use.
 ```javascript
@@ -505,7 +505,7 @@ fs.writeFileSync('1-json.json', bookJSON)
 ```
 ***
 
-### Debugging
+## Debugging
 - In debugging phase, we may use *`console.log()`* to print out and check the variables we are working on.
 
 - For further and more advanced way is to add **`debugger`** keyword into the lines that we want to to hold on a second and inspect what's going on via debugging tools. Firstly after adding the mentioned keyword but running the app normally, won't provide the execution to stop at the desired point. In order to make this happen, we are to run the app by adding **`inspect`** keyword right after *`node`* :
@@ -543,7 +543,7 @@ fs.writeFileSync('1-json.json', bookJSON)
 - Whenever we encounter an error message after running our app, we can simply see the type and the reason of the error and right below it, we will be seeing the stack trace. Here the most explicit one *(with the line and func. name specified)* is at the top and downside it goes to the internals.
 ***
 
-### Asynchronous NodeJS
+## Asynchronous NodeJS
 - Asynchronous NodeJs will allow us to do lots of jobs simultaneously. For example while waiting for a database request, in the meantime we will be able to handle very other requests from various users.
 
 - **Call Stack** keeps track of the individual functions that is executed. *PS: In a synchronous only application, solely this stack is being used!*
@@ -563,7 +563,7 @@ fs.writeFileSync('1-json.json', bookJSON)
 - None of the asynchronous functions is going to run before the *`main()`* function is done!
 ***
 
-### Callback Function
+## Callback Function
 A callback is a function that we provide as an argument to another function to be called later on. This may be both in sync. and asyn. way.
 > As we progress and program things in asynchronous way, we gonna need to get rid of the *return statement* due to the fact that when it's used within an asyn. function and then called by assigning to a new variable, the asyn. function that contains it never going to be executed until the main function *(where we call it by assigning to a new variable)* ends. So we will get an *undefined*. Here instead of a classical *return statement* we need to use callback functions. 
 
@@ -622,7 +622,7 @@ add(1, 4, (sum) => {
 ```
 ***
 
-### Callback Chaining
+## Callback Chaining
 To chain callbacks, we can simply write them nestedly:
 ```javascript
 geocode('Innsbruck', (error, data) => {
@@ -643,7 +643,7 @@ geocode('Innsbruck', (error, data) => {
 > So here `if (error) { return log(error) }` part prevents the function to move on and try to execute the remaining part with undefined arguments by stopping and returning! This is the most commont way to provide this... We cannot just return stuff like `return 'message'`. **WE MUST BOTH RETURN AND CONSOLE.LOG**
 ***
 
-### Object Property Shorthand
+## Object Property Shorthand
 When we assign a value to a property during defining an object and they both correspond to the same name, we can use shorthand syntax:
 ```javascript
 const name = 'Omer'
@@ -676,7 +676,7 @@ request({ url, json: true }, (error, {body} = {}) => {
 Up above, we have used just **`url,`** instead of **`url: url,`** by using ***object property shorthand***.
 ***
 
-### Object Destructuring
+## Object Destructuring
 Allows us to extract object's properties and their values into individual variables. Especially useful when working with complex objects that has lots of properties that is constantly referenced.
 ```javascript
 const product = {
@@ -732,7 +732,7 @@ geocode(address, (error, {latitude, longtitude, location} = {})) = {
 }
 ```
 
-#### **Error Handling**  
+### **Error Handling**  
 As a precaution against an error occurance we need to set a default value as we give destructured object to a ***function*** like **`request`** where there is an **`error`** parameter. Because if an error occurs, it will take a value but the other arguement will be **`undefined`** and trying to destructure an **`undefined`** value will end up in an error. So here is an example to prevent this:
 ```javascript
 geocode(address, (error, {latitude, longtitude, location} = {})) = {
@@ -747,7 +747,7 @@ request({ url, json: true }, (error, {body} = {}) => {
 ```
 ***
 
-### [ExpressJS](http://expressjs.com/)
+## [ExpressJS](http://expressjs.com/)
 Instead of needing to run commands from terminal to interact with our app we will be able to visit a url with the help of node server. To create our node server we will use a very tool: ExpressJS!  
 
 It is one of the original npm packages and definitely helps put JS on the map because it made it so easy to create web servers whether we want to serve yp something like a static website or whether we want to create a complex HTTP-JSON based AAPI to serve as the back end for something like a mobile or web application.  
@@ -912,7 +912,7 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     })
     ```
 
-#### **MAIN ONES**
+### **MAIN ONES**
 - `app.post()` allows us to create a document:
     ```javascript
     // Endpoint: Create an item
@@ -1001,14 +1001,14 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     })
     ```
 
-#### **Route Parameters**
+### **Route Parameters**
 They are part of the URL that are used to capture dynamic values and look like following:
 ```javascript
 app.get('/users/:id')
 ```
 After the colon we name the parameter
 
-#### **404 Page**  
+### **404 Page**  
 To create a ***404 Page*** we need to add the following to the end of *app.get()* calls:
 ```javascript
 app.get('*', (req, res) => {
@@ -1024,7 +1024,7 @@ app.get('/help/*', (req, res) => {
 })
 ```
 
-#### Seperate Routing
+### Seperate Routing
 After seperating the files, we should replace `app` keywords with `router` as seen below:  
 */routers/user.js*
 ```javascript
@@ -1060,7 +1060,7 @@ app.listen(port, () => {
 ```
 ***
 
-### Templating
+## Templating
 A **template engine** is a tool that renders dynamic webpages. We will use ***handlebars***. It's going to allow us to do 2 very important things:
   1. As mentioned it's going to allow us to render dynamic documents as opposed to the static ones
   1. Allows us to create code we can easily use accross the pages.  
@@ -1071,7 +1071,7 @@ After installing, all we need to do is to tell the express which templating engi
 ```javascript
 app.set('view engine', 'hbs')
 ```
-#### **Views:**  
+### **Views:**  
 By default all our *views* are supposed to live in the directory **views** right inside our root directory. If we prefer to modify it i.e. changing its name, we should set it:  
 ```javascript
 const viewsPath = path.join(__dirname, '../templates')
@@ -1095,7 +1095,7 @@ After injecting our values to our *.hbs file* all we need to do to use them is t
 <p>Created by {{creator}}</p>
 ```
 
-#### **Partials:**
+### **Partials:**
 Allows us to create a little template which is part of a big webpage. Especially when we are in need of using that part again and again accross all pages *(like headers or footers)*, then we can specify it as a *partial* and make use. To register our partials, within *app.js*:
 ```javascript
 hbs.registerPartials(partialsPath)
@@ -1109,7 +1109,7 @@ To render a partial, within views:
 >We can render our injected values also within partials for sure.
 ***
 
-### Getting Requests From Client-Side Javascript
+## Getting Requests From Client-Side Javascript
 In order to get requests from client-side javascript *(/public/js/app.js)* we will be using ***fetch API***. This is not a NodeJS script, it's a browser based script so that's why it only works by client-side and not in backend. Calling it, will start an asynchronous i/o operation like, request in the backend. The following piece, fetches a JSON and writes it onto the console after parsing:
 ```javascript
 fetch('http://puzzle.mead.io/puzzle').then((response) => {
@@ -1169,7 +1169,7 @@ weatherForm.addEventListener('submit', (e) => {
 ```
 ***
 
-### Deploying Application to [Heroku](https://www.heroku.com/)
+## Deploying Application to [Heroku](https://www.heroku.com/)
 We will be using [Heroku](https://www.heroku.com/) for free to deploy our websites. Heroku has some useful command line tools called as [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli).  
 Simply to install in Ubuntu:
 ```bash
@@ -1233,12 +1233,12 @@ $ git push heroku master
 **So it is crucial that application folder is the root folder!**
 ***
 
-### [MongoDB](https://www.mongodb.com/)
+## [MongoDB](https://www.mongodb.com/)
 MongoDB is a NoSQL database. NoSQL stands for *non-SQL*, *non-relational* or *not only SQL*. It provides an npm module for NodeJS developers to easily read and write from and to database. By the way, Javascript is used to manipulate the database.  
 Some structural differences between SQL and NoSQL:
 <img src="https://i.ibb.co/FqDTwZ0/SQL-vs-No-SQL.png">  
 
-#### **Download and Install**
+### **Download and Install**
 1. Download it from https://www.mongodb.com/try/download/community. On the page choose the OS and the appropriate extension for the installer. ***Ubuntu 20.04 and tgz is for us***.
 1. Extract tgz file
 1. Rename the extracted folder as *mongodb*
@@ -1251,10 +1251,14 @@ Some structural differences between SQL and NoSQL:
     /home/eomer
     $ /home/eomer/mongodb/bin/mongod --dbpath=/home/eomer/mongodb-data
     ```
+    Also to start the database:
+    ```bash
+    eomer@eomer:~/mongodb/bin$ mongod --dbpath=/home/eomer/mongodb-data
+    ```
     >By default MongoDB expects us to create a data directory at the root of the hard drive and in there it expects a db directory. It's not ideal because we may encounter so many permission issues so that's why we moved the extracted foler and created data folder in the user folder and started the server by specifying the path to there.
 - After running it, we will be seeing a message within the last rows as: ***"... waiting for connections on port 27017"***. Also we may understand from here that default port is ***27017***
 
-#### **GUI Viewer - [Robo 3T](https://robomongo.org/)**  
+### **GUI Viewer - [Robo 3T](https://robomongo.org/)**  
 Robo 3T is a MongoDB admin tool that provides a graphical user interface to manage our database.  
 1. Download from https://robomongo.org/download  
 1. After downloading and extracting *tar.gz* folder for Linux head over to *bin* folder and crack open *robo3t* file
@@ -1268,7 +1272,7 @@ Robo 3T is a MongoDB admin tool that provides a graphical user interface to mana
 - `db.version()` returns the version of MongoDB
 - `CTRL + R` refreshes the collection documents on the collection tab
 
-#### **Connecting**  
+### **Connecting**  
 We will be using [**mongodb npm module**](https://www.npmjs.com/package/mongodb) *(which is a MongoDB Native Driver)* to interact our database from Node i.e. to insert and manipulate documents.
 >*The documentation for Node.js MongoDB Driver API can be found [**here**](http://mongodb.github.io/node-mongodb-native/3.6/api/).*
 
@@ -1303,11 +1307,11 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) =>
 
   > If an error like *"(node:210379) [MONGODB DRIVER] Warning: Current Server Discovery and Monitoring engine is deprecated, and will be removed in a future version..."* is encountered. Do as suggested in the message and add `useUnifiedTopology: true` option within the second argument, options object.
 
-#### **CRUD Operations\***
+### **CRUD Operations\***
 \*These are low level usages of CRUD operations compared to the ones with Mongoose. So see [***CRUD Operations on Endpoints***]() under [***REST API***]() *or [***CREATING ENDPOINTS***]()* for a more practical and in-life use. **However** methods covered here can be used to better understand [***Mongoose Methods***]() under [***Mongoose***]() headline.  
 
 The main reason we prefer **Mongoose** over **MongoDB** is to create our models and structure our data in a nice way.
-#### **Create *(Inserting Documents)***
+### **Create *(Inserting Documents)***
 Insert a document *(inside `MongoClient.connect()`)*
 ```javascript
   const db = client.db(databaseName)
@@ -1352,7 +1356,7 @@ Insert a document *(inside `MongoClient.connect()`)*
 
     - `result.insertedIds` returns the ids of the documents just inserted
 
-#### ***ObjectID***
+### ***ObjectID***
 Unlike in MySQL, giving records ids as 1,2,3,... MongoDB gives ids like "5c0fec243ef6bdfbe1d62e2d". These ids are called as ***GU (Globally Unique) Ids*** With the help of GU Ids, there is no way any two document two collate so this allows us to handle heavy traffic accross multiple database in a more comfortable manner.  
 
 We can create our own ObjectIDs:
@@ -1389,7 +1393,7 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) =>
 ```
 Normally ids are stored as binary values with the length of 12, but for a human friendly format it's turned into hex string and shown in that way. When it's turned, the size doubles and becomes 24.
 
-#### **Read *(Querying Documents)***
+### **Read *(Querying Documents)***
 Read a document/documents *(inside `MongoClient.connect()`)*
 ```javascript
   const db = client.db(databaseName)
@@ -1443,7 +1447,7 @@ Read a document/documents *(inside `MongoClient.connect()`)*
   So when we got a cursor back, it opens up a lot of possibilities. Some methods we can use on `.find`:
   - `.toArray((error, users) => { ... }` is going to allow us to get an array of the documents matching.
 
-#### **Update**
+### **Update**
 Update a document/documents *(inside `MongoClient.connect()`)*
   ```javascript
   db.collection('users').updateOne({
@@ -1489,7 +1493,7 @@ Update a document/documents *(inside `MongoClient.connect()`)*
     - ***Opt*** Options
     - ***Opt*** Callback Func *(error, result)*  ***Promise if no callback passed***
 
-#### **Delete**
+### **Delete**
 Delete a document/documents *(inside `MongoClient.connect()`)*
   ```javascript
   db.collection('users').deleteMany({
@@ -1520,7 +1524,7 @@ Delete a document/documents *(inside `MongoClient.connect()`)*
     - ***Opt*** Callback Func *(error, result)*  ***Promise if no callback passed***
 ***
 
-### Promises
+## Promises
 Promises make it easy for us to manage our synchronous code. They are nothing more than an enhancement to callbacks but an important one.  
 1. In callback pattern there is only one function executes either for an error or for a result which leads us to add conditional logic to handle error. However in promises there are two seperates functions for error and result, which makes it easier and makes us get rid of conditional logic. Moreover, there are less code executed behind the scenes.  
 1. In callback function, if there are multiple `callback`s they are all executed. However in promises only the first `resolve`/`reject` is executed and the rest is ignored.
@@ -1546,7 +1550,7 @@ Promises make it easy for us to manage our synchronous code. They are nothing mo
   - `.then((result) => { ... })` allows us to register a function to run when things go well or in other words when `resolve` is called.
   - `.catch((error) => { ... })` allows us to register a function to run when things go wrong or in other words when `reject` is called.
 
-#### **Promise Chaning**
+### **Promise Chaning**
 The more asynchronous task we try to perform, the more nested and complex our code gets without promise chaining. For example instead of the following nested task:
 ```javascript
 add(1, 2).then((sum) => {
@@ -1586,7 +1590,7 @@ User.findByIdAndUpdate('609a9ae7cac38b46a572c1db', { age: 1 }).then((user) => {
 })
 ```
 
-#### **Async/Await**
+### **Async/Await**
 Async/Await allows us to create an **async** function and in that function we can use **await** feature. Actually it is to use instead of *promise chaining*!  
 
 It makes it so easy to work with our asynchronous promise based code. It makes our code that looks more synchronous than asynchronous. It is nearly a small set fo tools that makes it easy to work with promises.  
@@ -1617,7 +1621,7 @@ In conclusion, if we use ***async/await*** instead of ***promise chaining*** we 
 > ***PS**: It doesn't make things faster but makes easier to work with.*
 ***
 
-### [Mongoose](https://mongoosejs.com/)
+## [Mongoose](https://mongoosejs.com/)
 Mongoose falls into a broader category known as ODMs (Object Document Mapper). The main reason we prefer **Mongoose** over **MongoDB** is to create our models and structure our data in a nice way.  
 
 Install NPM Module:
@@ -1670,7 +1674,7 @@ me.save().then(() => {
 
 - Mongoose takes the model name we provide, lowercases and pluralizes and then name the collection with it. i.e. for our model **User** we see our automatically created collection name as **users**!
 
-#### **Data [Validation](https://mongoosejs.com/docs/validation.html#validation) and [Sanitization](https://mongoosejs.com/docs/schematypes.html#schematype-options)**
+### **Data [Validation](https://mongoosejs.com/docs/validation.html#validation) and [Sanitization](https://mongoosejs.com/docs/schematypes.html#schematype-options)**
 With [validation](https://mongoosejs.com/docs/validation.html#validation) we can enforce that the data conforms to some rules. Like min, max, required etc:  
 ```javascript
 name: {
@@ -1725,7 +1729,7 @@ Some sanitizators on `Date`
 - `min`: Date
 - `max`: Date
 
-#### [**Mongoose Methods**](https://mongoosejs.com/docs/queries.html)
+### [**Mongoose Methods**](https://mongoosejs.com/docs/queries.html)
 Mongoose provides us a series of methods similar to those we saw with MongoDB native driver. Each of these returns a mongoose `Query` object. We can both pass in a callback function, or chain a `.then()` promise.
 - `Model.countDocuments()`
 - `Model.deleteMany()`
@@ -1751,7 +1755,7 @@ Mongoose provides us a series of methods similar to those we saw with MongoDB na
 > *Unlike back in **MongoDB Native Driver** we don't need to provide our desired to be updated properties within `#set: {}` block. Instead we simply set the attributes and **Mongoose** handles them.*
 ***
 
-### REST API
+## REST API
 REST API stands for **R**epresentational **S**tate **T**ransfer - **A**pplication **P**rogramming **I**nterface.  
 Common REST API structure:  
 <img src="https://i.ibb.co/zZ5yfLJ/The-Task-Resource.png">
@@ -1760,7 +1764,7 @@ Inners of a Request/Response:
 <img src="https://i.ibb.co/WcWXYR3/Req-Res.png">
 
 
-#### [Postman](https://www.postman.com/downloads)
+### [Postman](https://www.postman.com/downloads)
 The goal of Postman isn't to replace a client, the goal is to allow us to test our REST API without having to also create a client to test it with. That's going to allow us to automatically test things like setting up a user with valid data and then signing them with valid data, making sure we get the correct response.  
 
 After creating the *collection* and clickin on *create request*, from the opened tabs, we can configure the request type *(the default is GET)* on the left hand-side and can type the URL on the right hand-side. We can also give in the *key-value* pairs at the end of the URL, but also we can type them under ***Params*** tab.  
@@ -1780,7 +1784,7 @@ During creation or update of a resource on postman or in other words POSTing or 
 > *If no `res.send()` is provided the request is gonna end up in a timeout.*
 ***
 
-#### **CRUD Operations on Endpoints**
+### **CRUD Operations on Endpoints**
 Create Endpoints:  
 *With Async/Await (PREFERRED)*
 ```javascript
@@ -1908,8 +1912,6 @@ app.delete('/users/:id', async (req, res) => {
   }
 })
 ```
-
-
 ***
 
 
@@ -1926,7 +1928,11 @@ app.delete('/users/:id', async (req, res) => {
 
 
 
-### Useful Functions
+
+
+
+
+## Useful Functions
 - `fs.writeFileSync('file_name.extension', data)`  
 Overwrites the data into the given file.
 
@@ -2017,7 +2023,7 @@ Lets us to get requests from client-side javascript. The following piece, fetche
   ```
 ***
 
-### CREATING ENDPOINTS
+## CREATING ENDPOINTS
 Create Endpoints:
 ```javascript
 // Endpoint: Create an item
@@ -2103,7 +2109,7 @@ app.delete('/users/:id', async (req, res) => {
 })
 ```
 
-#### Seperate Routing
+### Seperate Routing
 /routers/user.js
 ```javascript
 const express = require('express')
@@ -2137,7 +2143,7 @@ app.listen(port, () => {
 ```
 ***
 
-### Useful NPM Modules
+## Useful NPM Modules
 - [**validator**](https://www.npmjs.com/package/validator)  
 A library of string validators and sanitizers.  
 Some useful methods:  
@@ -2326,7 +2332,7 @@ Mongoose is a MongoDB object modeling tool designed to work in an asynchronous e
   > See "Mongoose" for detailed usage
 ***
 
-### Useful External Services/APIs
+## Useful External Services/APIs
 
 - [Weatherstack](https://weatherstack.com/) - http://api.weatherstack.com/  
 After signing up freely, it provides 1000 requests a day which is more than enough. Also provides just the current weather *endpoint* in the free plan.  
