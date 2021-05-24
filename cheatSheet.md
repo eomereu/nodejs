@@ -1253,7 +1253,7 @@ Some structural differences between SQL and NoSQL:
     ```
     Also to start the database:
     ```bash
-    eomer@eomer:~/mongodb/bin$ mongod --dbpath=/home/eomer/mongodb-data
+    eomer@eomer:~/mongodb/bin$ ./mongod --dbpath=/home/eomer/mongodb-data
     ```
     >By default MongoDB expects us to create a data directory at the root of the hard drive and in there it expects a db directory. It's not ideal because we may encounter so many permission issues so that's why we moved the extracted foler and created data folder in the user folder and started the server by specifying the path to there.
 - After running it, we will be seeing a message within the last rows as: ***"... waiting for connections on port 27017"***. Also we may understand from here that default port is ***27017***
@@ -1914,8 +1914,25 @@ app.delete('/users/:id', async (req, res) => {
 ```
 ***
 
+## API Authentication and Security
+### Securely Storing Passwords
+We will be using ***[bcryptjs](https://www.npmjs.com/package/bcryptjs)*** for storing passwords
+```javascript
+const myFunction = async () => {
+  const password = 'Red12345!'
+  const hashedPassword = await bcrypt.hash(password, 8)
+  const isMatch = await bcrypt.compare('Red12345!', hashedPassword)
+}
+```
+- `bcrypt.hash(passwordToBeHashed, numberOfRounds)`  
+  turns our plain text password into hashed password. `numberOfRounds` determines how many times the hashing algorithm is executed.
 
+  > ***8** is the ideal times that algorithm to run on our password in terms of speed/security!*
 
+- `bcrypt.compare(loginPlainPassword, hashedPasswordinDatabase)`  
+  returns True if `loginPlainPassword` *(the one user provides while logging in as a plain text)* matches `hashedPasswordinDatabase` *(the one we are storing in the database as a hashed value)*
+
+> *In **encryption** we can get the original value back. However **hashing algorithms** are one way algorithms. There is no way to recover from a hashed value.*
 
 
 
@@ -2330,6 +2347,23 @@ A MongoDB Native Driver that provides us to communicate with and manipulate our 
 Mongoose is a MongoDB object modeling tool designed to work in an asynchronous environment. Mongoose supports both promises and callbacks.
 
   > See "Mongoose" for detailed usage
+
+- [**bcryptjs**](https://www.npmjs.com/package/bcryptjs)  
+Bcryptjs is a hashing algorithm we use to store passwords securelyç
+  ```javascript
+  const myFunction = async () => {
+    const password = 'Red12345!'
+    const hashedPassword = await bcrypt.hash(password, 8)
+    const isMatch = await bcrypt.compare('Red12345!', hashedPassword)
+  }
+  ```
+  - `bcrypt.hash(passwordToBeHashed, numberOfRounds)`  
+  turns our plain text password into hashed password. `numberOfRounds` determines how many times the hashing algorithm is executed.
+
+  - `bcrypt.compare(loginPlainPassword, hashedPasswordinDatabase)`  
+  returns True if `loginPlainPassword` *(the one user provides while logging in as a plain text)* matches `hashedPasswordinDatabase` *(the one we are storing in the database as a hashed value)*
+
+  > ***8** is the ideal times that algorithm to run on our password in terms of speed/security!*
 ***
 
 ## Useful External Services/APIs
