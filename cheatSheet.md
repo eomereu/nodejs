@@ -1680,9 +1680,13 @@ With [validation](https://mongoosejs.com/docs/validation.html#validation) we can
 ```javascript
 name: {
   type: String,
-  required: true,
+  unique: true,
+  required: true
 }
 ```
+- `required: true`  
+  allows us to specify the attribute as unique, like emails in a database.
+  > *Please note that, if this addition is made later on after creating the database, we need to drop the database and rerun our program in order to recreate the database. Otherwise this addition won't make any sense!*
 However there are not much built-in validators in Mongoose. So to create our custom validation:  
 ```javascript
 age: {
@@ -1812,6 +1816,16 @@ app.post('/users', (req, res) => {
   }).catch((e) => {
     res.status(400).send(e)
   })
+})
+
+// Enpoint: Log in a user
+router.post('/users/login', async (req, res) => {
+  try {
+    const user = await User.findByCredentials(req.body.email, req.body.password)
+    res.send(user)
+  } catch (e) {
+    res.status(400).send()
+  }
 })
 ```
 
@@ -1987,7 +2001,7 @@ await user.save()
 ```
 - `user[update]` & `req.body[update]`  
   Allows us to alter every attribute that being updated dynamically
-  
+
 Otherwise as said, it bypasses Middleware we created within our model and for example saves passwords without hashing. 
 ***
 
@@ -2011,8 +2025,38 @@ const myFunction = async () => {
 
 > *In **encryption** we can get the original value back. However **hashing algorithms** are one way algorithms. There is no way to recover from a hashed value.*
 
+### Logging in Users
+In terms of avoiding code duplication and extra work, we code the necessary check logic within model:
+```javascript
+userSchema.statics.findByCredentials = async (email, password) => {
+  const user = await User.findOne({ email })
+  if (!user) {
+    throw new Error('Unable to login')
+  }
+  const isMatch = await bcrypt.compare(password, user.password)
+  if (!isMatch) {
+    throw new Error('Unable to login')
+  }
+  return user
+}
+```
+- `schema.statics.myFunction`  
+  allows us to define our own function on the model/schema to be called and used later on.
 
+> *It's a better practice not to provide detailed information about login errors.*
 
+Our login endpoint *within route*:
+```javascript
+// Enpoint: Log in a user
+router.post('/users/login', async (req, res) => {
+  try {
+    const user = await User.findByCredentials(req.body.email, req.body.password)
+    res.send(user)
+  } catch (e) {
+    res.status(400).send()
+  }
+})
+```
 
 
 
@@ -2041,6 +2085,16 @@ app.post('/users', async (req, res) => {
     res.status(201).send(user)
   } catch (e) {
     res.status(400).send(e)
+  }
+})
+
+// Enpoint: Log in a user
+router.post('/users/login', async (req, res) => {
+  try {
+    const user = await User.findByCredentials(req.body.email, req.body.password) //self-defined function. see model
+    res.send(user)
+  } catch (e) {
+    res.status(400).send()
   }
 })
 ```
@@ -2128,6 +2182,7 @@ const User = require('../models/user')
 const router = new express.Router()
 
 router.post('/users', async (req, res) => {})
+router.post('/users/login', async (req, res) => {})
 router.get('/users', async (req, res) => {})
 router.get('/users:id', async (req, res) => {})
 router.patch('/users:id', async (req, res) => {})
@@ -2178,6 +2233,7 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
+    unique: true,
     required: true,
     trim: true,
     lowercase: true,
@@ -2198,6 +2254,19 @@ const userSchema = new mongoose.Schema({
   }
 })
 
+userSchema.statics.findByCredentials = async (email, password) => {
+  const user = await User.findOne({ email })
+  if (!user) {
+    throw new Error('Unable to login')
+  }
+  const isMatch = await bcrypt.compare(password, user.password)
+  if (!isMatch) {
+    throw new Error('Unable to login')
+  }
+  return user
+}
+
+// Hash the password before saving
 userSchema.pre('save', async function (next) {
   const user = this
   if (user.isModified('password')) {
