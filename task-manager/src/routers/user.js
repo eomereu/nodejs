@@ -52,7 +52,13 @@ router.patch('/users/:id', async (req, res) => {
   }
 
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+    /*In order to make use of Middleware by preventing .findByIdAndUpdate bypass Mongoose
+      following line is replaced by the following three lines!*/
+    // const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+    const user = await User.findById(req.params.id)
+    updates.forEach((update) => user[update] = req.body[update])
+    await user.save()
+
     if (!user) {
       return res.status(404).send({ error: 'User not found!' })
     }

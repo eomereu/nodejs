@@ -1642,7 +1642,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api', {
 })
 
 // Create model
-const User = mongoose.model('User', {
+const userSchema = new mongoose.Schema({
   name: {
     type: String
   },
@@ -1650,6 +1650,7 @@ const User = mongoose.model('User', {
     type: Number
   }
 })
+const User = mongoose.model('User', userSchema)
 
 // Create an instance of the model
 const me = new User({
@@ -1785,7 +1786,7 @@ During creation or update of a resource on postman or in other words POSTing or 
 ***
 
 ### **CRUD Operations on Endpoints**
-Create Endpoints:  
+Create Endpoint:  
 *With Async/Await (PREFERRED)*
 ```javascript
 // Endpoint: Create an item
@@ -1814,7 +1815,7 @@ app.post('/users', (req, res) => {
 })
 ```
 
-Read Endpoints:  
+Read Endpoint:  
 *With Async/Await (PREFERRED)*
 ```javascript
 // Endpoint: Read all items
@@ -1872,7 +1873,7 @@ app.get('/users/:id', (req, res) => {
 
 > *The reason sometimes we get a **500 Error** instead of a **404 Error** when we give in a non existing ID: "The findById method will throw an error if the id you pass it is improperly formatted so you should see a 500 error most of the time. However, if you pass in an id that is validly formatted, but does not exist in the database then you will get the 404 sent back."*
 
-Update Enpoints:
+Update Enpoint:
 ```javascript
 // Enpoint: Update an item
 app.patch('/users/:id', async (req, res) => {
@@ -1885,7 +1886,13 @@ app.patch('/users/:id', async (req, res) => {
   }
 
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+    /*In order to make use of Middleware by preventing .findByIdAndUpdate bypass Mongoose
+      following line is replaced by the following three lines!*/
+    //See "Schema and Middleware" under "Mongoose" headline...
+    //const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+    const user = await User.findById(req.params.id)
+    updates.forEach((update) => user[update] = req.body[update])
+    await user.save()
     if (!user) {
       return res.status(404).send({ error: 'User not found!' })
     }
@@ -1897,7 +1904,7 @@ app.patch('/users/:id', async (req, res) => {
 ```
 > *If any of the properties that doesn't exist on the model tried to be updated, they will be completely ignored.*
 
-Delete Enpoints:
+Delete Enpoint:
 ```javascript
 // Endpoint: Delete an item
 app.delete('/users/:id', async (req, res) => {
@@ -1912,6 +1919,76 @@ app.delete('/users/:id', async (req, res) => {
   }
 })
 ```
+
+### Schema and Middleware
+When we give in our object definition *(or the object itself while modifying)* to Mongoose during model creation, it converts our model into [***schema***](https://mongoosejs.com/docs/api/schema.html) behind the scenes, giving us more opportunities to operate on it. [***Middleware***](https://mongoosejs.com/docs/middleware.html) is one of these features. Actually it is a way to customize the behaviour of our Mongoose model. With *middleware* we can register some functions to run before or after given events occur such as `validate`, `save`, `remove`, `updateOne`, `deleteOne`.
+
+- To register function before the event we simply use,
+  ```javascript
+  .pre('nameOfTheEvent', async function (next) {
+    ...
+    next()
+  })
+  ```
+  after the event,
+  ```javascript
+  .post('nameOfTheEvent', async function (next) {
+    ...
+    next()
+  })
+  ```
+  We should use a standart function *(not an arrow one)* due to the fact that we are going to make use of `this` binding. Also we define it as `async` to be able to use `await` feature.  
+
+  Also we need to add `next()` to prevent the function hang forever.
+
+Thus instead of adding code *(hashing the password in this scenario)* into multiple places, it allows us to add it solely to the model itself directly and makes us get rid of extra work and complexity.  
+
+In order to make use of these two features, we need to create the schema by ourselves and give in that schema to the model creation definition. And right before the definition the required *pre/post* additions should be added:
+```javascript
+const userSchema = new mongoose.Schema({
+  name: {
+    ...
+  },
+  password: {
+    ...
+  },
+  email: {
+    ...
+  },
+  age: {
+    ...
+  }
+})
+
+userSchema.pre('save', async function (next) {
+  const user = this
+  if (user.isModified('password')) {
+    user.password = await bcrypt.hash(user.password, 8)
+  }
+  next()
+})
+
+const User = mongoose.model('User', userSchema)
+```
+- `user.isModified('password')`  
+  returns `true` if user modified his/her password during update operation and based on that, we hash the password before updating.
+
+Certain Mongoose queries *(such as `.findByIdAndUpdate()`)* bypass more advanced features like Middleware *(and performs operations directly on the database)* which is why if we want to use them consistently we just have to do a tiny bit restructuring:  
+So in the *update route* instead of,
+```javascript
+// Line 55
+const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+```
+We write,
+```javascript
+const user = await User.findById(req.params.id)
+updates.forEach((update) => user[update] = req.body[update])
+await user.save()
+```
+- `user[update]` & `req.body[update]`  
+  Allows us to alter every attribute that being updated dynamically
+  
+Otherwise as said, it bypasses Middleware we created within our model and for example saves passwords without hashing. 
 ***
 
 ## API Authentication and Security
@@ -1948,6 +2025,192 @@ const myFunction = async () => {
 
 
 
+
+
+
+
+## CREATING ENDPOINTS
+Create Endpoints:
+```javascript
+// Endpoint: Create an item
+app.post('/users', async (req, res) => {
+  const user = new User(req.body)
+
+  try {
+    await user.save()
+    res.status(201).send(user)
+  } catch (e) {
+    res.status(400).send(e)
+  }
+})
+```
+
+Read Endpoints:
+```javascript
+// Endpoint: Read all items
+app.get('/users', async (req, res) => {
+  try {
+    const users = await User.find({})
+    res.send(users)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+
+// Endpoint: Read an item by id
+app.get('/users/:id', async (req, res) => {
+  const _id = req.params.id
+  try {
+    const user = await User.findById(_id)
+    if (!user) {
+      return res.status(404).send({ error: 'User not found!' })
+    }
+    res.send(user)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+```
+> *The reason we didn't convert `_id` to an object like back in MongoDB, is **Mongoose** automatically makes that conversion.*
+
+> *The reason sometimes we get a **500 Error** instead of a **404 Error** when we give in a non existing ID: "The findById method will throw an error if the id you pass it is improperly formatted so you should see a 500 error most of the time. However, if you pass in an id that is validly formatted, but does not exist in the database then you will get the 404 sent back."*
+
+Update Enpoints:
+```javascript
+// Enpoint: Update an item
+app.patch('/users/:id', async (req, res) => {
+  const updates = Object.keys(req.body)
+  const allowedUpdates = Object.keys(User.schema.obj) // ['name', 'email', 'password', 'age']
+  const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: 'Invalid Updates!' })
+  }
+
+  try {
+    /*In order to make use of Middleware by preventing .findByIdAndUpdate bypass Mongoose
+      following line is replaced by the following three lines!*/
+    //const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+    const user = await User.findById(req.params.id)
+    updates.forEach((update) => user[update] = req.body[update])
+    await user.save()
+    if (!user) {
+      return res.status(404).send({ error: 'User not found!' })
+    }
+    res.send(user)
+  } catch (e) {
+    res.status(400).send(e)
+  }
+})
+```
+
+Delete Enpoints:
+```javascript
+// Endpoint: Delete an item
+app.delete('/users/:id', async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id)
+    if (!user) {
+      return res.status(404).send( { error: 'User not found!' } )
+    }
+    res.send(user)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+```
+
+### Seperate Routing
+/routers/user.js
+```javascript
+const express = require('express')
+const User = require('../models/user')
+const router = new express.Router()
+
+router.post('/users', async (req, res) => {})
+router.get('/users', async (req, res) => {})
+router.get('/users:id', async (req, res) => {})
+router.patch('/users:id', async (req, res) => {})
+router.delete('/users:id', async (req, res) => {})
+
+module.exports = router
+```
+index.js
+```javascript
+const express = require('express')
+require('./db/mongoose')
+const User = require('./models/user')
+const userRouter = require('./routers/user')
+
+const app = express()
+const port = process.env.PORT || 3000
+
+app.use(express.json())
+app.use(userRouter)
+
+app.listen(port, () => {
+  console.log('Server is up on port ' + port)
+})
+```
+
+### Example Model
+```javascript
+const mongoose = require('mongoose')
+const validator = require('validator')
+const bcrypt = require('bcryptjs')
+
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  password: {
+    type: String,
+    required: true,
+    minLength: 7,
+    trim: true,
+    validate(value) {
+      if (validator.contains(value.toLowerCase(),'password')) {
+        throw new Error('Password may not contain \"password\"')
+      }
+    }
+  },
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true,
+    validate(value) {
+      if (!validator.isEmail(value)) {
+        throw new Error('Email is invalid')
+      }
+    }
+  },
+  age: {
+    type: Number,
+    default: 0,
+    validate(value) {
+      if (value < 0) {
+        throw new Error('Age must be a positive number')
+      }
+    }
+  }
+})
+
+userSchema.pre('save', async function (next) {
+  const user = this
+  if (user.isModified('password')) {
+    user.password = await bcrypt.hash(user.password, 8)
+  }
+  next()
+})
+
+const User = mongoose.model('User', userSchema)
+
+module.exports = User
+```
+***
 
 ## Useful Functions
 - `fs.writeFileSync('file_name.extension', data)`  
@@ -2038,126 +2301,6 @@ Lets us to get requests from client-side javascript. The following piece, fetche
     })
   })
   ```
-***
-
-## CREATING ENDPOINTS
-Create Endpoints:
-```javascript
-// Endpoint: Create an item
-app.post('/users', async (req, res) => {
-  const user = new User(req.body)
-
-  try {
-    await user.save()
-    res.status(201).send(user)
-  } catch (e) {
-    res.status(400).send(e)
-  }
-})
-```
-
-Read Endpoints:
-```javascript
-// Endpoint: Read all items
-app.get('/users', async (req, res) => {
-  try {
-    const users = await User.find({})
-    res.send(users)
-  } catch (e) {
-    res.status(500).send(e)
-  }
-})
-
-// Endpoint: Read an item by id
-app.get('/users/:id', async (req, res) => {
-  const _id = req.params.id
-  try {
-    const user = await User.findById(_id)
-    if (!user) {
-      return res.status(404).send({ error: 'User not found!' })
-    }
-    res.send(user)
-  } catch (e) {
-    res.status(500).send(e)
-  }
-})
-```
-> *The reason we didn't convert `_id` to an object like back in MongoDB, is **Mongoose** automatically makes that conversion.*
-
-> *The reason sometimes we get a **500 Error** instead of a **404 Error** when we give in a non existing ID: "The findById method will throw an error if the id you pass it is improperly formatted so you should see a 500 error most of the time. However, if you pass in an id that is validly formatted, but does not exist in the database then you will get the 404 sent back."*
-
-Update Enpoints:
-```javascript
-// Enpoint: Update an item
-app.patch('/users/:id', async (req, res) => {
-  const updates = Object.keys(req.body)
-  const allowedUpdates = Object.keys(User.schema.obj) // ['name', 'email', 'password', 'age']
-  const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
-
-  if (!isValidOperation) {
-    return res.status(400).send({ error: 'Invalid Updates!' })
-  }
-
-  try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
-    if (!user) {
-      return res.status(404).send({ error: 'User not found!' })
-    }
-    res.send(user)
-  } catch (e) {
-    res.status(400).send(e)
-  }
-})
-```
-
-Delete Enpoints:
-```javascript
-// Endpoint: Delete an item
-app.delete('/users/:id', async (req, res) => {
-  try {
-    const user = await User.findByIdAndDelete(req.params.id)
-    if (!user) {
-      return res.status(404).send( { error: 'User not found!' } )
-    }
-    res.send(user)
-  } catch (e) {
-    res.status(500).send(e)
-  }
-})
-```
-
-### Seperate Routing
-/routers/user.js
-```javascript
-const express = require('express')
-const User = require('../models/user')
-const router = new express.Router()
-
-router.post('/users', async (req, res) => {})
-router.get('/users', async (req, res) => {})
-router.get('/users:id', async (req, res) => {})
-router.patch('/users:id', async (req, res) => {})
-router.delete('/users:id', async (req, res) => {})
-
-module.exports = router
-```
-index.js
-```javascript
-const express = require('express')
-require('./db/mongoose')
-const User = require('./models/user')
-const userRouter = require('./routers/user')
-
-const app = express()
-const port = process.env.PORT || 3000
-
-app.use(express.json())
-app.use(userRouter)
-
-app.listen(port, () => {
-  console.log('Server is up on port ' + port)
-})
-```
 ***
 
 ## Useful NPM Modules
