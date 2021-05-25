@@ -1685,8 +1685,16 @@ name: {
 }
 ```
 - `required: true`  
-  allows us to specify the attribute as unique, like emails in a database.
-  > *Please note that, if this addition is made later on after creating the database, we need to drop the database and rerun our program in order to recreate the database. Otherwise this addition won't make any sense!*
+  allows us to specify the attribute as unique, like emails in a database.  
+  ***Please note that,*** if this addition is made later on after creating the database, we have 3 options to make it happen:
+  1. to drop the database and rerun our program in order to recreate the database. 
+  1. Restart the MongoDB service
+  1. Run the following query in a MongoDB shell:
+      ```javascript
+      db.users.createIndex({"email" : 1})
+      ```
+  *Otherwise this addition won't make any sense!*  
+
 However there are not much built-in validators in Mongoose. So to create our custom validation:  
 ```javascript
 age: {
@@ -1828,6 +1836,7 @@ router.post('/users/login', async (req, res) => {
   }
 })
 ```
+> *See "Logging in User" under "API Authentication and Security" for further information on function `.findByCredentials()`*
 
 Read Endpoint:  
 *With Async/Await (PREFERRED)*
@@ -2098,6 +2107,7 @@ router.post('/users/login', async (req, res) => {
   }
 })
 ```
+> *See "Logging in User" under "API Authentication and Security" for further information on function `.findByCredentials()`*
 
 Read Endpoints:
 ```javascript
