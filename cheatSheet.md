@@ -2067,6 +2067,49 @@ router.post('/users/login', async (req, res) => {
 })
 ```
 
+### JSON Web Tokens (JWTs)
+At the end of the day most of our routes will be private which will require a token to authenticate related user/admin. We will be using ***JSON Web Token (JWT)***. THe library that allows us to work with JWTs is [**jsonwebtoken**](https://www.npmjs.com/package/jsonwebtoken). The token will be provided to the client and then they can use the token later on to use privileged operations.  
+To create and verify a token,
+```javascript
+const jwt = require('jsonwebtoken')
+const myFunction = async () => {
+  const token = jwt.sign({ _id: 'dummy123' }, 'secretword', { expiresIn: '7 days' })
+  const data = jwt.verify(token, 'secretword')
+}
+```
+- Return value form `.sign()` is our token.
+- `.sign()` takes 3 arguments:
+  1. ***Req*** *Object:* Contains the data that's gonna be embedded in our token. *Must be a unique identifier. So `_id` is an ideal choice.*
+  1. ***Req*** *String:* Signature/Secret. This is going to be used to sign the token making sure that hasn't been tempered with or altered in any way.
+  1. ***Opt*** *Object with options:* 
+      - `expiresIn`  
+        allows us to provide as a string the amount of time we want our token to be valid.
+- `.verify()` is going to return the ***payload/body*** *(in JSON format)* of the token if things went well or throw an error otherwise.  
+A successful return:
+  ```bash
+  { _id: 'dummyID', iat: 1622233966 }
+  ```
+
+An example token:
+```bash
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJkdW1teUlEIiwiaWF0IjoxNjIyMjMzNzMwfQ.VCjAeriOIxy7e_st46EhIFvDDf5hsU1bQgEChUUF-rw
+```
+As seen the token consists of 3 distinct parts seperated by **periods** *(`.`)*.
+  1. **Header**: First piece of the JSON web token. A base-64 encoded JSON string. It contains some meta information about what type of token it is.
+  1. **Payload/Body**: Second piece of the JSON web token. Also a base-64 encoded JSON string. This contains the data we provided.
+  1. **Signature**: This is used to verify the token.
+
+> *The goal of the JSON web token isn't to hide the data that we provide, it's actually publicly viewable who has the token (They don't need the **secret** to see that). The whole point of JWT is to create data (that we provide) which is verifiable via the **signature/secret**!*
+
+If we decode the *payload/body* part of the JSON we will see something like the following:
+```json
+{"_id":"dummyID","iat":1622233730}
+```
+- `_id:"dummyID"`  
+  The data we provided
+- `iat:1622233730`  
+  Time stamp letting us know when the token is created. *(**iat**: **i**ssued **at**)*
+***
 
 
 
@@ -2586,6 +2629,12 @@ Bcryptjs is a hashing algorithm we use to store passwords securelyç
   returns True if `loginPlainPassword` *(the one user provides while logging in as a plain text)* matches `hashedPasswordinDatabase` *(the one we are storing in the database as a hashed value)*
 
   > ***8** is the ideal times that algorithm to run on our password in terms of speed/security!*
+
+- [**jsonwebtoken**](https://www.npmjs.com/package/jsonwebtoken)  
+  The library that allows us to use JSON Web Tokens within our project.
+  - `jwt.sign({ uniqueIdentifier }, 'secretSignature', { expiresIn: '2 weeks' })` creates and returns the token. First 2 arguments are required, last one optional.
+  - `jwt.verify(tokenToBeVerified, 'secretSignature')` verifies and returns the payload/body of the token as JSON if everything went well, throw an error otherwise.
+  > *See "JSON Web Tokens (JWTs)" under "API Authentication and Security" for detailed information.*
 ***
 
 ## Useful External Services/APIs
