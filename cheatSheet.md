@@ -556,7 +556,7 @@ fs.writeFileSync('1-json.json', bookJSON)
 - **Event Loop** constantly watch for both **Call Stack** and **Callback Queue**. If the *call stack* is empty then it's going to run items from *callback queue*.
 
 - *Call Stack - NodeAPIs - Callback Queue - Event Loop:*
-<img src="https://i.ibb.co/2vkKSHx/CS-NA-CQ-EL.png">
+    <img src="https://i.ibb.co/2vkKSHx/CS-NA-CQ-EL.png">
 
 - In regular synchronous scripts, everything ends with the ending of the execution of *`main()`* function. But it's not the case with asynchronous programs. Because *event loop* can just start to do its job: takes the things in *callback queue* and puts into the *call stack*
 
@@ -910,9 +910,9 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
       console.log(req.params)
       console.log(req.params.id)
     })
-    ```
-
-### Main Ones
+    ```  
+  
+***Main Ones***  
 - `app.post()` allows us to create a document  
     > *See "Example Endpoints (Endpoint Create)" under "Code Reference" headline for example code!*
 
@@ -953,6 +953,38 @@ app.get('/help/*', (req, res) => {
 For a better and easier managable backend it's better we seperate routes. After seperating the files, we should replace `app` keywords with `router`.
 
 > *See "Seperate Routing" under "Code Reference" headline for example code!*
+
+### Express Middleware
+We need express middleware to first authenticate user's token then execute operations.  
+So without middleware:  
+***new request -> run route handler***  
+However with middleware:  
+***new request -> do something -> run route handler***  
+A middleware function has the same parameters with a route handler which are `req, res` but with an additional one which is `next`.
+```javascript
+app.use((req, res, next) => {
+  console.log(req.method, req.path)
+  next()
+})
+```
+- We need to call `next()` in order express to know that we are done with the middleware function and it can now go on with the route handler. If we don't call it, it will never run the route handler.  
+
+However we may not always want to run the route handler but to prevent it like running into a not authenticated token or an unallowed operation. In that case we can simply send back a message to cease the process.
+```javascript
+app.use((req, res, next) => {
+  if (req.method === 'GET') {
+    res.send('GET requests are disabled')
+  } else {
+    next()
+  }
+})
+```
+If under maintenance:
+```javascript
+app.use((req, res, next) => {
+  res.status(503).send('We are sorry. Our servers are under maintenance.')
+})
+```
 ***
 
 ## Templating
@@ -1700,7 +1732,7 @@ const userSchema = new mongoose.Schema({
   age: {
     ...
   }
-  token: [{
+  tokens: [{
     token: {
       ...
     }
