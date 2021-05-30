@@ -912,94 +912,19 @@ Wit the web server, it is never going to stop running unless we tell it to stop.
     })
     ```
 
-### **MAIN ONES**
-- `app.post()` allows us to create a document:
-    ```javascript
-    // Endpoint: Create an item
-    app.post('/users', async (req, res) => {
-      const user = new User(req.body)
-      try {
-        await user.save()
-        res.status(201).send(user)
-      } catch (e) {
-        res.status(400).send(e)
-      }
-    })
-    ```
+### Main Ones
+- `app.post()` allows us to create a document  
+    > *See "Example Endpoints (Endpoint Create)" under "Code Reference" headline for example code!*
 
-- `app.get()` allows us to read the documents from an existing resource:
-    ```javascript
-    // Endpoint: Read all items
-    app.get('/users', async (req, res) => {
-      try {
-        const users = await User.find({})
-        res.send(users)
-      } catch (e) {
-        res.status(500).send(e)
-      }
-    })
+- `app.get()` allows us to read the documents from an existing resource  
+    > *See "Example Endpoints (Endpoint Read)" under "Code Reference" headline for example code!*
 
-    // Endpoint: Read an item by id
-    app.get('/users/:id', async (req, res) => {
-      const _id = req.params.id
-      try {
-        const user = await User.findById(_id)
-        if (!user) {
-          return res.status(404).send()
-        }
-        res.send(user)
-      } catch (e) {
-        res.status(500).send(e)
-      }
-    })
-    ```
+13. `app.patch()` allows us to update an existing resource  
+    > *See "Example Endpoints (Endpoint Update)" under "Code Reference" headline for example code!*
 
-13. `app.patch()` allows us to update an existing resource:
-    ```javascript
-    // Enpoint: Update an item
-    app.patch('/users/:id', async (req, res) => {
-      const updates = Object.keys(req.body)
-      const allowedUpdates = Object.keys(User.schema.obj) // ['name', 'email', 'password', 'age']
-      const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+1. `app.delete()` allows us to delete a document
+    > *See "Example Endpoints (Endpoint Delete)" under "Code Reference" headline for example code!*
 
-      if (!isValidOperation) {
-        return res.status(400).send({ error: 'Invalid Updates!' })
-      }
-
-      try {
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
-        if (!user) {
-          return res.status(404).send({ error: 'User not found!' })
-        }
-        res.send(user)
-      } catch (e) {
-        res.status(400).send(e)
-      }
-    })
-    ```
-    1. `Object.keys(req.body)` extracts `keys` from the body of request and creates an array
-    1. `Object.keys(Model.schema.obj)` extracts `keys`(`attributes`) of `Model`
-    1. `array.every((item) => { ... })` iterates over every `item` of `array` and returns `true` if the evaluation within the function `{ ... }` for ***all*** items returns `true`. Returns `false` if even only a single return is `false`!
-    1. `array.includes(item)` returns `true` if `item` is in `array`. `false` otherwise
-    1. `new: true` option will return ***the latest version of the object***, not the version of it before the update
-    1. `runValidators: true` option is going to make sure we do run validation for the update.
-    - `Object.values(req.body)` extracts ***values*** from the body of request and creates an array
-
-1. `app.delete()` allows us to delete a document:
-    ```javascript
-    // Endpoint: Delete an item
-    app.delete('/users/:id', async (req, res) => {
-      try {
-        const user = await User.findByIdAndDelete(req.params.id)
-        if (!user) {
-          return res.status(404).send( { error: 'User not found!' } )
-        }
-        res.send(user)
-      } catch (e) {
-        res.status(500).send(e)
-      }
-    })
-    ```
 
 ### **Route Parameters**
 They are part of the URL that are used to capture dynamic values and look like following:
@@ -1025,39 +950,9 @@ app.get('/help/*', (req, res) => {
 ```
 
 ### Seperate Routing
-After seperating the files, we should replace `app` keywords with `router` as seen below:  
-*/routers/user.js*
-```javascript
-const express = require('express')
-const User = require('../models/user')
-const router = new express.Router()
+For a better and easier managable backend it's better we seperate routes. After seperating the files, we should replace `app` keywords with `router`.
 
-router.post('/users', async (req, res) => {})
-router.get('/users', async (req, res) => {})
-router.get('/users:id', async (req, res) => {})
-router.patch('/users:id', async (req, res) => {})
-router.delete('/users:id', async (req, res) => {})
-
-module.exports = router
-```
-- `new express.Router()` creates a new router  
-
-*index.js*
-```javascript
-const express = require('express')
-require('./db/mongoose')
-const userRouter = require('./routers/user')
-
-const app = express()
-const port = process.env.PORT || 3000
-
-app.use(express.json())
-app.use(userRouter)
-
-app.listen(port, () => {
-  console.log('Server is up on port ' + port)
-})
-```
+> *See "Seperate Routing" under "Code Reference" headline for example code!*
 ***
 
 ## Templating
@@ -1742,7 +1637,7 @@ Some sanitizators on `Date`
 - `min`: Date
 - `max`: Date
 
-### [**Mongoose Methods**](https://mongoosejs.com/docs/queries.html)
+### [Mongoose Methods](https://mongoosejs.com/docs/queries.html)
 Mongoose provides us a series of methods similar to those we saw with MongoDB native driver. Each of these returns a mongoose `Query` object. We can both pass in a callback function, or chain a `.then()` promise.
 - `Model.countDocuments()`
 - `Model.deleteMany()`
@@ -1766,6 +1661,115 @@ Mongoose provides us a series of methods similar to those we saw with MongoDB na
 > *`.find...AndUpdate()` methods return the object as updating them whilst `.update...()` methods solely update the document.*
 
 > *Unlike back in **MongoDB Native Driver** we don't need to provide our desired to be updated properties within `#set: {}` block. Instead we simply set the attributes and **Mongoose** handles them.*
+
+### Schema and Middleware
+When we give in our object definition *(or the object itself while modifying)* to Mongoose during model creation, it converts our model into [***schema***](https://mongoosejs.com/docs/api/schema.html) behind the scenes, giving us more opportunities to operate on it. [***Middleware***](https://mongoosejs.com/docs/middleware.html) is one of these features. Actually it is a way to customize the behaviour of our Mongoose model. With *middleware* we can register some functions to run before or after given events occur such as `validate`, `save`, `remove`, `updateOne`, `deleteOne`.
+
+- To register function before the event we simply use,
+  ```javascript
+  .pre('nameOfTheEvent', async function (next) {
+    ...
+    next()
+  })
+  ```
+  after the event,
+  ```javascript
+  .post('nameOfTheEvent', async function (next) {
+    ...
+    next()
+  })
+  ```
+  We should use a standart function *(not an arrow one)* due to the fact that we are going to make use of `this` binding. Also we define it as `async` to be able to use `await` feature.  
+
+  Also we need to add `next()` to prevent the function hang forever.
+
+Thus instead of adding code *(hashing the password in this scenario)* into multiple places, it allows us to add it solely to the model itself directly and makes us get rid of extra work and complexity.  
+
+In order to make use of these two features, we need to create the schema by ourselves and give in that schema to the model creation definition. And right before the definition the required *pre/post* additions should be added:
+```javascript
+const userSchema = new mongoose.Schema({
+  name: {
+    ...
+  },
+  password: {
+    ...
+  },
+  email: {
+    ...
+  },
+  age: {
+    ...
+  }
+  token: [{
+    token: {
+      ...
+    }
+  }]
+})
+
+userSchema.pre('save', async function (next) {
+  const user = this
+  if (user.isModified('password')) {
+    user.password = await bcrypt.hash(user.password, 8)
+  }
+  next()
+})
+
+const User = mongoose.model('User', userSchema)
+```
+- `user.isModified('password')`  
+  returns `true` if user modified his/her password during update operation and based on that, we hash the password before updating.
+
+Certain Mongoose queries *(such as `.findByIdAndUpdate()`)* bypass more advanced features like Middleware *(and performs operations directly on the database)* which is why if we want to use them consistently we just have to do a tiny bit restructuring:  
+So in the *update route* instead of,
+```javascript
+// Line 55
+const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+```
+We write,
+```javascript
+const user = await User.findById(req.params.id)
+updates.forEach((update) => user[update] = req.body[update])
+await user.save()
+```
+- `user[update]` & `req.body[update]`  
+  Allows us to alter every attribute that being updated dynamically
+
+Otherwise as said, it bypasses Middleware we created within our model and for example saves passwords without hashing. 
+
+### Statics & Methods
+*Within* User Model:
+```javascript
+userSchema.methods.generateAuthToken = async function () {
+  const user = this
+  const token = jwt.sign({ _id: user._id.toString() }, 'secretword')
+
+  user.tokens = user.tokens.concat({ token })
+  await user.save()
+  
+  return token
+}
+
+userSchema.statics.findByCredentials = async (email, password) => {
+  const user = await User.findOne({ email })
+  if (!user) {
+    throw new Error('Unable to login')
+  }
+  const isMatch = await bcrypt.compare(password, user.password)
+  if (!isMatch) {
+    throw new Error('Unable to login')
+  }
+  return user
+}
+```
+- `statics` methods are accessible on Model. *Also called as **Model Methods**.*
+- `methods` methods are accessible on the Instance. *Also called as **Instance Methods**.*
+- `schema.statics.myFunction`  
+  allows us to define our own function on the model/schema to be called and used later on.
+- `schema.methods.myFunction`  
+  allows us to define our own function on the instance to be called and used later on.
+
+> *See "Logging in User by Generating Authentication Token" under "API Authentication and Security" for further information on remaining functions*
 ***
 
 ## REST API
@@ -1795,9 +1799,11 @@ During creation or update of a resource on postman or in other words POSTing or 
 > *Don't forget to save a request by simply hitting `CTRL + S` or clicking **Save** button at top right.*
 
 > *If no `res.send()` is provided the request is gonna end up in a timeout.*
-***
 
-### **CRUD Operations on Endpoints**
+<details>
+<summary><strong><em>Primitive Enpoints</em></strong></summary>
+
+### ~~**CRUD Operations on Endpoints**~~
 Create Endpoint:  
 *With Async/Await (PREFERRED)*
 ```javascript
@@ -1825,18 +1831,7 @@ app.post('/users', (req, res) => {
     res.status(400).send(e)
   })
 })
-
-// Enpoint: Log in a user
-router.post('/users/login', async (req, res) => {
-  try {
-    const user = await User.findByCredentials(req.body.email, req.body.password)
-    res.send(user)
-  } catch (e) {
-    res.status(400).send()
-  }
-})
 ```
-> *See "Logging in User" under "API Authentication and Security" for further information on function `.findByCredentials()`*
 
 Read Endpoint:  
 *With Async/Await (PREFERRED)*
@@ -1943,75 +1938,9 @@ app.delete('/users/:id', async (req, res) => {
 })
 ```
 
-### Schema and Middleware
-When we give in our object definition *(or the object itself while modifying)* to Mongoose during model creation, it converts our model into [***schema***](https://mongoosejs.com/docs/api/schema.html) behind the scenes, giving us more opportunities to operate on it. [***Middleware***](https://mongoosejs.com/docs/middleware.html) is one of these features. Actually it is a way to customize the behaviour of our Mongoose model. With *middleware* we can register some functions to run before or after given events occur such as `validate`, `save`, `remove`, `updateOne`, `deleteOne`.
+</details>
 
-- To register function before the event we simply use,
-  ```javascript
-  .pre('nameOfTheEvent', async function (next) {
-    ...
-    next()
-  })
-  ```
-  after the event,
-  ```javascript
-  .post('nameOfTheEvent', async function (next) {
-    ...
-    next()
-  })
-  ```
-  We should use a standart function *(not an arrow one)* due to the fact that we are going to make use of `this` binding. Also we define it as `async` to be able to use `await` feature.  
-
-  Also we need to add `next()` to prevent the function hang forever.
-
-Thus instead of adding code *(hashing the password in this scenario)* into multiple places, it allows us to add it solely to the model itself directly and makes us get rid of extra work and complexity.  
-
-In order to make use of these two features, we need to create the schema by ourselves and give in that schema to the model creation definition. And right before the definition the required *pre/post* additions should be added:
-```javascript
-const userSchema = new mongoose.Schema({
-  name: {
-    ...
-  },
-  password: {
-    ...
-  },
-  email: {
-    ...
-  },
-  age: {
-    ...
-  }
-})
-
-userSchema.pre('save', async function (next) {
-  const user = this
-  if (user.isModified('password')) {
-    user.password = await bcrypt.hash(user.password, 8)
-  }
-  next()
-})
-
-const User = mongoose.model('User', userSchema)
-```
-- `user.isModified('password')`  
-  returns `true` if user modified his/her password during update operation and based on that, we hash the password before updating.
-
-Certain Mongoose queries *(such as `.findByIdAndUpdate()`)* bypass more advanced features like Middleware *(and performs operations directly on the database)* which is why if we want to use them consistently we just have to do a tiny bit restructuring:  
-So in the *update route* instead of,
-```javascript
-// Line 55
-const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
-```
-We write,
-```javascript
-const user = await User.findById(req.params.id)
-updates.forEach((update) => user[update] = req.body[update])
-await user.save()
-```
-- `user[update]` & `req.body[update]`  
-  Allows us to alter every attribute that being updated dynamically
-
-Otherwise as said, it bypasses Middleware we created within our model and for example saves passwords without hashing. 
+> *Please see "Example Endpoints" under "Code Reference" headline for **final endpoint examples**, **seperate routing** and **example model***
 ***
 
 ## API Authentication and Security
@@ -2034,39 +1963,6 @@ const myFunction = async () => {
 
 > *In **encryption** we can get the original value back. However **hashing algorithms** are one way algorithms. There is no way to recover from a hashed value.*
 
-### Logging in Users
-In terms of avoiding code duplication and extra work, we code the necessary check logic within model:
-```javascript
-userSchema.statics.findByCredentials = async (email, password) => {
-  const user = await User.findOne({ email })
-  if (!user) {
-    throw new Error('Unable to login')
-  }
-  const isMatch = await bcrypt.compare(password, user.password)
-  if (!isMatch) {
-    throw new Error('Unable to login')
-  }
-  return user
-}
-```
-- `schema.statics.myFunction`  
-  allows us to define our own function on the model/schema to be called and used later on.
-
-> *It's a better practice not to provide detailed information about login errors.*
-
-Our login endpoint *within route*:
-```javascript
-// Enpoint: Log in a user
-router.post('/users/login', async (req, res) => {
-  try {
-    const user = await User.findByCredentials(req.body.email, req.body.password)
-    res.send(user)
-  } catch (e) {
-    res.status(400).send()
-  }
-})
-```
-
 ### JSON Web Tokens (JWTs)
 At the end of the day most of our routes will be private which will require a token to authenticate related user/admin. We will be using ***JSON Web Token (JWT)***. THe library that allows us to work with JWTs is [**jsonwebtoken**](https://www.npmjs.com/package/jsonwebtoken). The token will be provided to the client and then they can use the token later on to use privileged operations.  
 To create and verify a token,
@@ -2079,7 +1975,8 @@ const myFunction = async () => {
 ```
 - Return value form `.sign()` is our token.
 - `.sign()` takes 3 arguments:
-  1. ***Req*** *Object:* Contains the data that's gonna be embedded in our token. *Must be a unique identifier. So `_id` is an ideal choice.*
+  1. ***Req*** *Object including String* Contains the data that's gonna be embedded in our token. *Must be a unique identifier. So `_id` is an ideal choice.*
+  > *PS: When we use `_id` property, we must convert it to string via `.toString()` within this Object.*
   1. ***Req*** *String:* Signature/Secret. This is going to be used to sign the token making sure that hasn't been tempered with or altered in any way.
   1. ***Opt*** *Object with options:* 
       - `expiresIn`  
@@ -2109,6 +2006,74 @@ If we decode the *payload/body* part of the JSON we will see something like the 
   The data we provided
 - `iat:1622233730`  
   Time stamp letting us know when the token is created. *(**iat**: **i**ssued **at**)*
+
+### Logging in Users by Generating Authentication Tokens
+After generating tokens we will keep track of them by storing them all along with the user inside User Document. By doing so, a user will be able to login from multiple devices but when logged out from one of them, the others will stay logged in. In terms of avoiding code duplication and extra work, we code the necessary check logic within model:
+```javascript
+const userSchema = new mongoose.Schema({
+  ...,
+  tokens: [{
+    token: {
+      type: String,
+      required: true
+    }
+  }]
+})
+
+userSchema.methods.generateAuthToken = async function () {
+  const user = this
+  const token = jwt.sign({ _id: user._id.toString() }, 'secretword')
+
+  user.tokens = user.tokens.concat({ token })
+  await user.save()
+  
+  return token
+}
+
+userSchema.statics.findByCredentials = async (email, password) => {
+  const user = await User.findOne({ email })
+  if (!user) {
+    throw new Error('Unable to login')
+  }
+  const isMatch = await bcrypt.compare(password, user.password)
+  if (!isMatch) {
+    throw new Error('Unable to login')
+  }
+  return user
+}
+```
+- `tokens` property is an array of objects *(holding token)* to store tokens.
+- `methods` methods are accessible on the Instance. *Also called as **Instance Methods**.*
+- `schema.methods.myFunction`  
+  allows us to define our own function on the instance to be called and used later on.
+- `{ _id: user._id.toString() }`  
+since `_id:` within `.sign()` arguments must be equal to String, we use it like this.
+- `.concat()` concatenates our newly generated token to the existing tokens of a user instance.
+- `statics` methods are accessible on Model. *Also called as **Model Methods**.*
+- `schema.statics.myFunction`  
+  allows us to define our own function on the model/schema to be called and used later on.
+
+> *It's a better practice not to provide detailed information about login errors.*
+
+Our login endpoint *within route*:
+```javascript
+// Enpoint: Log in a user
+router.post('/users/login', async (req, res) => {
+  try {
+    const user = await User.findByCredentials(req.body.email, req.body.password)
+    const token = await user.generateAuthToken()
+    res.send({ user, token })
+  } catch (e) {
+    res.status(400).send()
+  }
+})
+```
+- `User.findByCredentials()` makes sense when we are not working with an individual user but we are working with the ***User collection*** as a whole.
+- `user.generateAuthToken()` considering the upper explanation we need to create a method that lives on ***User instance*** not the collection/model itself.
+
+> *If we check User Collection via Robo 3T, we will see that our tokens have their own _ids. This is known as sub-documents and they -much like regular documents- have their own automatically generated _ids.*
+
+
 ***
 
 
@@ -2125,16 +2090,18 @@ If we decode the *payload/body* part of the JSON we will see something like the 
 
 
 
-## CREATING ENDPOINTS
-Create Endpoints:
+## Code Reference
+### Example Endpoints
+Endpoint *Create*:
 ```javascript
 // Endpoint: Create an item
-app.post('/users', async (req, res) => {
+router.post('/users', async (req, res) => {
   const user = new User(req.body)
 
   try {
     await user.save()
-    res.status(201).send(user)
+    const token = await user.generateAuthToken()
+    res.status(201).send({ user, token })
   } catch (e) {
     res.status(400).send(e)
   }
@@ -2143,19 +2110,21 @@ app.post('/users', async (req, res) => {
 // Enpoint: Log in a user
 router.post('/users/login', async (req, res) => {
   try {
-    const user = await User.findByCredentials(req.body.email, req.body.password) //self-defined function. see model
-    res.send(user)
+    const user = await User.findByCredentials(req.body.email, req.body.password)
+    const token = await user.generateAuthToken()
+    res.send({ user, token })
   } catch (e) {
     res.status(400).send()
   }
 })
 ```
-> *See "Logging in User" under "API Authentication and Security" for further information on function `.findByCredentials()`*
 
-Read Endpoints:
+> *See "Logging in User by Generating Authentication Token" under "API Authentication and Security" for further information on functions*
+
+Endpoint *Read*:
 ```javascript
 // Endpoint: Read all items
-app.get('/users', async (req, res) => {
+router.get('/users', async (req, res) => {
   try {
     const users = await User.find({})
     res.send(users)
@@ -2165,7 +2134,7 @@ app.get('/users', async (req, res) => {
 })
 
 // Endpoint: Read an item by id
-app.get('/users/:id', async (req, res) => {
+router.get('/users/:id', async (req, res) => {
   const _id = req.params.id
   try {
     const user = await User.findById(_id)
@@ -2182,10 +2151,10 @@ app.get('/users/:id', async (req, res) => {
 
 > *The reason sometimes we get a **500 Error** instead of a **404 Error** when we give in a non existing ID: "The findById method will throw an error if the id you pass it is improperly formatted so you should see a 500 error most of the time. However, if you pass in an id that is validly formatted, but does not exist in the database then you will get the 404 sent back."*
 
-Update Enpoints:
+Endpoint *Update*:
 ```javascript
 // Enpoint: Update an item
-app.patch('/users/:id', async (req, res) => {
+router.patch('/users/:id', async (req, res) => {
   const updates = Object.keys(req.body)
   const allowedUpdates = Object.keys(User.schema.obj) // ['name', 'email', 'password', 'age']
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
@@ -2210,11 +2179,18 @@ app.patch('/users/:id', async (req, res) => {
   }
 })
 ```
+1. `Object.keys(req.body)` extracts `keys` from the body of request and creates an array
+1. `Object.keys(Model.schema.obj)` extracts `keys`(`attributes`) of `Model`
+1. `array.every((item) => { ... })` iterates over every `item` of `array` and returns `true` if the evaluation within the function `{ ... }` for ***all*** items returns `true`. Returns `false` if even only a single return is `false`!
+1. `array.includes(item)` returns `true` if `item` is in `array`. `false` otherwise
+1. `new: true` option will return ***the latest version of the object***, not the version of it before the update
+1. `runValidators: true` option is going to make sure we do run validation for the update.
+- `Object.values(req.body)` extracts ***values*** from the body of request and creates an array
 
-Delete Enpoints:
+Enpoint *Delete*:
 ```javascript
 // Endpoint: Delete an item
-app.delete('/users/:id', async (req, res) => {
+router.delete('/users/:id', async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id)
     if (!user) {
@@ -2304,9 +2280,27 @@ const userSchema = new mongoose.Schema({
         throw new Error('Age must be a positive number')
       }
     }
-  }
+  },
+  tokens: [{
+    token: {
+      type: String,
+      required: true
+    }
+  }]
 })
 
+// Creating ".generateAuthToken" method on Instance
+userSchema.methods.generateAuthToken = async function () {
+  const user = this
+  const token = jwt.sign({ _id: user._id.toString() }, 'secretword')
+
+  user.tokens = user.tokens.concat({ token })
+  await user.save()
+  
+  return token
+}
+
+// Creating ".findByCredentials" method on Model
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email })
   if (!user) {
