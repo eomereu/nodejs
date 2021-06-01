@@ -2173,6 +2173,7 @@ const auth = async (req, res, next) => {
       throw new Error()
     }
 
+    req.token = token
     req.user = user
     next()
   } catch (e) {
@@ -2184,6 +2185,7 @@ const auth = async (req, res, next) => {
 - `.replace('Bearer ','')` replaces the initial part of our header value in order to access only the token itself
 - Since `.verify()` returns the token as a JSON, we refer to the `_id` of the token which is also the `_id` of our user by `decoded._id`
 - `'tokens.token'` we used the name of attribute within quotes because it includes a special charachter which is dot in this case
+- `req.token = token` we assign our current token onto the request object to be able to use it later *(while logging out)*
 - `req.user = user` we assign our user *(the one who makes the request)* onto the request object to be able to return it back in the following code:  
 user.js *Route*  
 ```javascript
@@ -2193,6 +2195,38 @@ router.get('/users/me', auth, async (req, res) => {
 })
 ```
 > *Also server can send back some headers. `req.user = user` is an example of this up above.*
+
+### Logging Out
+Logout from the current session:
+```javascript
+// Endpoint: Log out a user
+router.post('/users/logout', auth, async (req, res) => {
+  try {
+    req.user.tokens = req.user.tokens.filter((token) => {
+      return token.token !== req.token
+    })
+    await req.user.save()
+    res.send()
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+```
+- `req.user.tokens = req.user.tokens.filter()` removes the current used token from the array by filtering itself with the comparison `token.token !== req.token`
+- We used `token.token` because each `token` element in that `filter` method has both `_id, token` properties *(since it's like that in our database)*. And we want to compare tokens only.
+Logout from all sessions:
+```javascript
+// Endpoint: Log out from all sessions
+router.post('/users/logoutAll', auth, async (req, res) => {
+  try {
+    req.user.tokens = []
+    await req.user.save()
+    res.send()
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+```
 ***
 
 
@@ -2239,6 +2273,33 @@ router.post('/users/login', async (req, res) => {
 ```
 
 > *See "Logging in User by Generating Authentication Token" under "API Authentication and Security" for further information on functions*
+
+Endpoint: *Logout*
+```javascript
+// Endpoint: Log out a user
+router.post('/users/logout', auth, async (req, res) => {
+  try {
+    req.user.tokens = req.user.tokens.filter((token) => {
+      return token.token !== req.token
+    })
+    await req.user.save()
+    res.send()
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+
+// Endpoint: Log out from all sessions
+router.post('/users/logoutAll', auth, async (req, res) => {
+  try {
+    req.user.tokens = []
+    await req.user.save()
+    res.send()
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+```
 
 Endpoint *Read*:
 ```javascript
