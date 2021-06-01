@@ -392,30 +392,32 @@ When we first install Node on our machine, npm is also installed with it automat
 ## Foldering
 Under root directory:
 - **public**  
-  Contains HTML files (static stuff) that users access
+  *Contains HTML files (static stuff) that users access*
   - **css**  
-  Contains stylesheets
+  *Contains stylesheets*
   - **img**  
-  Contains images
+  *Contains images*
   - **js**  
-  Contains client side scripts
+  *Contains client side scripts*
 - **src**  
-  Contains backend scripts
+  *Contains backend scripts*
   - **db**  
-  Contains *mongoose* code to connect to database
+  *Contains *mongoose* code to connect to database*
+  - **middleware**
+  *Contains Express Middleware (i.e. Token Auth.)*
   - **models**  
-  Contains models
+  *Contains models*
   - **routers**  
-  Contains routers
+  *Contains routers*
   - **utils**  
-  Contains components
+  *Contains components*
   - ***app.js / index.js***  
-  Main script
+  *Main script*
 - **templates**  
   - **partials**  
-    Contains partials
+    *Contains partials*
   - **views**  
-    Contains views
+    *Contains views*
 - ***package-lock.json***
 - ***package.json***
 ***
@@ -955,6 +957,8 @@ For a better and easier managable backend it's better we seperate routes. After 
 > *See "Seperate Routing" under "Code Reference" headline for example code!*
 
 ### Express Middleware
+> *See "Adding Seperated Middleware to Routes" (the next headline) for actual use.*
+
 We need express middleware to first authenticate user's token then execute operations.  
 So without middleware:  
 ***new request -> run route handler***  
@@ -983,6 +987,20 @@ If under maintenance:
 ```javascript
 app.use((req, res, next) => {
   res.status(503).send('We are sorry. Our servers are under maintenance.')
+})
+```
+### Adding Seperated Middleware to Routes
+To add middleware to an individual route all we do is pass it in as an argument to the method before we pass in our route handler. Ex:
+```javascript
+const auth = require('../middleware/auth')
+
+router.get('/users', auth, async (req, res) => {
+  try {
+    const users = await User.find({})
+    res.send(users)
+  } catch (e) {
+    res.status(500).send(e)
+  }
 })
 ```
 ***
@@ -2105,7 +2123,49 @@ router.post('/users/login', async (req, res) => {
 
 > *If we check User Collection via Robo 3T, we will see that our tokens have their own _ids. This is known as sub-documents and they -much like regular documents- have their own automatically generated _ids.*
 
+### Accepting Authentication Tokens
+To provide the token by the request, on Postman we click on ***Headers*** tab *(here is where we can setup key-value pairs)*. We write,  
+Inside ***KEY*** field:
+```bash
+Authorization
+```
+Inside ***VALUE*** field:
+```bash
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGIzNjI5NDk4OGQ2OWM4ZTBmNzFlNzUiLCJpYXQiOjE2MjIzNjg5MTZ9.lZ_CgSpWiByJOpOUwVMNVS3pSGIgFaqbudT6RjQnKEc
+```
+We add an Express Middleware for this job *(See "Adding Seperated Middleware to Routes" under "ExpressJS" for detailed info on express middleware)*.  
+auth.js *Middleware*
+```javascript
+const auth = async (req, res, next) => {
+  try {
+    const token = req.header('Authorization').replace('Bearer ','')
+    const decoded = jwt.verify(token, 'secretword')
+    const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
 
+    if (!user) {
+      throw new Error()
+    }
+
+    req.user = user
+    next()
+  } catch (e) {
+    res.status(401).send({ error: 'Please authenticate.' })
+  }
+}
+```
+- `.header('Authorization')` returns the value of the header *Authorization*
+- `.replace('Bearer ','')` replaces the initial part of our header value in order to access only the token itself
+- Since `.verify()` returns the token as a JSON, we refer to the `_id` of the token which is also the `_id` of our user by `decoded._id`
+- `'tokens.token'` we used the name of attribute within quotes because it includes a special charachter which is dot in this case
+- `req.user = user` we assign our user *(the one who makes the request)* onto the request object to be able to return it back in the following code:  
+user.js *Route*  
+```javascript
+// Endpoint: Read profile
+router.get('/users/me', auth, async (req, res) => {
+  res.send(req.user)
+})
+```
+> *Also server can send back some headers. `req.user = user` is an example of this up above.*
 ***
 
 
@@ -2163,6 +2223,11 @@ router.get('/users', async (req, res) => {
   } catch (e) {
     res.status(500).send(e)
   }
+})
+
+// Endpoint: Read profile
+router.get('/users/me', auth, async (req, res) => {
+  res.send(req.user)
 })
 
 // Endpoint: Read an item by id
@@ -2245,6 +2310,7 @@ const router = new express.Router()
 router.post('/users', async (req, res) => {})
 router.post('/users/login', async (req, res) => {})
 router.get('/users', async (req, res) => {})
+router.get('/users/me', auth, async (req, res) => {})
 router.get('/users:id', async (req, res) => {})
 router.patch('/users:id', async (req, res) => {})
 router.delete('/users:id', async (req, res) => {})

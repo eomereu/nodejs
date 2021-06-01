@@ -1,5 +1,6 @@
 const express = require('express')
 const User = require('../models/user')
+const auth = require('../middleware/auth')
 const router = new express.Router()
 
 // User Model
@@ -28,13 +29,18 @@ router.post('/users/login', async (req, res) => {
 })
 
 // Endpoint: Read all users
-router.get('/users', async (req, res) => {
+router.get('/users', auth, async (req, res) => {
   try {
     const users = await User.find({})
     res.send(users)
   } catch (e) {
     res.status(500).send(e)
   }
+})
+
+// Endpoint: Read profile
+router.get('/users/me', auth, async (req, res) => {
+  res.send(req.user)
 })
 
 // Endpoint: Read a user by id
