@@ -1850,6 +1850,33 @@ During creation or update of a resource on postman or in other words POSTing or 
 
 > *If no `res.send()` is provided the request is gonna end up in a timeout.*
 
+### Advanced Postman
+Environments let us to easily work with multiple server urls like dev and prod which refer to local and remote servers.  
+In order to create one, we click on the ***Environments*** tab on the left-hand side,  
+<img src="https://i.ibb.co/ysggRHq/Create-Environment.png">  
+
+To select current working environment, we click on ***No Environment*** tab top right and select our desired environment,
+<img src="https://i.ibb.co/R9MKX8T/Environment.png">  
+
+- As seen `{{url}}` has the value that we specified while creating the environment, we need to replace those *localhost:3000* parts with this selector.
+
+To only once define our Authorization token, *(after deleting our `Authorization - Bearer ey...Ec` from the **Headers** tab of **Read profile**)* we need to first make sure that under ***Authorization*** tab of all our requests *(except for the ones we want them to work without Authorization like **Create User** and **Login user**. For them we can choose **No Auth**)* ***Inherit auth from parent*** is selected *(already by default)* like in the following picture:  
+<img src="https://i.ibb.co/9cdtDNh/Inherit-Auth.png">  
+
+After ensuring, we click on three dots of ***Task App*** tab and hit ***Edit***. Under ***Authorization*** tab we change it to ***Bearer Token*** and type in `{{authToken}}` *(the environment variable that we will be creating in the next step)* into ***Token*** field:
+<img src="https://i.ibb.co/mh8wF1G/Auth-Token.png">  
+
+To get rid of manual token paste in and switch to an automation which will take the token as a new user created or logged in and assigns it to `authToken` environment variable:
+<img src="https://i.ibb.co/MhgkbLL/Token-Automation.png">  
+
+- The code under ***Pre-request Script*** runs right before the request is executed.
+- The code under ***Tests*** runs right after the request is executed, this tab is the one we used.
+- `pm` stands for <em>**p**ost**m**an</em> and allows us to reach multiple variables.
+- `pm.response.code` returns the status code
+- `pm.environment.set('key', 'value')` allows us to set a new environment variable
+- `pm.response.json()` takes the JSON response and converts it to an object
+
+
 <details>
 <summary><strong><em>Primitive Enpoints</em></strong></summary>
 
