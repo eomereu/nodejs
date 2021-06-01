@@ -2227,6 +2227,62 @@ router.post('/users/logoutAll', auth, async (req, res) => {
   }
 })
 ```
+
+### Hiding Private Data
+We shouldn't send back user's password or all of his/her tokens back. So in our model:
+```javascript
+// Hiding private data
+userSchema.methods.toJSON = function () {
+  const user = this
+  const userObject = user.toObject()
+
+  delete userObject.password
+  delete userObject.tokens
+
+  return userObject
+}
+```
+- `user.toObject()` turns our user JSON into object so that we can manipulate its attributes
+- `delete` deletes given attribute
+To see what exactly `.toJSON` special method doing, let's have a look at the following example:
+```javascript
+const pet = {
+  name: 'Hal'
+}
+console.log(JSON.stringify(pet))
+```
+```bash
+{"name":"Hal"}
+```
+Up above what Express is exactly doing. When we pass an object to `res.send()` it's calling `JSON.stringify()` behind the scenes. However when we setup `.toJSON` it's gonna get called whenever that object gets stringified:
+```javascript
+const pet = {
+  name: 'Hal'
+}
+pet.toJSON = function () {
+  console.log(this)
+  return this
+}
+console.log(JSON.stringify(pet))
+```
+```bash
+{ name: 'Hal', toJSON: [Function]}
+{"name":"Hal"}
+```
+So if we set it as an empty object within `.toJSON` then an empty object is gonna get stringified and be returned:
+```javascript
+const pet = {
+  name: 'Hal'
+}
+pet.toJSON = function () {
+  return {}
+}
+console.log(JSON.stringify(pet))
+```
+```bash
+{}
+```
+In conclusion we are deleting the attributes we don't want to send back like *password* and then return it in `.toJSON` method up top.
 ***
 
 
@@ -2474,6 +2530,17 @@ const userSchema = new mongoose.Schema({
     }
   }]
 })
+
+// Hiding private data
+userSchema.methods.toJSON = function () {
+  const user = this
+  const userObject = user.toObject()
+
+  delete userObject.password
+  delete userObject.tokens
+
+  return userObject
+}
 
 // Creating ".generateAuthToken" method on Instance
 userSchema.methods.generateAuthToken = async function () {
