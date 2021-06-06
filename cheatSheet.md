@@ -2018,6 +2018,8 @@ app.delete('/users/:id', async (req, res) => {
 </details>
 
 > *Please see "Example Endpoints" under "Code Reference" headline for **final endpoint examples**, **seperate routing** and **example model***
+
+> *If Postman is ever stuck on (Preparing Workspaces) screen, delete **.config/Postman** folder under **home** directory and run it again!*
 ***
 
 ## API Authentication and Security
