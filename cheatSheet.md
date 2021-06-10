@@ -1866,7 +1866,7 @@ To only once define our Authorization token, *(after deleting our `Authorization
 After ensuring, we click on three dots of ***Task App*** tab and hit ***Edit***. Under ***Authorization*** tab we change it to ***Bearer Token*** and type in `{{authToken}}` *(the environment variable that we will be creating in the next step)* into ***Token*** field:
 <img src="https://i.ibb.co/mh8wF1G/Auth-Token.png">  
 
-To get rid of manual token paste in and switch to an automation which will take the token as a new user created or logged in and assigns it to `authToken` environment variable:
+To get rid of manual token paste in and switch to an automation which will take the token as a new user created or logged in and assigns it to `authToken` environment variable:  
 <img src="https://i.ibb.co/MhgkbLL/Token-Automation.png">  
 
 - The code under ***Pre-request Script*** runs right before the request is executed.
@@ -2361,7 +2361,13 @@ router.post('/users/logoutAll', auth, async (req, res) => {
 
 Endpoint *Read*:
 ```javascript
-// Endpoint: Read all items
+  // Endpoint: Read profile
+  router.get('/users/me', auth, async (req, res) => {
+    res.send(req.user)
+  })
+
+// WITHOUT AUTHENTICATION!!!
+// Endpoint: Read all items ***Maybe for admins***
 router.get('/users', async (req, res) => {
   try {
     const users = await User.find({})
@@ -2371,12 +2377,8 @@ router.get('/users', async (req, res) => {
   }
 })
 
-// Endpoint: Read profile
-router.get('/users/me', auth, async (req, res) => {
-  res.send(req.user)
-})
-
-// Endpoint: Read an item by id
+// WITHOUT AUTHENTICATION!!!
+// Endpoint: Read an item by id ***Maybe for admins***
 router.get('/users/:id', async (req, res) => {
   const _id = req.params.id
   try {
@@ -2396,7 +2398,32 @@ router.get('/users/:id', async (req, res) => {
 
 Endpoint *Update*:
 ```javascript
-// Enpoint: Update an item
+// Enpoint: Update profile
+router.patch('/users/me', auth, async (req, res) => {
+  const updates = Object.keys(req.body)
+  const allowedUpdates = Object.keys(User.schema.obj)
+  const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: 'Invalid Updates!' })
+  }
+
+  try {
+    updates.forEach((update) => req.user[update] = req.body[update])
+    await req.user.save()
+    res.send(user)
+  } catch (e) {
+    res.status(400).send(e)
+  }
+})
+```
+- We no more need to find user again since we are already assigning it on `req.user` within ***auth***.
+- We also don't need to verify if user exists any more since already intercept it within ***auth***.
+> *See the endpoint below for detailed information on functions and usages!*
+
+```javascript
+// WITHOUT AUTHENTICATON!!!
+// Endpoint: Update an item ***Maybe for admins***
 router.patch('/users/:id', async (req, res) => {
   const updates = Object.keys(req.body)
   const allowedUpdates = Object.keys(User.schema.obj) // ['name', 'email', 'password', 'age']
@@ -2430,9 +2457,20 @@ router.patch('/users/:id', async (req, res) => {
 1. `runValidators: true` option is going to make sure we do run validation for the update.
 - `Object.values(req.body)` extracts ***values*** from the body of request and creates an array
 
-Enpoint *Delete*:
+Endpoint *Delete*:
 ```javascript
-// Endpoint: Delete an item
+// Endpoint: Delete profile
+router.delete('/users/me', auth, async (req, res) => {
+  try {
+    await req.user.remove()
+    res.send(req.user)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+
+// WITHOUT AUTHENTICATION!!!
+// Endpoint: Delete an item ***Maybe for admins***
 router.delete('/users/:id', async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id)
