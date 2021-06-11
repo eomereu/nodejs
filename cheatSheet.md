@@ -2285,6 +2285,66 @@ console.log(JSON.stringify(pet))
 {}
 ```
 In conclusion we are deleting the attributes we don't want to send back like *password* and then return it in `.toJSON` method up top.
+
+### The User/Task Relationship
+There are two ways of relating two:
+1. Users store ids of all tasks they created
+1. Individual tasks store id of its owner  
+
+So in ***Task*** model:  
+(***Real Related Attribute***)
+```javascript
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User'
+  }
+```
+- `type: mongoose.Schema.Types.ObjectId` lets us to set the type of the field as `_id` of another object:
+- `ref: 'User'` relates our ***Task*** model to ***User*** model.
+
+So our new ***Create Task*** route looks like:
+```javascript
+// Enpoint: Create a task
+router.post('/tasks', auth, async (req, res) => {
+  const task = new Task({
+    ...req.body,
+    owner: req.user._id
+  })
+
+  try {
+    await task.save()
+    res.status(201).send(task)
+  } catch (e) {
+    res.status(400).send(e)
+  }
+})
+```
+- `...req.body` **ES6 Spread Operator**: It's gonna copy all of the properties from *body* over to the object we are newly creating
+
+Ex *Pseudo*:
+```javascript
+const user = await User.findById('60c3b22efd228459d65ba25a')
+await user.populate('tasks').execPopulate()
+console.log(user.tasks)
+```
+- `.populate()` allows us to populate data from a relationship. *Either a virtual one (Virtual Property-down below) or a real related one (Real Related Attribute-up above)...*
+- `.execPopulate()` to fire the operation `populate` 
+
+***Virtual Property***  
+A virtual property is not actual data stored in a database. It is a relationship between two entities.  
+In ***User*** model:
+```javascript
+userSchema.virtual('tasks', {
+  ref: 'Task',
+  localField: '_id',
+  foreignField: 'owner'
+})
+```
+- `ref:` specifies the model that we want to set up relation to. ***Task*** model in this case...
+- `localField:` is the attribute that relates our current model to the ***ref*** model
+- `foreignField:` is the one that holds our selected field from the current Model. It lies in ***ref*** model.
+> *So now `user.tasks` is available! To get the content properly run `user.populate('tasks').execPopulate()`*
 ***
 
 
