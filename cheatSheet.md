@@ -2631,6 +2631,13 @@ const userSchema = new mongoose.Schema({
   }]
 })
 
+// Creating a vitual field
+userSchema.virtual('tasks', {
+  ref: 'Task',
+  localField: '_id',
+  foreignField: 'owner'
+})
+
 // Hiding private data
 userSchema.methods.toJSON = function () {
   const user = this
@@ -2678,6 +2685,31 @@ userSchema.pre('save', async function (next) {
 const User = mongoose.model('User', userSchema)
 
 module.exports = User
+```
+
+#### Related Model
+```javascript
+const mongoose = require('mongoose')
+
+const Task = mongoose.model('Task', {
+  description: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  completed: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User'
+  }
+})
+
+module.exports = Task
 ```
 ***
 
