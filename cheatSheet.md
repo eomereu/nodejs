@@ -2388,7 +2388,29 @@ router.get('/tasks', auth, async (req, res) => {
 - `match.completed = req.query.completed === 'true'` is going to create a `completed` attribute in the object ***match***.
 - `match` is a special attribute that checks for the matches by the provided attribute *-which is `completed` in our case-* within our collection has already been set as `match: { completed: true }` or `match: { completed: false }` up above and will be populating the tasks accordingly.
 
+### Pagination
+Pagination allows us to return results to the client part by part. For example when we perform a search on Google, it returns up to millions of results, however we see them ten by ten per page. So there are 3 approaches in pagination:
+1. Page by page *(like in Google)*
+1. "Load more" button
+1. Load as scroll *(like in Instagram)*
+However backend is always the same. We have two keys: `limit` and `skip` where we *limit* the results per page and sets *skip* to retrieve next results.
+```javascript
+  await req.user.populate({
+    path: 'tasks',
+    match,
+    options: {
+      limit: parseInt(req.query.limit),
+      skip: parseInt(req.query.skip)
+    }
+  }).execPopulate()
+  res.send(req.user.tasks)
+```
+- `parseInt()` is a JavaScript function that lets us take Integer from a String
+- `?limit=2&skip=0` first page of 2 results
+- `?limit=2&skip=2` second page of 2 results
+- `?limit=2&skip=4` third page of 2 results
 
+***
 
 
 
