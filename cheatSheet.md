@@ -2362,6 +2362,32 @@ const userSchema = new mongoose.Schema({
 ```
 - `timestamps` is `false` by default. After adding it like this we have ***createdAt*** and ***updatedAt*** fields in our collection.
 
+### Filtering Data
+In ***task router***:
+```javascript
+// Endpoint: Read all tasks
+// GET /tasks?completed=true
+router.get('/tasks', auth, async (req, res) => {
+  const match = {}
+
+  if (req.params.completed) {
+    match.completed = req.params.completed === 'true'
+  }
+  
+  try {
+    await req.user.populate({
+      path: 'tasks',
+      match
+    }).execPopulate()
+    res.send(req.user.tasks)
+  } catch (e) {
+    res.status(500).send()
+  }
+})
+```
+- `match.completed = req.params.completed === 'true'` is going to create a `completed` attribute in the object ***match***.
+- `match` is a special attribute that checks for the matches by the provided attribute *-which is `completed` in our case-* within our collection has already been set as `match: { completed: true }` or `match: { completed: false }` up above and will be populating the tasks accordingly.
+
 
 
 
