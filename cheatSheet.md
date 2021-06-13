@@ -2406,9 +2406,56 @@ However backend is always the same. We have two keys: `limit` and `skip` where w
   res.send(req.user.tasks)
 ```
 - `parseInt()` is a JavaScript function that lets us take Integer from a String
+```url
+{{url}}/tasks?limit=3&skip=3
+```
 - `?limit=2&skip=0` first page of 2 results
 - `?limit=2&skip=2` second page of 2 results
 - `?limit=2&skip=4` third page of 2 results
+
+### Sorting Data
+There are typically two pieces with `sortBy`. The most common way is to sepereate two with an underscore (`_`) or a colon (`:`):
+1. The field we are trying to sort by
+1. Order
+```url
+{{url}}/tasks?sortBy=createdAt:desc
+```
+- `asc` for ascending - refers to `1` within code
+- `desc` for descending - refers to `-1` within code
+Since we can sort by any attribute that our collection has:
+```javascript
+  const sort = {}
+
+  if (req.query.sortBy) {
+    const parts = req.query.sortBy.split(':')
+    sort[parts[0]] = parts[1]// === 'desc' ? -1 : 1
+  }
+  
+  try {
+    await req.user.populate({
+      path: 'tasks',
+      match,
+      options: {
+        limit: parseInt(req.query.limit),
+        skip: parseInt(req.query.skip),
+        sort
+      }
+    }).execPopulate()
+    res.send(req.user.tasks)
+  } catch (e) {
+    res.status(500).send()
+  }
+})
+```
+- `.split(':')` splits the string of our query based on colon
+- `sort[parts[0]]` is a dynamic attribute selector. So since here our user decides the attribute we have to use this type to determine and assign the attribute
+- `parts[1] === 'desc' ? -1 : 1` our ternary operator which sets the attribute to `-1` if second part of the query equals to `desc`, sets to `1` otherwise. ***HOWEVER*** because mongoose accepts `asc` and `desc` on `sortBy` we don't need it:
+- `parts[1]` is enough based on the item above.
+- If user set `completed` to `asc` or `1` then it will first show the incomplete ones, then completed ones.
+
+
+
+
 
 ***
 
