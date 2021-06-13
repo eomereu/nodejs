@@ -2370,8 +2370,8 @@ In ***task router***:
 router.get('/tasks', auth, async (req, res) => {
   const match = {}
 
-  if (req.params.completed) {
-    match.completed = req.params.completed === 'true'
+  if (req.query.completed) {
+    match.completed = req.query.completed === 'true'
   }
   
   try {
@@ -2385,7 +2385,7 @@ router.get('/tasks', auth, async (req, res) => {
   }
 })
 ```
-- `match.completed = req.params.completed === 'true'` is going to create a `completed` attribute in the object ***match***.
+- `match.completed = req.query.completed === 'true'` is going to create a `completed` attribute in the object ***match***.
 - `match` is a special attribute that checks for the matches by the provided attribute *-which is `completed` in our case-* within our collection has already been set as `match: { completed: true }` or `match: { completed: false }` up above and will be populating the tasks accordingly.
 
 

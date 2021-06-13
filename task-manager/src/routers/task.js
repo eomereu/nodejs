@@ -25,8 +25,8 @@ router.post('/tasks', auth, async (req, res) => {
 router.get('/tasks', auth, async (req, res) => {
   const match = {}
 
-  if (req.params.completed) {
-    match.completed = req.params.completed === 'true'
+  if (req.query.completed) {
+    match.completed = req.query.completed === 'true'
   }
   
   try {
