@@ -2452,13 +2452,27 @@ Since we can sort by any attribute that our collection has:
 - `parts[1] === 'desc' ? -1 : 1` our ternary operator which sets the attribute to `-1` if second part of the query equals to `desc`, sets to `1` otherwise. ***HOWEVER*** because mongoose accepts `asc` and `desc` on `sortBy` we don't need it:
 - `parts[1]` is enough based on the item above.
 - If user set `completed` to `asc` or `1` then it will first show the incomplete ones, then completed ones.
-
-
-
-
-
 ***
 
+## File Uploads
+Express doesn't support file uploads by default. However the npm package [**multer**](https://www.npmjs.com/package/multer) provides us to support the functionality.  
+An example upload endpoint:
+```javascript
+const multer = require('multer')
+const upload = multer({
+  dest:'images'
+})
+app.post('/uploads', upload.single('file'), (req, res) => {
+  res.send()
+})
+```
+- `dest:` option keeps our targeted folder to store the uploads
+- `upload.single('file')` makes the code wait for an upload named as ***file*** to handle. That's why in Postman we need to specify the ***KEY*** value as ***file***.
+
+> *Within Postman we need to select **form-data** option to be able to provide file upload. Then within **KEY** field, we choose **file**. So it allows us to upload files.*
+
+> *Watch out that, for the time being, when we upload the file/picture it gets a random name and no extension!*
+***
 
 
 
@@ -3235,6 +3249,9 @@ Bcryptjs is a hashing algorithm we use to store passwords securelyç
   - `jwt.sign({ uniqueIdentifier }, 'secretSignature', { expiresIn: '2 weeks' })` creates and returns the token. First 2 arguments are required, last one optional.
   - `jwt.verify(tokenToBeVerified, 'secretSignature')` verifies and returns the payload/body of the token as JSON if everything went well, throw an error otherwise.
   > *See "JSON Web Tokens (JWTs)" under "API Authentication and Security" for detailed information.*
+
+- [**multer**](https://www.npmjs.com/package/multer)
+  The library that allows us to provide file uploads
 ***
 
 ## Useful External Services/APIs
